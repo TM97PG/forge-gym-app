@@ -61,24 +61,26 @@ INLINE_LOGIN_TEMPLATE = """
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Forge Login</title>
   <style>
-    :root { --bg:#060606; --panel:#111315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c4b39d; --accent:#ff8b39; --accent2:#ffc14d; }
+    :root { --bg:#060606; --panel:#111315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c4b39d; --accent:#ff8b39; --accent2:#ffc14d; --glass:rgba(255,255,255,.045); }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:20px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.22), transparent 28%), linear-gradient(180deg,#050505,#111); }
-    .card { width:min(560px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:28px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:12px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.22), transparent 28%), radial-gradient(circle at bottom right, rgba(255,193,77,.14), transparent 24%), linear-gradient(180deg,#050505,#111); }
+    .card { width:min(560px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:32px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); position:relative; overflow:hidden; }
+    .card:before { content:""; position:absolute; inset:0; background:linear-gradient(125deg, transparent 0 35%, rgba(255,255,255,.04) 50%, transparent 65%); pointer-events:none; }
     .eyebrow,.mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:700; }
     .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
     h1 { margin:12px 0 8px; font-size:44px; line-height:.96; font-family:Georgia,serif; }
     p { color:#eadbc8; line-height:1.7; }
     .grid { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin:22px 0; }
-    .feature,.note,.flash { padding:14px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
-    .feature strong,.note strong { display:block; margin-top:8px; font-size:18px; }
+    .feature,.flash,.login-side { padding:14px; border-radius:20px; background:var(--glass); border:1px solid var(--line); }
+    .feature strong,.login-side strong { display:block; margin-top:8px; font-size:18px; }
     form { display:grid; gap:12px; margin-top:14px; }
     label { display:grid; gap:8px; font-size:14px; color:var(--muted); }
     input,button { min-height:54px; border-radius:16px; border:1px solid var(--line); }
     input { width:100%; padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
     button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
-    .stack { display:grid; gap:10px; margin:14px 0; }
-    @media (max-width: 720px) { .grid { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; } }
+    .stack,.login-shell-grid { display:grid; gap:10px; margin:14px 0; }
+    .login-shell-grid { grid-template-columns:1.15fr .85fr; align-items:start; }
+    @media (max-width: 720px) { .grid,.login-shell-grid { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; border-radius:26px; } }
   </style>
 </head>
 <body>
@@ -101,15 +103,17 @@ INLINE_LOGIN_TEMPLATE = """
       </div>
       {% endif %}
     {% endwith %}
-    <form method="post">
-      <label>Username <input type="text" name="username" placeholder="admin" required></label>
-      <label>Password <input type="password" name="password" placeholder="Password" required></label>
-      <button type="submit">Udji u Forge</button>
-    </form>
-    <div class="note" style="margin-top:14px;">
-      <div class="mini">Admin login</div>
-      <strong>admin</strong>
-      <p>Lozinka: <code>daljamtelemont1</code></p>
+    <div class="login-shell-grid">
+      <form method="post">
+        <label>Username <input type="text" name="username" placeholder="Username" required></label>
+        <label>Password <input type="password" name="password" placeholder="Password" required></label>
+        <button type="submit">Udji u Forge</button>
+      </form>
+      <div class="login-side">
+        <div class="mini">Private access</div>
+        <strong>Mobile athlete login</strong>
+        <p>Čist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
+      </div>
     </div>
   </main>
 </body>
@@ -142,7 +146,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     h2 { font-size:clamp(26px, 4vw, 42px); }
     .hero-head,.hero-user,.split,.section-head,.head-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
     .hero p,.option p,.metric-note,.log p,.admin-note { color:#eadbc8; line-height:1.65; }
-    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid { display:grid; gap:14px; }
+    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid,.meal-grid,.mission-grid { display:grid; gap:14px; }
     .hero-kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:18px; }
     .grid3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
     .grid4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
@@ -171,13 +175,15 @@ INLINE_DASHBOARD_TEMPLATE = """
     .next { background:rgba(78,186,114,.12); border:1px solid rgba(78,186,114,.18); }
     .notice { background:rgba(255,176,0,.08); border:1px solid rgba(255,176,0,.18); }
     .logs { display:grid; gap:12px; max-height:780px; overflow:auto; }
-    .users-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .users-grid,.meal-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .mission-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
+    .achievement-grid { display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
     .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
-    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2 { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
+    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } }
   </style>
 </head>
 <body>
@@ -232,6 +238,11 @@ INLINE_DASHBOARD_TEMPLATE = """
         <article class="kpi"><span class="mini">Minutes</span><strong>{{ payload.stats.weekly_minutes }}</strong></article>
         <article class="kpi"><span class="mini">Calories</span><strong>{{ payload.assistant.targets.calories }}</strong></article>
       </div>
+      <div class="mission-grid">
+        <article class="kpi"><span class="mini">Recovery score</span><strong>{{ payload.scores.recovery_score }}/10</strong></article>
+        <article class="kpi"><span class="mini">Transformation</span><strong>{{ payload.scores.transformation_score }}/10</strong></article>
+        <article class="kpi"><span class="mini">Consistency</span><strong>{{ payload.scores.consistency_score }}%</strong></article>
+      </div>
       <div class="quickbar">
         <a href="#plans">Goal plans</a>
         <a href="#assistant">Assistant</a>
@@ -250,6 +261,41 @@ INLINE_DASHBOARD_TEMPLATE = """
           <article class="kpi"><span class="mini">Age</span><strong>{{ payload.user.age }}</strong></article>
           <article class="kpi"><span class="mini">Height / Weight</span><strong>{{ payload.user.height_cm }} / {{ payload.user.weight_kg }}</strong></article>
           <article class="kpi"><span class="mini">Goal</span><strong>{{ payload.user.goal|title }}</strong></article>
+        </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          <form method="post" action="/profile/update" class="form2">
+            <label>Ime i prezime<input type="text" name="full_name" value="{{ payload.user.full_name }}" required></label>
+            <label>Godine<input type="number" name="age" value="{{ payload.user.age }}" min="13" max="100"></label>
+            <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ payload.user.height_cm }}"></label>
+            <label>Kilaza kg<input type="number" step="0.1" name="weight_kg" value="{{ payload.user.weight_kg }}"></label>
+            <label>Cilj
+              <select name="goal">
+                <option value="performance" {% if payload.user.goal == 'performance' %}selected{% endif %}>Performance</option>
+                <option value="muscle" {% if payload.user.goal == 'muscle' %}selected{% endif %}>Muscle</option>
+                <option value="cut" {% if payload.user.goal == 'cut' %}selected{% endif %}>Cut</option>
+              </select>
+            </label>
+            <label>Iskustvo
+              <select name="experience_level">
+                <option value="beginner" {% if payload.user.experience_level == 'beginner' %}selected{% endif %}>Beginner</option>
+                <option value="intermediate" {% if payload.user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                <option value="advanced" {% if payload.user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
+              </select>
+            </label>
+            <button class="full" type="submit">Sačuvaj profil</button>
+          </form>
+          <div>
+            <div class="mini">Achievements</div>
+            <div class="achievement-grid">
+              {% for item in payload.achievements %}
+              <article class="option">
+                <strong>{{ item.title }}</strong>
+                <div class="notice">{{ item.value }}</div>
+                <p>{{ item.detail }}</p>
+              </article>
+              {% endfor %}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -313,6 +359,29 @@ INLINE_DASHBOARD_TEMPLATE = """
           </div>
         </div>
         <div class="next">{{ payload.assistant.next_action }}</div>
+      </section>
+
+      <section class="panel" id="mission">
+        <div class="section-head">
+          <div><div class="mini">Daily mission</div><h2>What matters today</h2></div>
+        </div>
+        <div class="log">
+          <ul class="list">
+            {% for item in payload.daily_mission %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="meal-grid" style="margin-top:16px;">
+          {% for meal in payload.meal_suggestions %}
+          <article class="option">
+            <div class="mini">{{ meal.time }}</div>
+            <strong>{{ meal.title }}</strong>
+            <p>{{ meal.details }}</p>
+            <div class="notice">{{ meal.macro }}</div>
+          </article>
+          {% endfor %}
+        </div>
       </section>
 
       <section class="panel" id="calendar">
@@ -1212,6 +1281,99 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
     return options.get(goal, options["performance"])
 
 
+def build_meal_suggestions(goal: str, calories_target: int, protein_target: int) -> list[dict[str, Any]]:
+    library = {
+        "performance": [
+            {"title": "Pre-lift power bowl", "time": "Breakfast", "details": "Oats, banana, whey and Greek yogurt for quick carbs and protein."},
+            {"title": "Post-workout recovery plate", "time": "Lunch", "details": "Chicken, rice and fruit to reload glycogen and recovery."},
+            {"title": "Evening performance dinner", "time": "Dinner", "details": "Salmon, potatoes and vegetables for recovery and micronutrients."},
+        ],
+        "muscle": [
+            {"title": "Mass builder breakfast", "time": "Breakfast", "details": "Eggs, oats, peanut butter and yogurt for calorie-dense protein."},
+            {"title": "Growth lunch", "time": "Lunch", "details": "Beef or chicken, rice and olive oil for a surplus without junk."},
+            {"title": "Anabolic dinner", "time": "Dinner", "details": "Pasta with lean meat and parmesan plus a protein dessert."},
+        ],
+        "cut": [
+            {"title": "Lean start meal", "time": "Breakfast", "details": "Egg whites, berries and yogurt to stay full with low calories."},
+            {"title": "Deficit lunch", "time": "Lunch", "details": "Chicken salad, potatoes and fruit with high protein focus."},
+            {"title": "Tight dinner", "time": "Dinner", "details": "White fish or turkey, vegetables and rice with precise portions."},
+        ],
+    }
+    items = library.get(goal, library["performance"])
+    items[0]["macro"] = f"{protein_target}g protein target"
+    items[1]["macro"] = f"{calories_target} kcal structure"
+    items[2]["macro"] = "Hydration + digestion friendly finish"
+    return items
+
+
+def build_athlete_scores(workouts: list[dict[str, Any]], metrics: list[dict[str, Any]], meals: list[dict[str, Any]]) -> dict[str, Any]:
+    latest_metric = metrics[0] if metrics else None
+    form_score = int(latest_metric["form_score"]) if latest_metric else 7
+    sleep_score = min(10, round(float(latest_metric["sleep_hours"])) if latest_metric else 7)
+    training_score = min(10, max(5, len(workouts[:6]) + 4))
+    nutrition_score = min(10, max(5, round(sum(float(meal["protein"]) for meal in meals[:5]) / 35) if meals else 6))
+    recovery_score = round((form_score + sleep_score + nutrition_score) / 3, 1)
+    transformation_score = round((training_score + nutrition_score + form_score) / 3, 1)
+    consistency_score = min(100, max(42, len(workouts) * 8 + len(metrics) * 6))
+    return {
+        "recovery_score": recovery_score,
+        "transformation_score": transformation_score,
+        "consistency_score": consistency_score,
+        "sleep_score": sleep_score,
+        "nutrition_score": nutrition_score,
+        "training_score": training_score,
+    }
+
+
+def build_daily_mission(user: dict[str, Any], assistant: dict[str, Any], stats: dict[str, Any]) -> list[str]:
+    goal = str(user["goal"]).lower()
+    mission = [
+        f"Hit {assistant['targets']['protein']}g protein before the end of the day.",
+        f"Protect recovery score with 8h sleep focus and smart hydration.",
+    ]
+    if goal == "muscle":
+        mission.insert(0, "Choose the highest-quality hypertrophy plan and push execution, not junk fatigue.")
+    elif goal == "cut":
+        mission.insert(0, "Stay in a clean deficit while keeping strength sessions sharp.")
+    else:
+        mission.insert(0, "Train for performance today and keep first working sets explosive.")
+    if stats.get("latest_metric"):
+        mission.append(f"Current body weight check-in is {stats['latest_metric']['body_weight']} kg, so keep portions aligned.")
+    return mission
+
+
+def build_achievements(stats: dict[str, Any], workouts: list[dict[str, Any]], metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    items = [
+        {
+            "title": "Consistency engine",
+            "value": f"{max(7, len(workouts) * 4)} day streak",
+            "detail": "Training entries are building a visible weekly rhythm.",
+        },
+        {
+            "title": "Recovery control",
+            "value": f"{stats['pr_count']} high-output sessions",
+            "detail": "Quality sessions are staying high without losing structure.",
+        },
+    ]
+    if metrics:
+        items.append(
+            {
+                "title": "Physique tracking",
+                "value": f"{metrics[0]['form_score']}/10 form score",
+                "detail": "Body check-ins are staying active and useful for adjustments.",
+            }
+        )
+    else:
+        items.append(
+            {
+                "title": "First milestone",
+                "value": "Add your first body check-in",
+                "detail": "Once metrics start coming in, the assistant gets smarter.",
+            }
+        )
+    return items
+
+
 def build_assistant_plan(
     user: dict[str, Any],
     workouts: list[dict[str, Any]],
@@ -1314,6 +1476,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     seed["user"]["streak_days"] = max(3, len(workouts) * 4)
 
     assistant = build_assistant_plan(user, workouts, metrics, meals, calendar)
+    scores = build_athlete_scores(workouts, metrics, meals)
+    meal_suggestions = build_meal_suggestions(str(user["goal"]).lower(), assistant["targets"]["calories"], assistant["targets"]["protein"])
+    daily_mission = build_daily_mission(user, assistant, stats)
+    achievements = build_achievements(stats, workouts, metrics)
 
     return {
         "seed": seed,
@@ -1323,9 +1489,13 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "workouts": workouts,
         "metrics": metrics,
         "stats": stats,
+        "scores": scores,
         "nutrition_stats": nutrition_stats,
         "recommendation": recommendation,
         "assistant": assistant,
+        "meal_suggestions": meal_suggestions,
+        "daily_mission": daily_mission,
+        "achievements": achievements,
         "calendar": calendar,
         "meals": meals,
         "exercises": exercises,
@@ -1812,6 +1982,31 @@ def add_calendar_event():
         )
 
     return redirect(url_for("dashboard") + "#calendar")
+
+
+@app.route("/profile/update", methods=["POST"])
+@login_required
+def update_profile():
+    user = current_user()
+    full_name = str(request.form.get("full_name") or user["full_name"]).strip()[:80]
+    age = clamp_int(request.form.get("age"), int(user["age"]), 13, 100)
+    height_cm = clamp_float(request.form.get("height_cm"), float(user["height_cm"]), 100.0, 250.0)
+    weight_kg = clamp_float(request.form.get("weight_kg"), float(user["weight_kg"]), 30.0, 350.0)
+    goal = str(request.form.get("goal") or user["goal"]).strip().lower()[:30]
+    experience_level = str(request.form.get("experience_level") or user["experience_level"]).strip().lower()[:30]
+
+    with get_db() as db:
+        db.execute(
+            """
+            UPDATE users
+            SET full_name = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
+            WHERE id = ?
+            """,
+            (full_name, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
+        )
+
+    flash("Profil je ažuriran i preporuke su osvježene.")
+    return redirect(url_for("dashboard") + "#profile")
 
 
 init_db()
