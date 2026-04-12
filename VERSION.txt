@@ -1,0 +1,16 @@
+FORGE V3 MOBILE BUILD
+
+This folder contains the latest Forge mobile app update.
+
+Visible upgrade markers:
+- Login screen shows: V3 Mobile Build
+- Dashboard shows: Version V3
+- Dashboard shows: New mobile UX
+
+Updated areas:
+- user accounts
+- admin login
+- personalized assistant
+- calendar
+- mobile UX
+- PWA login start
