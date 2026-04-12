@@ -395,6 +395,72 @@ INLINE_DASHBOARD_TEMPLATE = """
 """
 
 
+INLINE_ONBOARDING_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Onboarding</title>
+  <style>
+    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:20px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.18), transparent 24%), linear-gradient(180deg,#050505,#101112); }
+    .card { width:min(760px,100%); padding:28px; border-radius:28px; background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); box-shadow:0 30px 80px rgba(0,0,0,.45); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:12px 0 8px; font-size:42px; line-height:.96; font-family:Georgia,serif; }
+    p { color:#eadbc8; line-height:1.7; }
+    form { display:grid; gap:12px; margin-top:18px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    label { display:grid; gap:8px; color:var(--muted); font-size:14px; }
+    input,select,button { width:100%; min-height:52px; border-radius:16px; border:1px solid var(--line); font:inherit; }
+    input,select { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
+    .full { grid-column:1 / -1; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:18px; }
+    .tile { padding:14px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
+    .tile strong { display:block; margin-top:8px; font-size:18px; }
+    @media (max-width: 760px) { form,.grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="pill">First login setup</div>
+    <div class="mini" style="margin-top:14px;">Forge athlete profile</div>
+    <h1>Popuni svoj profil</h1>
+    <p>Unesi ime, godine, visinu, kilazu i cilj. Na osnovu toga Forge ti daje predloge treninga, ishrane i kalendar plana.</p>
+    <div class="grid">
+      <article class="tile"><div class="mini">Goal</div><strong>Personalized training</strong><p>Dobijaš više planova za performance, muscle ili cut cilj.</p></article>
+      <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se računaju po tvom profilu.</p></article>
+      <article class="tile"><div class="mini">Calendar</div><strong>Planned routine</strong><p>Izabrani plan i preporuke ulaze u tvoj kalendar.</p></article>
+    </div>
+    <form method="post">
+      <label>Ime i prezime<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
+      <label>Godine<input type="number" name="age" value="{{ user.age }}" min="13" max="100" required></label>
+      <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ user.height_cm }}" required></label>
+      <label>Kilaža kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
+      <label class="full">Cilj
+        <select name="goal">
+          <option value="performance" {% if user.goal == 'performance' %}selected{% endif %}>Performance</option>
+          <option value="muscle" {% if user.goal == 'muscle' %}selected{% endif %}>Muscle</option>
+          <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>Cut</option>
+        </select>
+      </label>
+      <label class="full">Iskustvo
+        <select name="experience_level">
+          <option value="beginner" {% if user.experience_level == 'beginner' %}selected{% endif %}>Beginner</option>
+          <option value="intermediate" {% if user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+          <option value="advanced" {% if user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
+        </select>
+      </label>
+      <button class="full" type="submit">Sačuvaj profil i nastavi</button>
+    </form>
+  </main>
+</body>
+</html>
+"""
+
+
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -422,6 +488,7 @@ def init_db() -> None:
                 weight_kg REAL NOT NULL DEFAULT 80,
                 goal TEXT NOT NULL DEFAULT 'performance',
                 experience_level TEXT NOT NULL DEFAULT 'intermediate',
+                profile_completed INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL
             );
 
@@ -512,6 +579,7 @@ def init_db() -> None:
             """
         )
         ensure_column(db, "workout_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "users", "profile_completed", "profile_completed INTEGER NOT NULL DEFAULT 0")
         ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -566,6 +634,7 @@ def init_db() -> None:
 
         demo_user = db.execute("SELECT id FROM users WHERE username = 'lenovo'").fetchone()
         demo_user_id = int(demo_user["id"])
+        db.execute("UPDATE users SET profile_completed = 1 WHERE username IN ('admin', 'lenovo')")
 
         existing_logs = db.execute("SELECT COUNT(*) AS count FROM workout_logs WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
         existing_metrics = db.execute("SELECT COUNT(*) AS count FROM body_metrics WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
@@ -701,7 +770,7 @@ def fetch_user(username: str = "") -> dict[str, Any] | None:
     with get_db() as db:
         row = db.execute(
             """
-            SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level
+            SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed
             FROM users
             WHERE username = ?
             """,
@@ -1270,6 +1339,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def needs_onboarding(user: dict[str, Any] | None) -> bool:
+    return bool(user and not int(user.get("profile_completed", 0)))
+
+
 @app.route("/")
 def home():
     if current_user():
@@ -1280,7 +1353,7 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user():
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("onboarding") if needs_onboarding(current_user()) else url_for("dashboard"))
 
     if request.method == "POST":
         username = str(request.form.get("username") or "").strip().lower()
@@ -1288,7 +1361,7 @@ def login():
         user = fetch_user(username)
         if user and check_password_hash(user["password_hash"], password):
             session["username"] = user["username"]
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("onboarding") if needs_onboarding(user) else url_for("dashboard"))
         flash("Pogresan username ili password.")
 
     return render_template_string(INLINE_LOGIN_TEMPLATE)
@@ -1303,8 +1376,39 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    payload = dashboard_payload(current_user())
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    payload = dashboard_payload(user)
     return render_template_string(INLINE_DASHBOARD_TEMPLATE, payload=payload, today=date.today().isoformat())
+
+
+@app.route("/onboarding", methods=["GET", "POST"])
+@login_required
+def onboarding():
+    user = current_user()
+    if request.method == "POST":
+        full_name = str(request.form.get("full_name") or user["full_name"]).strip()[:80]
+        age = clamp_int(request.form.get("age"), int(user["age"]), 13, 100)
+        height_cm = clamp_float(request.form.get("height_cm"), float(user["height_cm"]), 100.0, 250.0)
+        weight_kg = clamp_float(request.form.get("weight_kg"), float(user["weight_kg"]), 30.0, 350.0)
+        goal = str(request.form.get("goal") or user["goal"]).strip().lower()[:30]
+        experience_level = str(request.form.get("experience_level") or user["experience_level"]).strip().lower()[:30]
+
+        with get_db() as db:
+            db.execute(
+                """
+                UPDATE users
+                SET full_name = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
+                WHERE id = ?
+                """,
+                (full_name, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
+            )
+
+        flash("Profil je sacuvan. Forge sada pravi plan za tebe.")
+        return redirect(url_for("dashboard"))
+
+    return render_template_string(INLINE_ONBOARDING_TEMPLATE, user=user)
 
 
 @app.route("/manifest.json")
@@ -1449,8 +1553,8 @@ def create_user():
         db.execute(
             """
             INSERT INTO users (
-                username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 username,
@@ -1462,6 +1566,7 @@ def create_user():
                 weight_kg,
                 goal,
                 experience_level,
+                0 if role == "member" else 1,
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
