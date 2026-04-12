@@ -1,0 +1,102 @@
+{
+  "filters": {
+    "goals": ["all", "performance", "muscle", "cut", "recovery"],
+    "meal_types": ["all", "breakfast", "lunch", "dinner", "snack", "preworkout", "postworkout"]
+  },
+  "foods": [
+    {"name": "Chicken breast", "unit": "100g", "calories": 165, "protein": 31, "carbs": 0, "fats": 3.6, "goals": ["muscle", "cut", "performance"], "meal_types": ["lunch", "dinner", "postworkout"], "tags": ["lean", "protein", "meat"]},
+    {"name": "Turkey breast", "unit": "100g", "calories": 135, "protein": 29, "carbs": 0, "fats": 1.6, "goals": ["muscle", "cut"], "meal_types": ["lunch", "dinner"], "tags": ["lean", "protein"]},
+    {"name": "Salmon", "unit": "100g", "calories": 206, "protein": 22, "carbs": 0, "fats": 12, "goals": ["performance", "recovery", "muscle"], "meal_types": ["lunch", "dinner"], "tags": ["omega3", "fish", "protein"]},
+    {"name": "Eggs", "unit": "100g", "calories": 143, "protein": 13, "carbs": 1.1, "fats": 10, "goals": ["muscle", "performance", "recovery"], "meal_types": ["breakfast", "snack"], "tags": ["protein", "fat"]},
+    {"name": "Greek yogurt", "unit": "100g", "calories": 66, "protein": 10, "carbs": 3.6, "fats": 0.4, "goals": ["cut", "muscle", "recovery"], "meal_types": ["breakfast", "snack", "postworkout"], "tags": ["dairy", "protein"]},
+    {"name": "Cottage cheese", "unit": "100g", "calories": 98, "protein": 11, "carbs": 3.4, "fats": 4.3, "goals": ["cut", "muscle"], "meal_types": ["breakfast", "snack"], "tags": ["dairy", "protein"]},
+    {"name": "Oats", "unit": "100g", "calories": 389, "protein": 16.9, "carbs": 66.3, "fats": 6.9, "goals": ["performance", "muscle"], "meal_types": ["breakfast", "preworkout"], "tags": ["carbs", "fiber"]},
+    {"name": "Rice cooked", "unit": "100g", "calories": 130, "protein": 2.7, "carbs": 28, "fats": 0.3, "goals": ["performance", "muscle", "recovery"], "meal_types": ["lunch", "dinner", "postworkout"], "tags": ["carbs"]},
+    {"name": "Potatoes", "unit": "100g", "calories": 77, "protein": 2, "carbs": 17, "fats": 0.1, "goals": ["performance", "cut", "recovery"], "meal_types": ["lunch", "dinner"], "tags": ["carbs", "fiber"]},
+    {"name": "Sweet potatoes", "unit": "100g", "calories": 86, "protein": 1.6, "carbs": 20, "fats": 0.1, "goals": ["performance", "recovery", "cut"], "meal_types": ["lunch", "dinner"], "tags": ["carbs", "fiber"]},
+    {"name": "Banana", "unit": "100g", "calories": 89, "protein": 1.1, "carbs": 23, "fats": 0.3, "goals": ["performance", "recovery"], "meal_types": ["breakfast", "snack", "preworkout"], "tags": ["fruit", "carbs"]},
+    {"name": "Blueberries", "unit": "100g", "calories": 57, "protein": 0.7, "carbs": 14, "fats": 0.3, "goals": ["cut", "recovery", "performance"], "meal_types": ["breakfast", "snack"], "tags": ["fruit", "antioxidants"]},
+    {"name": "Avocado", "unit": "100g", "calories": 160, "protein": 2, "carbs": 9, "fats": 15, "goals": ["recovery", "muscle"], "meal_types": ["breakfast", "lunch"], "tags": ["fat", "micronutrients"]},
+    {"name": "Olive oil", "unit": "100g", "calories": 884, "protein": 0, "carbs": 0, "fats": 100, "goals": ["muscle", "recovery"], "meal_types": ["lunch", "dinner"], "tags": ["fat"]},
+    {"name": "Almonds", "unit": "100g", "calories": 579, "protein": 21, "carbs": 22, "fats": 50, "goals": ["muscle", "recovery"], "meal_types": ["snack"], "tags": ["fat", "snack"]},
+    {"name": "Whey protein", "unit": "100g", "calories": 400, "protein": 80, "carbs": 8, "fats": 7, "goals": ["muscle", "performance", "recovery"], "meal_types": ["postworkout", "snack"], "tags": ["supplement", "protein"]},
+    {"name": "Beef mince 5%", "unit": "100g", "calories": 137, "protein": 21, "carbs": 0, "fats": 5, "goals": ["muscle", "performance"], "meal_types": ["lunch", "dinner"], "tags": ["meat", "protein"]},
+    {"name": "Tuna", "unit": "100g", "calories": 132, "protein": 29, "carbs": 0, "fats": 1, "goals": ["cut", "muscle", "recovery"], "meal_types": ["lunch", "snack"], "tags": ["fish", "protein"]},
+    {"name": "Whole grain bread", "unit": "100g", "calories": 247, "protein": 13, "carbs": 41, "fats": 4.2, "goals": ["performance", "muscle"], "meal_types": ["breakfast", "snack"], "tags": ["carbs"]},
+    {"name": "Peanut butter", "unit": "100g", "calories": 588, "protein": 25, "carbs": 20, "fats": 50, "goals": ["muscle", "performance"], "meal_types": ["breakfast", "snack"], "tags": ["fat", "calorie-dense"]}
+  ],
+  "recipes": [
+    {
+      "name": "Power Oat Bowl",
+      "meal_type": "breakfast",
+      "goals": ["performance", "muscle"],
+      "calories": 640,
+      "protein": 38,
+      "carbs": 82,
+      "fats": 16,
+      "ingredients": ["80g oats", "250g greek yogurt", "1 banana", "20g peanut butter", "80g blueberries"],
+      "steps": ["Cook or soak oats.", "Add yogurt and fruit.", "Top with peanut butter."],
+      "benefit": "Strong pre-workout fuel with protein and steady carbs."
+    },
+    {
+      "name": "Lean Chicken Rice Box",
+      "meal_type": "lunch",
+      "goals": ["cut", "performance", "muscle"],
+      "calories": 710,
+      "protein": 63,
+      "carbs": 78,
+      "fats": 14,
+      "ingredients": ["220g chicken breast", "280g cooked rice", "150g vegetables", "10g olive oil"],
+      "steps": ["Grill chicken.", "Cook rice.", "Add vegetables and olive oil."],
+      "benefit": "Classic high-protein meal for body recomposition and recovery."
+    },
+    {
+      "name": "Salmon Recovery Plate",
+      "meal_type": "dinner",
+      "goals": ["recovery", "performance", "muscle"],
+      "calories": 690,
+      "protein": 46,
+      "carbs": 52,
+      "fats": 30,
+      "ingredients": ["180g salmon", "300g potatoes", "greens", "10g olive oil"],
+      "steps": ["Bake salmon.", "Roast potatoes.", "Serve with greens."],
+      "benefit": "Great evening meal for joint support and recovery."
+    },
+    {
+      "name": "Fast Cut Yogurt Cup",
+      "meal_type": "snack",
+      "goals": ["cut", "recovery"],
+      "calories": 240,
+      "protein": 28,
+      "carbs": 18,
+      "fats": 3,
+      "ingredients": ["250g greek yogurt", "100g berries", "10g honey"],
+      "steps": ["Mix ingredients in a bowl.", "Eat cold."],
+      "benefit": "Low-fat, high-protein snack that keeps hunger down."
+    },
+    {
+      "name": "Post-Lift Shake Stack",
+      "meal_type": "postworkout",
+      "goals": ["performance", "muscle", "recovery"],
+      "calories": 430,
+      "protein": 38,
+      "carbs": 54,
+      "fats": 7,
+      "ingredients": ["40g whey", "1 banana", "60g oats", "300ml milk or water"],
+      "steps": ["Blend everything until smooth."],
+      "benefit": "Quick recovery hit for glycogen and muscle repair."
+    },
+    {
+      "name": "Hotel Gym Wrap",
+      "meal_type": "lunch",
+      "goals": ["performance", "cut"],
+      "calories": 520,
+      "protein": 42,
+      "carbs": 44,
+      "fats": 18,
+      "ingredients": ["2 wraps", "150g turkey breast", "salad mix", "20g avocado"],
+      "steps": ["Fill wraps with turkey and vegetables.", "Roll tightly."],
+      "benefit": "Portable recipe for travel days and hotel training."
+    }
+  ]
+}

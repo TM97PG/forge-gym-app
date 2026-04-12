@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Forge">
+  <title>{{ payload.seed.brand.name }} Gym App</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <header class="hero-card reveal" id="top">
+      <div class="hero-film"></div>
+      <div class="eyebrow">Adaptive athlete system</div>
+      <div class="hero-head">
+        <div>
+          <h1>{{ payload.seed.brand.name }}</h1>
+          <p>{{ payload.seed.brand.tagline }}</p>
+        </div>
+        <div class="status-chip">{{ payload.stats.weekly_sessions }} sessions this week</div>
+      </div>
+      <div class="hero-user">
+        <div>
+          <span class="mini-label">Athlete</span>
+          <strong>{{ payload.seed.user.name }}</strong>
+          <small>{{ payload.seed.user.level }}</small>
+        </div>
+        <div>
+          <span class="mini-label">Goal</span>
+          <strong>{{ payload.seed.user.goal }}</strong>
+          <small>Readiness {{ payload.seed.user.readiness }}% and streak {{ payload.seed.user.streak_days }} days.</small>
+        </div>
+      </div>
+      <div class="premium-ribbon">
+        <span>Forge Elite</span>
+        <span>Performance OS</span>
+        <span>Coach-led</span>
+      </div>
+      <div class="hero-kpis">
+        <article class="kpi-card">
+          <span>Weekly volume</span>
+          <strong>{{ payload.stats.weekly_volume }}</strong>
+        </article>
+        <article class="kpi-card">
+          <span>Weekly minutes</span>
+          <strong>{{ payload.stats.weekly_minutes }}</strong>
+        </article>
+        <article class="kpi-card">
+          <span>High-output days</span>
+          <strong>{{ payload.stats.pr_count }}</strong>
+        </article>
+        <article class="kpi-card">
+          <span>Current weight</span>
+          <strong>{% if payload.stats.latest_metric %}{{ payload.stats.latest_metric.body_weight }}kg{% else %}-{% endif %}</strong>
+        </article>
+      </div>
+    </header>
+
+    <main class="page-grid">
+      <section class="panel section-span reveal">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Coach squad</span>
+            <h2>Inside coaches</h2>
+          </div>
+        </div>
+        <div class="coach-grid">
+          {% for key, coach in payload.coaches.items() %}
+          <article class="coach-persona {{ coach.accent }}">
+            <span class="mini-label">{{ coach.role }}</span>
+            <strong>{{ coach.name }}</strong>
+            <p>{{ coach.tone }}</p>
+            <div class="coach-pill">{{ key }}</div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel section-span reveal">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Coach studio</span>
+            <h2>Premium trainer profiles</h2>
+          </div>
+        </div>
+        <div class="trainer-showcase">
+          {% for trainer in payload.trainers %}
+          <article class="trainer-card">
+            <span class="mini-label">{{ trainer.title }}</span>
+            <strong>{{ trainer.name }}</strong>
+            <p>{{ trainer.specialty }}</p>
+            <div class="trainer-signature">{{ trainer.signature }}</div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel recommendation-panel reveal" id="coach">
+        <div class="section-heading compact">
+          <div>
+            <span class="mini-label">Adaptive recommendation</span>
+            <h2>Smart workout builder</h2>
+          </div>
+        </div>
+
+        <form id="recommendation-form" class="recommendation-form">
+          <label>
+            Coach
+            <select name="coach">
+              <option value="strength">Strength</option>
+              <option value="hypertrophy">Hypertrophy</option>
+              <option value="conditioning">Conditioning</option>
+              <option value="mobility">Recovery</option>
+            </select>
+          </label>
+          <label>
+            Mood
+            <select name="mood">
+              <option value="steady">Steady</option>
+              <option value="great">Great</option>
+              <option value="tired">Tired</option>
+              <option value="sore">Sore</option>
+            </select>
+          </label>
+          <label>
+            Energy
+            <input type="range" name="energy" min="1" max="10" value="7">
+          </label>
+          <label>
+            Equipment
+            <select name="equipment">
+              <option value="full gym">Full gym</option>
+              <option value="home">Home setup</option>
+              <option value="hotel">Hotel gym</option>
+            </select>
+          </label>
+          <label>
+            Goal
+            <select name="goal">
+              <option value="performance">Performance</option>
+              <option value="muscle">Muscle</option>
+              <option value="cut">Cut</option>
+            </select>
+          </label>
+          <label>
+            Minutes
+            <input type="number" name="minutes" min="20" max="180" value="{{ payload.recommendation.duration }}">
+          </label>
+          <button type="submit">Build my session</button>
+        </form>
+
+        <article class="recommendation-output" id="recommendation-output">
+          <div class="recommendation-topline">
+            <span class="mini-label">{{ payload.recommendation.coach_role }}</span>
+            <strong>{{ payload.recommendation.coach_name }}</strong>
+          </div>
+          <h3 id="rec-headline">{{ payload.recommendation.headline }}</h3>
+          <p id="rec-tone">{{ payload.recommendation.tone }}</p>
+          <div class="recommendation-meta">
+            <div><span>Intensity</span><strong id="rec-intensity">{{ payload.recommendation.intensity }}</strong></div>
+            <div><span>Duration</span><strong id="rec-duration">{{ payload.recommendation.duration }} min</strong></div>
+            <div><span>Equipment</span><strong id="rec-equipment">{{ payload.recommendation.equipment }}</strong></div>
+          </div>
+          <ul class="bullet-list" id="rec-blocks">
+            {% for block in payload.recommendation.blocks %}
+            <li>{{ block }}</li>
+            {% endfor %}
+          </ul>
+          <div class="research-strip">
+            <span class="mini-label">Evidence rules</span>
+            <ul class="bullet-list slim" id="rec-principles">
+              {% for principle in payload.recommendation.principles %}
+              <li>{{ principle }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="next-step" id="rec-next">{{ payload.recommendation.next_step }}</div>
+        </article>
+      </section>
+
+      <section class="panel reveal">
+        <div class="section-heading compact">
+          <div>
+            <span class="mini-label">Today</span>
+            <h2>{{ payload.seed.today.label }}</h2>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring">
+              <strong>{{ payload.seed.today.duration }}</strong>
+              <span>min</span>
+            </div>
+          </div>
+        </div>
+        <p class="focus-line">{{ payload.seed.today.focus }}</p>
+        <div class="metric-strip">
+          <div><span>Calories</span><strong>{{ payload.seed.today.calories_target }}</strong></div>
+          <div><span>Water</span><strong>{{ payload.seed.today.water_liters }}L</strong></div>
+          <div><span>Steps</span><strong>{{ payload.seed.today.steps_target }}</strong></div>
+        </div>
+        <div class="block-list">
+          {% for block in payload.seed.today.blocks %}
+          <article class="block-card">
+            <div class="block-head">
+              <span>{{ block.title }}</span>
+              <strong>{{ block.time }}</strong>
+            </div>
+            <ul class="bullet-list">
+              {% for item in block["items"] %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel reveal">
+        <div class="section-heading compact">
+          <div>
+            <span class="mini-label">Research pulse</span>
+            <h2>Best-app principles</h2>
+          </div>
+        </div>
+        <div class="research-cards">
+          {% for source in payload.research %}
+          <article class="research-card">
+            <span class="mini-label">{{ source.name }}</span>
+            <p>{{ source.principle }}</p>
+            <a href="{{ source.url }}" target="_blank" rel="noreferrer">Source</a>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel section-span reveal" id="nutrition">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Nutrition lab</span>
+            <h2>Food, grams, recipes and targets</h2>
+          </div>
+        </div>
+
+        <div class="hero-kpis nutrition-kpis">
+          <article class="kpi-card">
+            <span>Calories today</span>
+            <strong>{{ payload.nutrition_stats.calories }}</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Protein today</span>
+            <strong>{{ payload.nutrition_stats.protein }}g</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Carbs today</span>
+            <strong>{{ payload.nutrition_stats.carbs }}g</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Fats today</span>
+            <strong>{{ payload.nutrition_stats.fats }}g</strong>
+          </article>
+        </div>
+
+        <div class="split-grid">
+          <form method="post" action="/log-meal" class="data-form">
+            <label>Date and time<input type="datetime-local" name="logged_at" value="{{ today }}T12:00"></label>
+            <label>Meal type
+              <select name="meal_type">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+                <option value="preworkout">Pre-workout</option>
+                <option value="postworkout">Post-workout</option>
+              </select>
+            </label>
+            <label>Food<input type="text" name="food_name" placeholder="Chicken breast"></label>
+            <label>Goal tag
+              <select name="goal_tag">
+                <option value="performance">Performance</option>
+                <option value="muscle">Muscle</option>
+                <option value="cut">Cut</option>
+                <option value="recovery">Recovery</option>
+              </select>
+            </label>
+            <label>Grams<input type="number" step="0.1" name="grams" value="100"></label>
+            <label>Calories<input type="number" step="0.1" name="calories" value="0"></label>
+            <label>Protein<input type="number" step="0.1" name="protein" value="0"></label>
+            <label>Carbs<input type="number" step="0.1" name="carbs" value="0"></label>
+            <label>Fats<input type="number" step="0.1" name="fats" value="0"></label>
+            <label class="full">Notes<textarea name="notes" rows="3" placeholder="Digestion, fullness, pre/post workout note"></textarea></label>
+            <button type="submit">Save meal</button>
+          </form>
+
+          <div class="log-list">
+            {% for meal in payload.meals %}
+            <article class="log-card">
+              <div class="log-head">
+                <div>
+                  <span class="mini-label">{{ meal.logged_at }}</span>
+                  <strong>{{ meal.food_name }}</strong>
+                </div>
+                <div class="log-chip">{{ meal.meal_type }}</div>
+              </div>
+              <div class="log-stats">
+                <div><span>Grams</span><strong>{{ meal.grams }}</strong></div>
+                <div><span>Kcal</span><strong>{{ meal.calories }}</strong></div>
+                <div><span>P</span><strong>{{ meal.protein }}g</strong></div>
+                <div><span>C/F</span><strong>{{ meal.carbs }} / {{ meal.fats }}</strong></div>
+              </div>
+              <p>{{ meal.notes }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="section-heading compact" style="margin-top:24px">
+          <div>
+            <span class="mini-label">Food finder</span>
+            <h2>Filter all foods</h2>
+          </div>
+        </div>
+
+        <form id="nutrition-filter-form" class="recommendation-form">
+          <label>Goal
+            <select name="goal">
+              {% for item in payload.food_filters.goals %}
+              <option value="{{ item }}">{{ item }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>Meal type
+            <select name="meal_type">
+              {% for item in payload.food_filters.meal_types %}
+              <option value="{{ item }}">{{ item }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label class="full">Search
+            <input type="text" name="q" placeholder="protein, fruit, rice, yogurt...">
+          </label>
+          <button type="submit">Filter nutrition</button>
+        </form>
+
+        <div class="catalog-grid" id="food-results">
+          {% for food in payload.foods %}
+          <article class="catalog-card">
+            <span class="mini-label">{{ food.unit }}</span>
+            <strong>{{ food.name }}</strong>
+            <div class="catalog-macros">{{ food.calories }} kcal • P {{ food.protein }} • C {{ food.carbs }} • F {{ food.fats }}</div>
+            <p>{{ food.tags|join(", ") }}</p>
+          </article>
+          {% endfor %}
+        </div>
+
+        <div class="section-heading compact" style="margin-top:24px">
+          <div>
+            <span class="mini-label">Recipes</span>
+            <h2>Meals that support goals</h2>
+          </div>
+        </div>
+
+        <div class="catalog-grid recipe-grid" id="recipe-results">
+          {% for recipe in payload.recipes %}
+          <article class="catalog-card recipe-card">
+            <span class="mini-label">{{ recipe.meal_type }}</span>
+            <strong>{{ recipe.name }}</strong>
+            <div class="catalog-macros">{{ recipe.calories }} kcal • P {{ recipe.protein }} • C {{ recipe.carbs }} • F {{ recipe.fats }}</div>
+            <p>{{ recipe.benefit }}</p>
+            <ul class="bullet-list slim">
+              {% for ingredient in recipe.ingredients %}
+              <li>{{ ingredient }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel section-span reveal" id="track">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Workout tracking</span>
+            <h2>Log the work</h2>
+          </div>
+        </div>
+        <div class="split-grid">
+          <form method="post" action="/log-workout" class="data-form">
+            <label>Date<input type="date" name="workout_date" value="{{ today }}"></label>
+            <label>Coach
+              <select name="coach_key">
+                <option value="strength">Strength</option>
+                <option value="hypertrophy">Hypertrophy</option>
+                <option value="conditioning">Conditioning</option>
+                <option value="mobility">Recovery</option>
+              </select>
+            </label>
+            <label>Focus<input type="text" name="focus" placeholder="Lower power"></label>
+            <label>Duration<input type="number" name="duration_minutes" min="10" max="240" value="75"></label>
+            <label>Volume load<input type="number" name="volume_load" min="0" max="500000" value="12000"></label>
+            <label>Energy<input type="number" name="energy_score" min="1" max="10" value="8"></label>
+            <label>Effort<input type="number" name="effort_score" min="1" max="10" value="8"></label>
+            <label class="full">Notes<textarea name="notes" rows="4" placeholder="How did the session feel?"></textarea></label>
+            <button type="submit">Save workout</button>
+          </form>
+
+          <div class="log-list">
+            {% for workout in payload.workouts %}
+            <article class="log-card">
+              <div class="log-head">
+                <div>
+                  <span class="mini-label">{{ workout.workout_date }}</span>
+                  <strong>{{ workout.focus }}</strong>
+                </div>
+                <div class="log-chip">{{ workout.coach_key }}</div>
+              </div>
+              <div class="log-stats">
+                <div><span>Minutes</span><strong>{{ workout.duration_minutes }}</strong></div>
+                <div><span>Volume</span><strong>{{ workout.volume_load }}</strong></div>
+                <div><span>Energy</span><strong>{{ workout.energy_score }}/10</strong></div>
+                <div><span>Effort</span><strong>{{ workout.effort_score }}/10</strong></div>
+              </div>
+              <p>{{ workout.notes }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section class="panel section-span reveal" id="exercise">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Exercise lab</span>
+            <h2>Per-exercise tracking</h2>
+          </div>
+        </div>
+        <div class="split-grid">
+          <form method="post" action="/log-exercise" class="data-form">
+            <label>Date and time<input type="datetime-local" name="logged_at" value="{{ today }}T18:00"></label>
+            <label>Exercise<input type="text" name="exercise_name" placeholder="Back squat"></label>
+            <label>Category
+              <select name="category">
+                <option value="strength">Strength</option>
+                <option value="hypertrophy">Hypertrophy</option>
+                <option value="conditioning">Conditioning</option>
+                <option value="mobility">Mobility</option>
+              </select>
+            </label>
+            <label>Muscle group<input type="text" name="muscle_group" placeholder="legs"></label>
+            <label>Sets<input type="number" name="sets_count" min="1" max="20" value="4"></label>
+            <label>Reps text<input type="text" name="reps_text" placeholder="8,8,8,8"></label>
+            <label>Weight kg<input type="number" step="0.5" name="weight_kg" value="60"></label>
+            <label>RPE<input type="number" step="0.1" min="1" max="10" name="rpe" value="8"></label>
+            <label>Coach
+              <select name="coach_key">
+                <option value="strength">Strength</option>
+                <option value="hypertrophy">Hypertrophy</option>
+                <option value="conditioning">Conditioning</option>
+                <option value="mobility">Recovery</option>
+              </select>
+            </label>
+            <label class="full">Notes<textarea name="notes" rows="3" placeholder="Tempo, execution, pump, form cues"></textarea></label>
+            <button type="submit">Save exercise log</button>
+          </form>
+
+          <div class="log-list">
+            {% for item in payload.exercises %}
+            <article class="log-card">
+              <div class="log-head">
+                <div>
+                  <span class="mini-label">{{ item.logged_at }}</span>
+                  <strong>{{ item.exercise_name }}</strong>
+                </div>
+                <div class="log-chip">{{ item.category }}</div>
+              </div>
+              <div class="log-stats">
+                <div><span>Muscle</span><strong>{{ item.muscle_group }}</strong></div>
+                <div><span>Sets</span><strong>{{ item.sets_count }}</strong></div>
+                <div><span>Load</span><strong>{{ item.weight_kg }}kg</strong></div>
+                <div><span>RPE</span><strong>{{ item.rpe }}</strong></div>
+              </div>
+              <p>{{ item.reps_text }} · {{ item.notes }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="section-heading compact" style="margin-top:24px">
+          <div>
+            <span class="mini-label">Library</span>
+            <h2>Suggested exercise pool</h2>
+          </div>
+        </div>
+        <div class="catalog-grid">
+          {% for item in payload.exercise_library %}
+          <article class="catalog-card">
+            <span class="mini-label">{{ item.category }}</span>
+            <strong>{{ item.name }}</strong>
+            <div class="catalog-macros">{{ item.muscle_group }} · best for {{ item.best_for }}</div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel section-span reveal" id="metrics">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Body metrics</span>
+            <h2>Progress ledger</h2>
+          </div>
+        </div>
+        <div class="split-grid">
+          <form method="post" action="/log-metric" class="data-form">
+            <label>Date<input type="date" name="metric_date" value="{{ today }}"></label>
+            <label>Weight<input type="number" step="0.1" name="body_weight" value="86.5"></label>
+            <label>Body fat %<input type="number" step="0.1" name="body_fat" value="13.8"></label>
+            <label>Chest cm<input type="number" step="0.1" name="chest" value="109"></label>
+            <label>Waist cm<input type="number" step="0.1" name="waist" value="83"></label>
+            <label>Arm cm<input type="number" step="0.1" name="arm" value="40"></label>
+            <label>Thigh cm<input type="number" step="0.1" name="thigh" value="61"></label>
+            <label>Sleep hours<input type="number" step="0.1" name="sleep_hours" value="8"></label>
+            <label>Steps<input type="number" name="steps" value="10000"></label>
+            <label>Form score<input type="number" name="form_score" min="1" max="10" value="8"></label>
+            <label class="full">Check-in note<textarea name="checkin_note" rows="3" placeholder="How lean, full, flat or recovered do you look and feel?"></textarea></label>
+            <button type="submit">Save metrics</button>
+          </form>
+
+          <div class="metrics-stack">
+            <div class="delta-strip">
+              <article><span>Weight delta</span><strong>{{ payload.stats.weight_delta }} kg</strong></article>
+              <article><span>Waist delta</span><strong>{{ payload.stats.waist_delta }} cm</strong></article>
+            </div>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>Fat</th>
+                    <th>Waist</th>
+                    <th>Form</th>
+                    <th>Sleep</th>
+                    <th>Steps</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for metric in payload.metrics %}
+                  <tr>
+                    <td>{{ metric.metric_date }}</td>
+                    <td>{{ metric.body_weight }}</td>
+                    <td>{{ metric.body_fat }}</td>
+                    <td>{{ metric.waist }}</td>
+                    <td>{{ metric.form_score }}/10</td>
+                    <td>{{ metric.sleep_hours }}</td>
+                    <td>{{ metric.steps }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel section-span reveal" id="gallery">
+        <div class="section-heading">
+          <div>
+            <span class="mini-label">Progress gallery</span>
+            <h2>Track visual form</h2>
+          </div>
+        </div>
+        <div class="split-grid">
+          <form method="post" action="/log-photo" class="data-form">
+            <label>Date<input type="date" name="photo_date" value="{{ today }}"></label>
+            <label>Pose
+              <select name="pose">
+                <option value="Front">Front</option>
+                <option value="Side">Side</option>
+                <option value="Back">Back</option>
+              </select>
+            </label>
+            <label>Mood<input type="text" name="mood" value="Sharp"></label>
+            <label>Lighting score<input type="number" name="lighting_score" min="1" max="10" value="8"></label>
+            <label>Visual score<input type="number" name="visual_score" min="1" max="10" value="8"></label>
+            <label class="full">Image URL<input type="url" name="photo_url" placeholder="https://..."></label>
+            <label class="full">Notes<textarea name="notes" rows="3" placeholder="Conditioning, fullness, waist, shoulders, legs..."></textarea></label>
+            <button type="submit">Save progress photo</button>
+          </form>
+
+          <div class="photo-gallery">
+            {% for photo in payload.photos %}
+            <article class="photo-card">
+              <img src="{{ photo.photo_url }}" alt="{{ photo.pose }} progress photo">
+              <div class="photo-meta">
+                <span class="mini-label">{{ photo.photo_date }} · {{ photo.pose }}</span>
+                <strong>{{ photo.mood }}</strong>
+                <div class="catalog-macros">visual {{ photo.visual_score }}/10 · lighting {{ photo.lighting_score }}/10</div>
+                <p>{{ photo.notes }}</p>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <a class="active" href="#top">Home</a>
+      <a href="#coach">Coach</a>
+      <a href="#nutrition">Fuel</a>
+      <a href="#track">Track</a>
+      <a href="#gallery">Form</a>
+    </nav>
+  </div>
+
+  <script>
+    window.FORGE_BOOTSTRAP = {{ payload|tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

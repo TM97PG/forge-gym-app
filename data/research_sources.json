@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "name": "Nike Training Club",
+      "url": "https://www.nike.com/pr/ntc-app",
+      "principle": "A premium app needs guided sessions across strength, conditioning, yoga and mobility."
+    },
+    {
+      "name": "Strava Training Log",
+      "url": "https://support.strava.com/hc/en-us/articles/206535704-Training-Log",
+      "principle": "Training history should be visual, filterable and updated every time the athlete logs a session."
+    },
+    {
+      "name": "Freeletics Coach",
+      "url": "https://help.freeletics.com/hc/en-us/articles/4407828383250-Adjust-your-Running-Journey-preferences",
+      "principle": "The coach should adapt sessions based on available days, equipment and in-the-moment adjustments."
+    },
+    {
+      "name": "Fitbod Algorithm",
+      "url": "https://fitbod.me/blog/fitbod-algorithm",
+      "principle": "Recommendations should consider recent muscle use, goal, equipment and workout history."
+    }
+  ]
+}

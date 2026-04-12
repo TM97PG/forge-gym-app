@@ -1,0 +1,151 @@
+{
+  "brand": {
+    "name": "Forge",
+    "tagline": "Train like you mean it"
+  },
+  "user": {
+    "name": "Lenovo",
+    "level": "Elite Hybrid Athlete",
+    "streak_days": 48,
+    "readiness": 86,
+    "goal": "Rekompozicija tijela uz više snage i eksplozivnosti"
+  },
+  "today": {
+    "label": "Lower Body Power",
+    "duration": 78,
+    "focus": "Brza ekscentrična kontrola i eksplozivan izlaz iz rupe.",
+    "calories_target": 3240,
+    "water_liters": 3.8,
+    "steps_target": 11000,
+    "coach_note": "Prve dvije radne serije neka budu tehnički savršene. Tek onda diži agresiju.",
+    "blocks": [
+      {
+        "title": "Primer",
+        "time": "06 min",
+        "items": [
+          "90/90 hip switch x 12",
+          "Ankle rocks x 15",
+          "Band glute drive x 20"
+        ]
+      },
+      {
+        "title": "Strength",
+        "time": "28 min",
+        "items": [
+          "Back squat 5 x 5",
+          "Romanian deadlift 4 x 8",
+          "Walking lunges 3 x 12"
+        ]
+      },
+      {
+        "title": "Athletic",
+        "time": "18 min",
+        "items": [
+          "Box jump 5 x 3",
+          "Sled push 6 rounds",
+          "Kettlebell swing 4 x 15"
+        ]
+      },
+      {
+        "title": "Finish",
+        "time": "12 min",
+        "items": [
+          "Echo bike 10/50 x 10",
+          "Breath reset 2 min"
+        ]
+      }
+    ]
+  },
+  "week": [
+    {
+      "day": "Pon",
+      "title": "Upper Strength",
+      "status": "done"
+    },
+    {
+      "day": "Uto",
+      "title": "Recovery + Core",
+      "status": "done"
+    },
+    {
+      "day": "Sri",
+      "title": "Lower Body Power",
+      "status": "today"
+    },
+    {
+      "day": "Čet",
+      "title": "Push Hypertrophy",
+      "status": "next"
+    },
+    {
+      "day": "Pet",
+      "title": "Pull + Conditioning",
+      "status": "next"
+    },
+    {
+      "day": "Sub",
+      "title": "Athlete Engine",
+      "status": "next"
+    },
+    {
+      "day": "Ned",
+      "title": "Full Recovery",
+      "status": "rest"
+    }
+  ],
+  "stats": [
+    {
+      "label": "PR momentum",
+      "value": "+12%"
+    },
+    {
+      "label": "Weekly volume",
+      "value": "18.4k"
+    },
+    {
+      "label": "Avg sleep",
+      "value": "7.9h"
+    },
+    {
+      "label": "Consistency",
+      "value": "94%"
+    }
+  ],
+  "nutrition": {
+    "title": "Performance Fuel",
+    "macros": [
+      {
+        "label": "Protein",
+        "value": "210g"
+      },
+      {
+        "label": "Carbs",
+        "value": "355g"
+      },
+      {
+        "label": "Fats",
+        "value": "82g"
+      }
+    ],
+    "meals": [
+      "Pre-workout: greek yogurt, banana, oats, honey",
+      "Post-workout: rice, chicken, mango salsa",
+      "Dinner: salmon, potatoes, greens"
+    ]
+  },
+  "recovery": {
+    "sleep_score": 89,
+    "stress": "Low",
+    "mobility": "14 min target",
+    "rituals": [
+      "Magnesium before sleep",
+      "5 min box breathing",
+      "8k laganih koraka do podne"
+    ]
+  },
+  "achievements": [
+    "Squat PR this month: 160kg x 3",
+    "Best conditioning score in 10 weeks",
+    "48 dana bez preskočenog plana"
+  ]
+}
