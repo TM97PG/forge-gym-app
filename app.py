@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from datetime import date, datetime, timedelta
+from functools import wraps
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -19,6 +22,7 @@ FOODS_FILE = DATA_DIR / "foods.json"
 DB_FILE = DATA_DIR / "forge.sqlite3"
 
 app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(TEMPLATES_DIR))
+app.secret_key = os.environ.get("FORGE_SECRET_KEY", "forge-secret-2026")
 
 
 COACHES = {
@@ -65,8 +69,23 @@ def init_db() -> None:
     with get_db() as db:
         db.executescript(
             """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                full_name TEXT NOT NULL,
+                role TEXT NOT NULL DEFAULT 'member',
+                age INTEGER NOT NULL DEFAULT 28,
+                height_cm REAL NOT NULL DEFAULT 180,
+                weight_kg REAL NOT NULL DEFAULT 80,
+                goal TEXT NOT NULL DEFAULT 'performance',
+                experience_level TEXT NOT NULL DEFAULT 'intermediate',
+                created_at TEXT NOT NULL
+            );
+
             CREATE TABLE IF NOT EXISTS workout_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
                 workout_date TEXT NOT NULL,
                 coach_key TEXT NOT NULL,
                 focus TEXT NOT NULL,
@@ -80,6 +99,7 @@ def init_db() -> None:
 
             CREATE TABLE IF NOT EXISTS body_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
                 metric_date TEXT NOT NULL,
                 body_weight REAL NOT NULL,
                 body_fat REAL NOT NULL,
@@ -94,6 +114,7 @@ def init_db() -> None:
 
             CREATE TABLE IF NOT EXISTS meal_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
                 logged_at TEXT NOT NULL,
                 meal_type TEXT NOT NULL,
                 food_name TEXT NOT NULL,
@@ -109,6 +130,7 @@ def init_db() -> None:
 
             CREATE TABLE IF NOT EXISTS exercise_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
                 logged_at TEXT NOT NULL,
                 exercise_name TEXT NOT NULL,
                 category TEXT NOT NULL,
@@ -124,6 +146,7 @@ def init_db() -> None:
 
             CREATE TABLE IF NOT EXISTS progress_photos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
                 photo_date TEXT NOT NULL,
                 pose TEXT NOT NULL,
                 mood TEXT NOT NULL,
@@ -133,20 +156,81 @@ def init_db() -> None:
                 notes TEXT NOT NULL DEFAULT '',
                 created_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS calendar_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
+                event_date TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                title TEXT NOT NULL,
+                details TEXT NOT NULL DEFAULT '',
+                coach_key TEXT NOT NULL DEFAULT 'strength',
+                created_at TEXT NOT NULL
+            );
             """
         )
+        ensure_column(db, "workout_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "progress_photos", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "calendar_events", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "body_metrics", "form_score", "form_score INTEGER NOT NULL DEFAULT 7")
+        ensure_column(db, "body_metrics", "checkin_note", "checkin_note TEXT NOT NULL DEFAULT ''")
 
-        columns = {row["name"] for row in db.execute("PRAGMA table_info(body_metrics)").fetchall()}
-        if "form_score" not in columns:
-            db.execute("ALTER TABLE body_metrics ADD COLUMN form_score INTEGER NOT NULL DEFAULT 7")
-        if "checkin_note" not in columns:
-            db.execute("ALTER TABLE body_metrics ADD COLUMN checkin_note TEXT NOT NULL DEFAULT ''")
+        admin_exists = db.execute("SELECT id FROM users WHERE username = 'admin'").fetchone()
+        if not admin_exists:
+            db.execute(
+                """
+                INSERT INTO users (
+                    username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    "admin",
+                    generate_password_hash("daljamtelemont1"),
+                    "Forge Admin",
+                    "admin",
+                    30,
+                    180,
+                    84,
+                    "performance",
+                    "advanced",
+                    datetime.utcnow().isoformat(timespec="seconds"),
+                ),
+            )
 
-        existing_logs = db.execute("SELECT COUNT(*) AS count FROM workout_logs").fetchone()["count"]
-        existing_metrics = db.execute("SELECT COUNT(*) AS count FROM body_metrics").fetchone()["count"]
-        existing_meals = db.execute("SELECT COUNT(*) AS count FROM meal_logs").fetchone()["count"]
-        existing_exercises = db.execute("SELECT COUNT(*) AS count FROM exercise_logs").fetchone()["count"]
-        existing_photos = db.execute("SELECT COUNT(*) AS count FROM progress_photos").fetchone()["count"]
+        demo_exists = db.execute("SELECT id FROM users WHERE username = 'lenovo'").fetchone()
+        if not demo_exists:
+            db.execute(
+                """
+                INSERT INTO users (
+                    username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    "lenovo",
+                    generate_password_hash("forge1234"),
+                    "Lenovo Athlete",
+                    "member",
+                    27,
+                    183,
+                    86.1,
+                    "performance",
+                    "intermediate",
+                    datetime.utcnow().isoformat(timespec="seconds"),
+                ),
+            )
+
+        demo_user = db.execute("SELECT id FROM users WHERE username = 'lenovo'").fetchone()
+        demo_user_id = int(demo_user["id"])
+
+        existing_logs = db.execute("SELECT COUNT(*) AS count FROM workout_logs WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
+        existing_metrics = db.execute("SELECT COUNT(*) AS count FROM body_metrics WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
+        existing_meals = db.execute("SELECT COUNT(*) AS count FROM meal_logs WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
+        existing_exercises = db.execute("SELECT COUNT(*) AS count FROM exercise_logs WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
+        existing_photos = db.execute("SELECT COUNT(*) AS count FROM progress_photos WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
+        existing_calendar = db.execute("SELECT COUNT(*) AS count FROM calendar_events WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
 
         if not existing_logs:
             seed_logs = [
@@ -160,11 +244,11 @@ def init_db() -> None:
                 db.execute(
                     """
                     INSERT INTO workout_logs (
-                        workout_date, coach_key, focus, duration_minutes, volume_load,
+                        user_id, workout_date, coach_key, focus, duration_minutes, volume_load,
                         energy_score, effort_score, notes, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (*row, datetime.utcnow().isoformat(timespec="seconds")),
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
                 )
 
         if not existing_metrics:
@@ -177,11 +261,11 @@ def init_db() -> None:
                 db.execute(
                     """
                     INSERT INTO body_metrics (
-                        metric_date, body_weight, body_fat, chest, waist, arm, thigh,
+                        user_id, metric_date, body_weight, body_fat, chest, waist, arm, thigh,
                         sleep_hours, steps, form_score, checkin_note, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (*row, datetime.utcnow().isoformat(timespec="seconds")),
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
                 )
 
         if not existing_meals:
@@ -196,11 +280,11 @@ def init_db() -> None:
                 db.execute(
                     """
                     INSERT INTO meal_logs (
-                        logged_at, meal_type, food_name, grams, calories, protein, carbs,
+                        user_id, logged_at, meal_type, food_name, grams, calories, protein, carbs,
                         fats, goal_tag, notes, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (*row, datetime.utcnow().isoformat(timespec="seconds")),
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
                 )
 
         if not existing_exercises:
@@ -214,11 +298,11 @@ def init_db() -> None:
                 db.execute(
                     """
                     INSERT INTO exercise_logs (
-                        logged_at, exercise_name, category, muscle_group, sets_count, reps_text,
+                        user_id, logged_at, exercise_name, category, muscle_group, sets_count, reps_text,
                         weight_kg, rpe, coach_key, notes, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (*row, datetime.utcnow().isoformat(timespec="seconds")),
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
                 )
 
         if not existing_photos:
@@ -231,10 +315,25 @@ def init_db() -> None:
                 db.execute(
                     """
                     INSERT INTO progress_photos (
-                        photo_date, pose, mood, lighting_score, visual_score, photo_url, notes, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        user_id, photo_date, pose, mood, lighting_score, visual_score, photo_url, notes, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (*row, datetime.utcnow().isoformat(timespec="seconds")),
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
+                )
+
+        if not existing_calendar:
+            for row in [
+                ("2026-04-14", "training", "Upper strength day", "Heavy bench, pull-ups and rows.", "strength"),
+                ("2026-04-15", "nutrition", "High-carb refill", "Push carbs around the session and keep fats lower.", "hypertrophy"),
+                ("2026-04-16", "recovery", "Mobility and sleep focus", "Light walk, stretch and 8h sleep target.", "mobility"),
+            ]:
+                db.execute(
+                    """
+                    INSERT INTO calendar_events (
+                        user_id, event_date, event_type, title, details, coach_key, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (demo_user_id, *row, datetime.utcnow().isoformat(timespec="seconds")),
                 )
 
 
@@ -254,73 +353,139 @@ def clamp_float(value: Any, default: float, minimum: float, maximum: float) -> f
     return max(minimum, min(maximum, parsed))
 
 
-def recent_workouts(limit: int = 8) -> list[dict[str, Any]]:
+def fetch_user(username: str = "") -> dict[str, Any] | None:
+    if not username:
+        return None
+    with get_db() as db:
+        row = db.execute(
+            """
+            SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level
+            FROM users
+            WHERE username = ?
+            """,
+            (username,),
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def current_user() -> dict[str, Any] | None:
+    return fetch_user(session.get("username", ""))
+
+
+def login_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not current_user():
+            return redirect(url_for("login"))
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user = current_user()
+        if not user or user.get("role") != "admin":
+            return redirect(url_for("home"))
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
+def ensure_column(db: sqlite3.Connection, table: str, column: str, ddl: str) -> None:
+    columns = {row["name"] for row in db.execute(f"PRAGMA table_info({table})").fetchall()}
+    if column not in columns:
+        db.execute(f"ALTER TABLE {table} ADD COLUMN {ddl}")
+
+
+def recent_workouts(user_id: int, limit: int = 8) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
             SELECT id, workout_date, coach_key, focus, duration_minutes, volume_load,
                    energy_score, effort_score, notes
             FROM workout_logs
+            WHERE user_id = ?
             ORDER BY workout_date DESC, id DESC
             LIMIT ?
             """,
-            (limit,),
+            (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
 
-def recent_metrics(limit: int = 6) -> list[dict[str, Any]]:
+def recent_metrics(user_id: int, limit: int = 6) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
             SELECT metric_date, body_weight, body_fat, chest, waist, arm, thigh, sleep_hours, steps, form_score, checkin_note
             FROM body_metrics
+            WHERE user_id = ?
             ORDER BY metric_date DESC, id DESC
             LIMIT ?
             """,
-            (limit,),
+            (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
 
-def recent_meals(limit: int = 16) -> list[dict[str, Any]]:
+def recent_meals(user_id: int, limit: int = 16) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
             SELECT logged_at, meal_type, food_name, grams, calories, protein, carbs, fats, goal_tag, notes
             FROM meal_logs
+            WHERE user_id = ?
             ORDER BY logged_at DESC, id DESC
             LIMIT ?
             """,
-            (limit,),
+            (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
 
-def recent_exercises(limit: int = 16) -> list[dict[str, Any]]:
+def recent_exercises(user_id: int, limit: int = 16) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
             SELECT logged_at, exercise_name, category, muscle_group, sets_count, reps_text, weight_kg, rpe, coach_key, notes
             FROM exercise_logs
+            WHERE user_id = ?
             ORDER BY logged_at DESC, id DESC
             LIMIT ?
             """,
-            (limit,),
+            (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
 
-def recent_photos(limit: int = 6) -> list[dict[str, Any]]:
+def recent_photos(user_id: int, limit: int = 6) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
             SELECT photo_date, pose, mood, lighting_score, visual_score, photo_url, notes
             FROM progress_photos
+            WHERE user_id = ?
             ORDER BY photo_date DESC, id DESC
             LIMIT ?
             """,
-            (limit,),
+            (user_id, limit),
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def calendar_items(user_id: int, limit: int = 14) -> list[dict[str, Any]]:
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT event_date, event_type, title, details, coach_key
+            FROM calendar_events
+            WHERE user_id = ?
+            ORDER BY event_date ASC, id ASC
+            LIMIT ?
+            """,
+            (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
@@ -530,29 +695,123 @@ def build_recommendation(
     }
 
 
-def dashboard_payload() -> dict[str, Any]:
+def list_users() -> list[dict[str, Any]]:
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT id, username, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
+            FROM users
+            ORDER BY role DESC, created_at ASC, id ASC
+            """
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def build_assistant_plan(
+    user: dict[str, Any],
+    workouts: list[dict[str, Any]],
+    metrics: list[dict[str, Any]],
+    meals: list[dict[str, Any]],
+    calendar: list[dict[str, Any]],
+    energy: int = 7,
+    training_days: int = 4,
+) -> dict[str, Any]:
+    latest_metric = metrics[0] if metrics else None
+    weight = float(latest_metric["body_weight"]) if latest_metric else float(user["weight_kg"])
+    goal = str(user["goal"]).lower()
+    protein_target = round(weight * (2.2 if goal == "muscle" else 2.0 if goal == "performance" else 1.9))
+    carbs_target = round(weight * (4.0 if goal == "performance" else 3.3 if goal == "muscle" else 2.4))
+    fats_target = round(weight * 0.8)
+    calories_target = int(protein_target * 4 + carbs_target * 4 + fats_target * 9)
+
+    assistant_coach = "strength"
+    if goal == "muscle":
+        assistant_coach = "hypertrophy"
+    elif goal == "cut":
+        assistant_coach = "conditioning"
+
+    training_summary = [
+        f"{training_days} training days this week with 1 recovery emphasis day.",
+        f"Main lane: {COACHES[assistant_coach]['role']} with progressive overload and logged RPE.",
+        f"Body profile: {user['height_cm']} cm, {round(weight, 1)} kg, age {user['age']}.",
+    ]
+    if workouts:
+        training_summary.append(f"Latest logged session: {workouts[0]['focus']} on {workouts[0]['workout_date']}.")
+    if latest_metric:
+        training_summary.append(
+            f"Latest check-in: {latest_metric['body_weight']} kg, waist {latest_metric['waist']} cm, form {latest_metric['form_score']}/10."
+        )
+
+    nutrition_summary = [
+        f"Daily target: {calories_target} kcal, {protein_target}g protein, {carbs_target}g carbs, {fats_target}g fats.",
+        "Anchor each meal with lean protein, structured carbs around training and stable hydration.",
+        "Use recipes in the nutrition lab to stay aligned with the current goal.",
+    ]
+    if meals:
+        nutrition_summary.append(f"Most recent meal logged: {meals[0]['food_name']} ({meals[0]['meal_type']}).")
+
+    calendar_summary = calendar[:4] or [
+        {
+            "event_date": (date.today() + timedelta(days=1)).isoformat(),
+            "event_type": "training",
+            "title": "Upper performance session",
+            "details": "Main lift, accessories and recovery block.",
+            "coach_key": assistant_coach,
+        }
+    ]
+
+    return {
+        "coach_key": assistant_coach,
+        "coach_name": COACHES[assistant_coach]["name"],
+        "coach_role": COACHES[assistant_coach]["role"],
+        "headline": f"{user['full_name']} plan for {goal}",
+        "training_summary": training_summary,
+        "nutrition_summary": nutrition_summary,
+        "calendar_summary": calendar_summary,
+        "targets": {
+            "calories": calories_target,
+            "protein": protein_target,
+            "carbs": carbs_target,
+            "fats": fats_target,
+        },
+        "next_action": "Log workouts, meals and check-ins daily so the assistant keeps adapting to this athlete profile.",
+    }
+
+
+def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     seed = load_json(SEED_FILE)
     research = load_json(RESEARCH_FILE)["sources"]
     catalog = catalog_payload()
-    workouts = recent_workouts()
-    metrics = recent_metrics()
-    meals = recent_meals()
-    exercises = recent_exercises()
-    photos = recent_photos()
+    workouts = recent_workouts(int(user["id"]))
+    metrics = recent_metrics(int(user["id"]))
+    meals = recent_meals(int(user["id"]))
+    exercises = recent_exercises(int(user["id"]))
+    photos = recent_photos(int(user["id"]))
+    calendar = calendar_items(int(user["id"]))
     stats = build_tracking_stats(workouts, metrics)
     nutrition_stats = build_nutrition_stats(meals)
     recommendation = build_recommendation(
-        coach_key="strength",
+        coach_key="strength" if user["goal"] == "performance" else "hypertrophy" if user["goal"] == "muscle" else "conditioning",
         mood="steady",
         energy=7,
         equipment="full gym",
         minutes=75,
-        goal="performance",
+        goal=str(user["goal"]).lower(),
         workouts=workouts,
         research=research,
     )
+
+    seed["user"]["name"] = user["full_name"]
+    seed["user"]["level"] = user["experience_level"].title()
+    seed["user"]["goal"] = user["goal"].title()
+    seed["user"]["readiness"] = 86 if stats["latest_metric"] else 74
+    seed["user"]["streak_days"] = max(3, len(workouts) * 4)
+
+    assistant = build_assistant_plan(user, workouts, metrics, meals, calendar)
+
     return {
         "seed": seed,
+        "user": {k: v for k, v in user.items() if k != "password_hash"},
         "coaches": COACHES,
         "research": research,
         "workouts": workouts,
@@ -560,6 +819,8 @@ def dashboard_payload() -> dict[str, Any]:
         "stats": stats,
         "nutrition_stats": nutrition_stats,
         "recommendation": recommendation,
+        "assistant": assistant,
+        "calendar": calendar,
         "meals": meals,
         "exercises": exercises,
         "photos": photos,
@@ -568,12 +829,44 @@ def dashboard_payload() -> dict[str, Any]:
         "food_filters": catalog["filters"],
         "foods": filtered_foods("all", "all", ""),
         "recipes": filtered_recipes("all", "all"),
+        "users": list_users() if user.get("role") == "admin" else [],
     }
 
 
 @app.route("/")
 def home():
-    payload = dashboard_payload()
+    if current_user():
+        return redirect(url_for("dashboard"))
+    return redirect(url_for("login"))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user():
+        return redirect(url_for("dashboard"))
+
+    if request.method == "POST":
+        username = str(request.form.get("username") or "").strip().lower()
+        password = str(request.form.get("password") or "")
+        user = fetch_user(username)
+        if user and check_password_hash(user["password_hash"], password):
+            session["username"] = user["username"]
+            return redirect(url_for("dashboard"))
+        flash("Pogresan username ili password.")
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    payload = dashboard_payload(current_user())
     return render_template("index.html", payload=payload, today=date.today().isoformat())
 
 
@@ -595,11 +888,13 @@ def health():
 
 
 @app.route("/api/dashboard")
+@login_required
 def dashboard_api():
-    return jsonify(dashboard_payload())
+    return jsonify(dashboard_payload(current_user()))
 
 
 @app.route("/api/nutrition")
+@login_required
 def nutrition_api():
     goal = str(request.args.get("goal") or "all").strip().lower()
     meal_type = str(request.args.get("meal_type") or "all").strip().lower()
@@ -614,6 +909,7 @@ def nutrition_api():
 
 
 @app.route("/api/exercises")
+@login_required
 def exercises_api():
     query = str(request.args.get("q") or "").strip().lower()
     goal = str(request.args.get("goal") or "all").strip().lower()
@@ -629,9 +925,11 @@ def exercises_api():
 
 
 @app.route("/api/recommendation", methods=["POST"])
+@login_required
 def recommendation_api():
     research = load_json(RESEARCH_FILE)["sources"]
-    workouts = recent_workouts()
+    user = current_user()
+    workouts = recent_workouts(int(user["id"]))
     data = request.get_json(silent=True) or {}
     coach_key = str(data.get("coach") or "strength")
     mood = str(data.get("mood") or "steady").strip().lower()
@@ -643,8 +941,71 @@ def recommendation_api():
     return jsonify(recommendation)
 
 
+@app.route("/api/assistant-plan", methods=["POST"])
+@login_required
+def assistant_plan_api():
+    user = current_user()
+    data = request.get_json(silent=True) or {}
+    energy = clamp_int(data.get("energy"), 7, 1, 10)
+    training_days = clamp_int(data.get("training_days"), 4, 2, 7)
+    workouts = recent_workouts(int(user["id"]))
+    metrics = recent_metrics(int(user["id"]))
+    meals = recent_meals(int(user["id"]))
+    calendar = calendar_items(int(user["id"]))
+    return jsonify(build_assistant_plan(user, workouts, metrics, meals, calendar, energy=energy, training_days=training_days))
+
+
+@app.route("/admin/users", methods=["POST"])
+@admin_required
+def create_user():
+    username = str(request.form.get("username") or "").strip().lower()[:40]
+    password = str(request.form.get("password") or "").strip()
+    full_name = str(request.form.get("full_name") or "").strip()[:80]
+
+    if not username or not password or not full_name:
+        flash("Username, password i puno ime su obavezni.")
+        return redirect(url_for("dashboard") + "#admin")
+
+    if fetch_user(username):
+        flash("Taj username vec postoji.")
+        return redirect(url_for("dashboard") + "#admin")
+
+    age = clamp_int(request.form.get("age"), 25, 13, 100)
+    height_cm = clamp_float(request.form.get("height_cm"), 180.0, 100.0, 250.0)
+    weight_kg = clamp_float(request.form.get("weight_kg"), 80.0, 30.0, 350.0)
+    goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
+    experience_level = str(request.form.get("experience_level") or "intermediate").strip().lower()[:30]
+    role = "admin" if str(request.form.get("role") or "member").strip().lower() == "admin" else "member"
+
+    with get_db() as db:
+        db.execute(
+            """
+            INSERT INTO users (
+                username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                username,
+                generate_password_hash(password),
+                full_name,
+                role,
+                age,
+                height_cm,
+                weight_kg,
+                goal,
+                experience_level,
+                datetime.utcnow().isoformat(timespec="seconds"),
+            ),
+        )
+
+    flash(f"Korisnik {username} je napravljen.")
+    return redirect(url_for("dashboard") + "#admin")
+
+
 @app.route("/log-workout", methods=["POST"])
+@login_required
 def log_workout():
+    user = current_user()
     workout_date = str(request.form.get("workout_date") or date.today().isoformat())
     coach_key = str(request.form.get("coach_key") or "strength")
     focus = str(request.form.get("focus") or "Custom session").strip()[:120]
@@ -658,11 +1019,12 @@ def log_workout():
         db.execute(
             """
             INSERT INTO workout_logs (
-                workout_date, coach_key, focus, duration_minutes, volume_load,
+                user_id, workout_date, coach_key, focus, duration_minutes, volume_load,
                 energy_score, effort_score, notes, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
+                int(user["id"]),
                 workout_date,
                 coach_key,
                 focus,
@@ -674,11 +1036,13 @@ def log_workout():
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
-    return redirect(url_for("home") + "#track")
+    return redirect(url_for("dashboard") + "#track")
 
 
 @app.route("/log-metric", methods=["POST"])
+@login_required
 def log_metric():
+    user = current_user()
     metric_date = str(request.form.get("metric_date") or date.today().isoformat())
     body_weight = clamp_float(request.form.get("body_weight"), 80.0, 30.0, 300.0)
     body_fat = clamp_float(request.form.get("body_fat"), 15.0, 2.0, 60.0)
@@ -695,11 +1059,12 @@ def log_metric():
         db.execute(
             """
             INSERT INTO body_metrics (
-                metric_date, body_weight, body_fat, chest, waist, arm, thigh,
+                user_id, metric_date, body_weight, body_fat, chest, waist, arm, thigh,
                 sleep_hours, steps, form_score, checkin_note, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
+                int(user["id"]),
                 metric_date,
                 body_weight,
                 body_fat,
@@ -714,11 +1079,13 @@ def log_metric():
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
-    return redirect(url_for("home") + "#metrics")
+    return redirect(url_for("dashboard") + "#metrics")
 
 
 @app.route("/log-meal", methods=["POST"])
+@login_required
 def log_meal():
+    user = current_user()
     logged_at = str(request.form.get("logged_at") or datetime.now().strftime("%Y-%m-%dT%H:%M"))
     meal_type = str(request.form.get("meal_type") or "meal").strip()[:30]
     food_name = str(request.form.get("food_name") or "Custom food").strip()[:120]
@@ -734,11 +1101,12 @@ def log_meal():
         db.execute(
             """
             INSERT INTO meal_logs (
-                logged_at, meal_type, food_name, grams, calories, protein, carbs,
+                user_id, logged_at, meal_type, food_name, grams, calories, protein, carbs,
                 fats, goal_tag, notes, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
+                int(user["id"]),
                 logged_at,
                 meal_type,
                 food_name,
@@ -752,11 +1120,13 @@ def log_meal():
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
-    return redirect(url_for("home") + "#nutrition")
+    return redirect(url_for("dashboard") + "#nutrition")
 
 
 @app.route("/log-exercise", methods=["POST"])
+@login_required
 def log_exercise():
+    user = current_user()
     logged_at = str(request.form.get("logged_at") or datetime.now().strftime("%Y-%m-%dT%H:%M"))
     exercise_name = str(request.form.get("exercise_name") or "Custom exercise").strip()[:120]
     category = str(request.form.get("category") or "strength").strip()[:40]
@@ -772,11 +1142,12 @@ def log_exercise():
         db.execute(
             """
             INSERT INTO exercise_logs (
-                logged_at, exercise_name, category, muscle_group, sets_count, reps_text,
+                user_id, logged_at, exercise_name, category, muscle_group, sets_count, reps_text,
                 weight_kg, rpe, coach_key, notes, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
+                int(user["id"]),
                 logged_at,
                 exercise_name,
                 category,
@@ -790,11 +1161,13 @@ def log_exercise():
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
-    return redirect(url_for("home") + "#exercise")
+    return redirect(url_for("dashboard") + "#exercise")
 
 
 @app.route("/log-photo", methods=["POST"])
+@login_required
 def log_photo():
+    user = current_user()
     photo_date = str(request.form.get("photo_date") or date.today().isoformat())
     pose = str(request.form.get("pose") or "Front").strip()[:40]
     mood = str(request.form.get("mood") or "Sharp").strip()[:40]
@@ -810,10 +1183,11 @@ def log_photo():
         db.execute(
             """
             INSERT INTO progress_photos (
-                photo_date, pose, mood, lighting_score, visual_score, photo_url, notes, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                user_id, photo_date, pose, mood, lighting_score, visual_score, photo_url, notes, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
+                int(user["id"]),
                 photo_date,
                 pose,
                 mood,
@@ -824,7 +1198,38 @@ def log_photo():
                 datetime.utcnow().isoformat(timespec="seconds"),
             ),
         )
-    return redirect(url_for("home") + "#gallery")
+    return redirect(url_for("dashboard") + "#gallery")
+
+
+@app.route("/calendar/add", methods=["POST"])
+@login_required
+def add_calendar_event():
+    user = current_user()
+    event_date = str(request.form.get("event_date") or date.today().isoformat())
+    event_type = str(request.form.get("event_type") or "training").strip()[:40]
+    title = str(request.form.get("title") or "Planned session").strip()[:120]
+    details = str(request.form.get("details") or "").strip()[:300]
+    coach_key = str(request.form.get("coach_key") or "strength").strip()[:40]
+
+    with get_db() as db:
+        db.execute(
+            """
+            INSERT INTO calendar_events (
+                user_id, event_date, event_type, title, details, coach_key, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                int(user["id"]),
+                event_date,
+                event_type,
+                title,
+                details,
+                coach_key,
+                datetime.utcnow().isoformat(timespec="seconds"),
+            ),
+        )
+
+    return redirect(url_for("dashboard") + "#calendar")
 
 
 init_db()
