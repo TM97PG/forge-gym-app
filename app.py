@@ -85,9 +85,9 @@ INLINE_LOGIN_TEMPLATE = """
 </head>
 <body>
   <main class="card">
-    <div class="pill">APP.PY ONLY BUILD V5</div>
+    <div class="pill">APP.PY ONLY BUILD V7</div>
     <div class="eyebrow" style="margin-top:14px;">Forge Athlete OS</div>
-    <h1>Login i personal athlete sistem V5</h1>
+    <h1>Secure athlete login V7</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar.</p>
     <div class="grid">
       <article class="feature"><div class="mini">Profile</div><strong>Custom athlete data</strong><p>Ime, prezime, visina, kilaza, godine i cilj po korisniku.</p></article>
@@ -108,6 +108,7 @@ INLINE_LOGIN_TEMPLATE = """
         <label>Username <input type="text" name="username" placeholder="Username" required></label>
         <label>Password <input type="password" name="password" placeholder="Password" required></label>
         <button type="submit">Udji u Forge</button>
+        <a href="/register" style="display:inline-flex;justify-content:center;align-items:center;min-height:52px;border-radius:16px;border:1px solid var(--line);text-decoration:none;color:var(--text);background:rgba(255,255,255,.04);font-weight:700;">Napravi nalog</a>
       </form>
       <div class="login-side">
         <div class="mini">Private access</div>
@@ -115,6 +116,74 @@ INLINE_LOGIN_TEMPLATE = """
         <p>Čist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
       </div>
     </div>
+  </main>
+</body>
+</html>
+"""
+
+
+INLINE_REGISTER_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Registration</title>
+  <style>
+    :root { --bg:#060606; --panel:#111315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c4b39d; --accent:#ff8b39; --accent2:#ffc14d; --glass:rgba(255,255,255,.045); }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:12px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.22), transparent 28%), radial-gradient(circle at bottom right, rgba(255,193,77,.14), transparent 24%), linear-gradient(180deg,#050505,#111); }
+    .card { width:min(760px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:32px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:700; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:12px 0 8px; font-size:42px; line-height:.96; font-family:Georgia,serif; }
+    p { color:#eadbc8; line-height:1.7; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:18px; }
+    label { display:grid; gap:8px; font-size:14px; color:var(--muted); }
+    input,select,button { width:100%; min-height:52px; border-radius:16px; border:1px solid var(--line); font:inherit; }
+    input,select { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
+    .full { grid-column:1 / -1; }
+    .flash { margin:14px 0; padding:14px; border-radius:18px; background:var(--glass); border:1px solid var(--line); }
+    @media (max-width: 760px) { .grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="pill">Forge registration</div>
+    <div class="mini" style="margin-top:14px;">Create your athlete account</div>
+    <h1>Napravi svoj nalog</h1>
+    <p>Korisnik može sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post" class="grid">
+      <label>Ime i prezime<input type="text" name="full_name" required></label>
+      <label>Username<input type="text" name="username" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <label>Pol
+        <select name="gender">
+          <option value="male">Muško</option>
+          <option value="female">Žensko</option>
+        </select>
+      </label>
+      <label>Godine<input type="number" name="age" value="25" min="13" max="100"></label>
+      <label>Visina cm<input type="number" step="0.1" name="height_cm" value="180"></label>
+      <label>Kilaža kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
+      <label>Cilj
+        <select name="goal">
+          <option value="performance">Performance</option>
+          <option value="muscle">Muscle</option>
+          <option value="cut">Cut</option>
+        </select>
+      </label>
+      <button class="full" type="submit">Kreiraj nalog</button>
+      <a class="full" href="/login" style="display:inline-flex;justify-content:center;align-items:center;min-height:52px;border-radius:16px;border:1px solid var(--line);text-decoration:none;color:var(--text);background:rgba(255,255,255,.04);font-weight:700;">Nazad na login</a>
+    </form>
   </main>
 </body>
 </html>
@@ -146,7 +215,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     h2 { font-size:clamp(26px, 4vw, 42px); }
     .hero-head,.hero-user,.split,.section-head,.head-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
     .hero p,.option p,.metric-note,.log p,.admin-note { color:#eadbc8; line-height:1.65; }
-    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid,.meal-grid,.mission-grid { display:grid; gap:14px; }
+    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid,.meal-grid,.mission-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid { display:grid; gap:14px; }
     .hero-kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:18px; }
     .grid3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
     .grid4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
@@ -175,15 +244,17 @@ INLINE_DASHBOARD_TEMPLATE = """
     .next { background:rgba(78,186,114,.12); border:1px solid rgba(78,186,114,.18); }
     .notice { background:rgba(255,176,0,.08); border:1px solid rgba(255,176,0,.18); }
     .logs { display:grid; gap:12px; max-height:780px; overflow:auto; }
-    .users-grid,.meal-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .users-grid,.meal-grid,.folder-grid,.planner-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .mission-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
+    .filter-grid { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
     .achievement-grid { display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
+    .pr-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
     .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
-    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
+    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } }
   </style>
 </head>
 <body>
@@ -191,12 +262,13 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-        <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V5</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V7</strong>
       </div>
       <div class="toplinks">
-        <a href="#plans">Plans</a>
-        <a href="#calendar">Calendar</a>
-        <a href="#admin">Users</a>
+        <a href="#folders">📁 Folders</a>
+        <a href="#plans">🏋️ Plans</a>
+        <a href="#calendar">🗓️ Calendar</a>
+        <a href="#admin">👥 Users</a>
         <a class="logout" href="/logout">Logout</a>
       </div>
     </div>
@@ -244,10 +316,33 @@ INLINE_DASHBOARD_TEMPLATE = """
         <article class="kpi"><span class="mini">Consistency</span><strong>{{ payload.scores.consistency_score }}%</strong></article>
       </div>
       <div class="quickbar">
-        <a href="#plans">Goal plans</a>
-        <a href="#assistant">Assistant</a>
-        <a href="#calendar">Calendar</a>
-        <a href="#profile">Profile</a>
+        <a href="#folders">📁 Folders</a>
+        <a href="#plans">🏋️ Goal plans</a>
+        <a href="#assistant">🧠 Assistant</a>
+        <a href="#profile">👤 Profile</a>
+      </div>
+      <div class="filter-grid">
+        {% for item in payload.adaptive_filters %}
+        <article class="kpi">
+          <span class="mini">{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel span" id="folders">
+      <div class="section-head">
+        <div><div class="mini">Folders</div><h2>Mobile control center</h2></div>
+      </div>
+      <div class="folder-grid">
+        {% for item in payload.folder_cards %}
+        <a href="{{ item.anchor }}" class="option" style="text-decoration:none;">
+          <div class="mini">Folder</div>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.detail }}</p>
+        </a>
+        {% endfor %}
       </div>
     </section>
 
@@ -258,13 +353,23 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
         <div class="grid4">
           <article class="kpi"><span class="mini">Full name</span><strong>{{ payload.user.full_name }}</strong></article>
+          <article class="kpi"><span class="mini">Gender</span><strong>{{ payload.user.gender|title }}</strong></article>
           <article class="kpi"><span class="mini">Age</span><strong>{{ payload.user.age }}</strong></article>
           <article class="kpi"><span class="mini">Height / Weight</span><strong>{{ payload.user.height_cm }} / {{ payload.user.weight_kg }}</strong></article>
           <article class="kpi"><span class="mini">Goal</span><strong>{{ payload.user.goal|title }}</strong></article>
+          <article class="kpi"><span class="mini">Equipment</span><strong>{{ payload.user.equipment_access|title }}</strong></article>
+          <article class="kpi"><span class="mini">Fatigue</span><strong>{{ payload.user.fatigue_state|title }}</strong></article>
+          <article class="kpi"><span class="mini">Cycle mode</span><strong>{{ payload.user.cycle_phase|title }}</strong></article>
         </div>
         <div class="panel-grid" style="margin-top:16px;">
           <form method="post" action="/profile/update" class="form2">
             <label>Ime i prezime<input type="text" name="full_name" value="{{ payload.user.full_name }}" required></label>
+            <label>Pol
+              <select name="gender">
+                <option value="male" {% if payload.user.gender == 'male' %}selected{% endif %}>Muško</option>
+                <option value="female" {% if payload.user.gender == 'female' %}selected{% endif %}>Žensko</option>
+              </select>
+            </label>
             <label>Godine<input type="number" name="age" value="{{ payload.user.age }}" min="13" max="100"></label>
             <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ payload.user.height_cm }}"></label>
             <label>Kilaza kg<input type="number" step="0.1" name="weight_kg" value="{{ payload.user.weight_kg }}"></label>
@@ -280,6 +385,28 @@ INLINE_DASHBOARD_TEMPLATE = """
                 <option value="beginner" {% if payload.user.experience_level == 'beginner' %}selected{% endif %}>Beginner</option>
                 <option value="intermediate" {% if payload.user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
                 <option value="advanced" {% if payload.user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
+              </select>
+            </label>
+            <label>Oprema
+              <select name="equipment_access">
+                <option value="full gym" {% if payload.user.equipment_access == 'full gym' %}selected{% endif %}>Full gym</option>
+                <option value="home" {% if payload.user.equipment_access == 'home' %}selected{% endif %}>Home</option>
+                <option value="hotel" {% if payload.user.equipment_access == 'hotel' %}selected{% endif %}>Hotel</option>
+              </select>
+            </label>
+            <label>Umor
+              <select name="fatigue_state">
+                <option value="steady" {% if payload.user.fatigue_state == 'steady' %}selected{% endif %}>Steady</option>
+                <option value="high" {% if payload.user.fatigue_state == 'high' %}selected{% endif %}>High</option>
+                <option value="drained" {% if payload.user.fatigue_state == 'drained' %}selected{% endif %}>Drained</option>
+              </select>
+            </label>
+            <label>Cycle mode
+              <select name="cycle_phase">
+                <option value="neutral" {% if payload.user.cycle_phase == 'neutral' %}selected{% endif %}>Neutral</option>
+                <option value="performance" {% if payload.user.cycle_phase == 'performance' %}selected{% endif %}>Performance</option>
+                <option value="recovery" {% if payload.user.cycle_phase == 'recovery' %}selected{% endif %}>Recovery</option>
+                <option value="late_cycle" {% if payload.user.cycle_phase == 'late_cycle' %}selected{% endif %}>Late cycle</option>
               </select>
             </label>
             <button class="full" type="submit">Sačuvaj profil</button>
@@ -384,6 +511,52 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </section>
 
+      <section class="panel" id="wellness">
+        <div class="section-head">
+          <div><div class="mini">Wellness</div><h2>{{ payload.wellness_panel.title }}</h2></div>
+        </div>
+        <div class="log">
+          <p>{{ payload.wellness_panel.tone }}</p>
+          <ul class="list">
+            {% for item in payload.wellness_panel.points %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel span" id="planner">
+        <div class="section-head">
+          <div><div class="mini">Weekly planner</div><h2>Seven day layout</h2></div>
+        </div>
+        <div class="planner-grid">
+          {% for item in payload.weekly_planner %}
+          <article class="option">
+            <div class="mini">{{ item.day_label }} · {{ item.date }}</div>
+            <strong>{{ item.title }}</strong>
+            <div class="notice">{{ item.type }}</div>
+            <p>{{ item.details }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel span" id="pr-tracker">
+        <div class="section-head">
+          <div><div class="mini">PR tracker</div><h2>Best lifts by exercise</h2></div>
+        </div>
+        <div class="pr-grid">
+          {% for item in payload.pr_tracker %}
+          <article class="option">
+            <div class="mini">{{ item.category }}</div>
+            <strong>{{ item.exercise_name }}</strong>
+            <div class="notice">{{ item.weight_kg }} kg · {{ item.reps_text }}</div>
+            <p>{{ item.logged_at }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
       <section class="panel" id="calendar">
         <div class="section-head">
           <div><div class="mini">Calendar</div><h2>Weekly plan</h2></div>
@@ -423,6 +596,34 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Ime i prezime<input type="text" name="full_name" required></label>
             <label>Username<input type="text" name="username" required></label>
             <label>Password<input type="text" name="password" required></label>
+            <label>Pol
+              <select name="gender">
+                <option value="male">Muško</option>
+                <option value="female">Žensko</option>
+              </select>
+            </label>
+            <label>Cycle mode
+              <select name="cycle_phase">
+                <option value="neutral">Neutral</option>
+                <option value="performance">Performance</option>
+                <option value="recovery">Recovery</option>
+                <option value="late_cycle">Late cycle</option>
+              </select>
+            </label>
+            <label>Oprema
+              <select name="equipment_access">
+                <option value="full gym">Full gym</option>
+                <option value="home">Home</option>
+                <option value="hotel">Hotel</option>
+              </select>
+            </label>
+            <label>Umor
+              <select name="fatigue_state">
+                <option value="steady">Steady</option>
+                <option value="high">High</option>
+                <option value="drained">Drained</option>
+              </select>
+            </label>
             <label>Goal
               <select name="goal"><option value="performance">Performance</option><option value="muscle">Muscle</option><option value="cut">Cut</option></select>
             </label>
@@ -442,7 +643,7 @@ INLINE_DASHBOARD_TEMPLATE = """
             <article class="user-card">
               <div class="mini">{{ user.role }}</div>
               <strong>{{ user.full_name }}</strong>
-              <p>@{{ user.username }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
+              <p>@{{ user.username }} · {{ user.gender|title }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
             </article>
             {% endfor %}
           </div>
@@ -505,6 +706,34 @@ INLINE_ONBOARDING_TEMPLATE = """
     </div>
     <form method="post">
       <label>Ime i prezime<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
+      <label>Pol
+        <select name="gender">
+          <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Muško</option>
+          <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Žensko</option>
+        </select>
+      </label>
+      <label>Oprema
+        <select name="equipment_access">
+          <option value="full gym" {% if user.equipment_access == 'full gym' %}selected{% endif %}>Full gym</option>
+          <option value="home" {% if user.equipment_access == 'home' %}selected{% endif %}>Home</option>
+          <option value="hotel" {% if user.equipment_access == 'hotel' %}selected{% endif %}>Hotel</option>
+        </select>
+      </label>
+      <label>Umor
+        <select name="fatigue_state">
+          <option value="steady" {% if user.fatigue_state == 'steady' %}selected{% endif %}>Steady</option>
+          <option value="high" {% if user.fatigue_state == 'high' %}selected{% endif %}>High</option>
+          <option value="drained" {% if user.fatigue_state == 'drained' %}selected{% endif %}>Drained</option>
+        </select>
+      </label>
+      <label>Cycle mode
+        <select name="cycle_phase">
+          <option value="neutral" {% if user.cycle_phase == 'neutral' %}selected{% endif %}>Neutral</option>
+          <option value="performance" {% if user.cycle_phase == 'performance' %}selected{% endif %}>Performance</option>
+          <option value="recovery" {% if user.cycle_phase == 'recovery' %}selected{% endif %}>Recovery</option>
+          <option value="late_cycle" {% if user.cycle_phase == 'late_cycle' %}selected{% endif %}>Late cycle</option>
+        </select>
+      </label>
       <label>Godine<input type="number" name="age" value="{{ user.age }}" min="13" max="100" required></label>
       <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ user.height_cm }}" required></label>
       <label>Kilaža kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
@@ -552,6 +781,10 @@ def init_db() -> None:
                 password_hash TEXT NOT NULL,
                 full_name TEXT NOT NULL,
                 role TEXT NOT NULL DEFAULT 'member',
+                gender TEXT NOT NULL DEFAULT 'male',
+                cycle_phase TEXT NOT NULL DEFAULT 'neutral',
+                equipment_access TEXT NOT NULL DEFAULT 'full gym',
+                fatigue_state TEXT NOT NULL DEFAULT 'steady',
                 age INTEGER NOT NULL DEFAULT 28,
                 height_cm REAL NOT NULL DEFAULT 180,
                 weight_kg REAL NOT NULL DEFAULT 80,
@@ -648,6 +881,10 @@ def init_db() -> None:
             """
         )
         ensure_column(db, "workout_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "users", "gender", "gender TEXT NOT NULL DEFAULT 'male'")
+        ensure_column(db, "users", "cycle_phase", "cycle_phase TEXT NOT NULL DEFAULT 'neutral'")
+        ensure_column(db, "users", "equipment_access", "equipment_access TEXT NOT NULL DEFAULT 'full gym'")
+        ensure_column(db, "users", "fatigue_state", "fatigue_state TEXT NOT NULL DEFAULT 'steady'")
         ensure_column(db, "users", "profile_completed", "profile_completed INTEGER NOT NULL DEFAULT 0")
         ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -839,7 +1076,8 @@ def fetch_user(username: str = "") -> dict[str, Any] | None:
     with get_db() as db:
         row = db.execute(
             """
-            SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed
+            SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed,
+                   gender, cycle_phase, equipment_access, fatigue_state
             FROM users
             WHERE username = ?
             """,
@@ -1179,7 +1417,7 @@ def list_users() -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
-            SELECT id, username, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
+            SELECT id, username, full_name, role, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, created_at
             FROM users
             ORDER BY role DESC, created_at ASC, id ASC
             """
@@ -1187,8 +1425,42 @@ def list_users() -> list[dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
+def build_adaptive_filters(user: dict[str, Any]) -> list[dict[str, Any]]:
+    weight = float(user["weight_kg"])
+    weight_class = "light"
+    if weight >= 95:
+        weight_class = "heavy"
+    elif weight >= 75:
+        weight_class = "middle"
+    return [
+        {"label": "Gender", "value": str(user.get("gender", "male")).title()},
+        {"label": "Weight class", "value": weight_class.title()},
+        {"label": "Goal", "value": str(user["goal"]).title()},
+        {"label": "Experience", "value": str(user["experience_level"]).title()},
+        {"label": "Equipment", "value": str(user.get("equipment_access", "full gym")).title()},
+        {"label": "Fatigue", "value": str(user.get("fatigue_state", "steady")).title()},
+        {"label": "Cycle mode", "value": str(user.get("cycle_phase", "neutral")).title()},
+    ]
+
+
+def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"title": "Training folder", "anchor": "#plans", "detail": f"Adaptive plans for {user['goal']} with {len(assistant['suggestions'])} plan options."},
+        {"title": "Nutrition folder", "anchor": "#mission", "detail": f"Macro targets set to {assistant['targets']['calories']} kcal and {assistant['targets']['protein']}g protein."},
+        {"title": "Recovery folder", "anchor": "#assistant", "detail": "Recovery score, daily mission and readiness cues in one place."},
+        {"title": "Profile folder", "anchor": "#profile", "detail": "Update gender, weight, height, age and goal anytime from the dashboard."},
+    ]
+
+
 def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_days: int) -> list[dict[str, Any]]:
     goal = str(user["goal"]).lower()
+    gender = str(user.get("gender", "male")).lower()
+    weight = float(user["weight_kg"])
+    frame = "athletic"
+    if weight >= 95:
+        frame = "power"
+    elif weight < 70:
+        frame = "lightweight"
     options = {
         "performance": [
             {
@@ -1196,7 +1468,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "strength",
                 "coach_role": COACHES["strength"]["role"],
                 "days": training_days,
-                "summary": "Heavy compounds, speed work and structured accessory balance for athletic output.",
+                "summary": f"Heavy compounds, speed work and structured accessory balance for {frame} {gender} athletes chasing output.",
                 "blocks": ["Day 1 upper strength", "Day 2 lower power", "Day 3 hypertrophy support", "Day 4 engine and mobility"],
                 "nutrition": "Higher carbs around lifts, stable protein and hydration.",
             },
@@ -1205,7 +1477,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": "Blend of force, conditioning and recovery for body recomposition with performance.",
+                "summary": f"Blend of force, conditioning and recovery for {gender} athletes who want recomposition with performance.",
                 "blocks": ["2 lifting days", "1 athletic conditioning day", "1 movement and trunk day"],
                 "nutrition": "Carb cycling around hardest sessions and lighter recovery day meals.",
             },
@@ -1214,7 +1486,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "strength",
                 "coach_role": COACHES["strength"]["role"],
                 "days": training_days,
-                "summary": "Simple progression model with repeatable upper and lower sessions and clean logbook focus.",
+                "summary": f"Simple progression model tuned for {frame} body types and clear logbook progression.",
                 "blocks": ["Upper A", "Lower A", "Upper B", "Lower B"],
                 "nutrition": "Consistent calories with strong protein anchor every meal.",
             },
@@ -1225,7 +1497,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "hypertrophy",
                 "coach_role": COACHES["hypertrophy"]["role"],
                 "days": training_days,
-                "summary": "High-quality volume, controlled execution and pump-biased finishers for muscle gain.",
+                "summary": f"High-quality volume and controlled execution for {gender} users pushing muscle gain.",
                 "blocks": ["Push focus", "Pull focus", "Legs focus", "Upper density day"],
                 "nutrition": "Small calorie surplus with high protein and pre/post workout carbs.",
             },
@@ -1234,7 +1506,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "hypertrophy",
                 "coach_role": COACHES["hypertrophy"]["role"],
                 "days": training_days,
-                "summary": "Reliable upper/lower template with more weekly frequency for growth.",
+                "summary": f"Reliable upper/lower template with more weekly frequency and bodyweight-aware volume.",
                 "blocks": ["Upper chest and back", "Lower quads and glutes", "Upper shoulders and arms", "Lower posterior chain"],
                 "nutrition": "Repeatable meal structure with protein at every feeding window.",
             },
@@ -1243,7 +1515,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": "Muscle-focused work with controlled conditioning to stay tighter while growing.",
+                "summary": f"Muscle-focused work with controlled conditioning so {gender} users stay tighter while growing.",
                 "blocks": ["3 hypertrophy days", "1 low-impact conditioning day", "1 optional mobility session"],
                 "nutrition": "Moderate surplus on training days, cleaner intake on lighter days.",
             },
@@ -1254,7 +1526,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": "Protect strength while increasing output and energy expenditure.",
+                "summary": f"Protect strength while increasing output and energy expenditure for {frame} athletes cutting down.",
                 "blocks": ["2 full body strength days", "2 conditioning finish days", "Daily steps target"],
                 "nutrition": "Calorie deficit with high protein and carbs focused around training.",
             },
@@ -1263,7 +1535,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "strength",
                 "coach_role": COACHES["strength"]["role"],
                 "days": training_days,
-                "summary": "Keep muscle signal high with lower junk volume and sharper recovery control.",
+                "summary": f"Keep muscle signal high with lower junk volume and sharper recovery control for {gender} users.",
                 "blocks": ["Upper strength", "Lower strength", "Density accessories", "Zone 2 + mobility"],
                 "nutrition": "Protein first, moderate carbs, tighter food quality control.",
             },
@@ -1272,7 +1544,7 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": "Best for users who want aggressive output, sweat and calendar structure.",
+                "summary": f"Best for {gender} users who want aggressive output, sweat and precise weekly structure.",
                 "blocks": ["Intervals", "Carries and sleds", "Machine circuits", "Recovery mobility"],
                 "nutrition": "Low-fat peri-workout structure with precise calorie logging.",
             },
@@ -1304,6 +1576,23 @@ def build_meal_suggestions(goal: str, calories_target: int, protein_target: int)
     items[1]["macro"] = f"{calories_target} kcal structure"
     items[2]["macro"] = "Hydration + digestion friendly finish"
     return items
+
+
+def goal_training_days(user: dict[str, Any]) -> int:
+    base = 4
+    if str(user["goal"]).lower() == "cut":
+        base = 5
+    if float(user["weight_kg"]) >= 95:
+        base = max(4, base - 1)
+    if str(user.get("gender", "male")).lower() == "female" and str(user["goal"]).lower() == "muscle":
+        base = max(base, 5)
+    if str(user.get("fatigue_state", "steady")).lower() in {"high", "drained"}:
+        base = max(3, base - 1)
+    if str(user.get("equipment_access", "full gym")).lower() == "home":
+        base = max(3, base)
+    if str(user.get("gender", "male")).lower() == "female" and str(user.get("cycle_phase", "neutral")).lower() in {"recovery", "late_cycle"}:
+        base = max(3, base - 1)
+    return base
 
 
 def build_athlete_scores(workouts: list[dict[str, Any]], metrics: list[dict[str, Any]], meals: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1374,6 +1663,93 @@ def build_achievements(stats: dict[str, Any], workouts: list[dict[str, Any]], me
     return items
 
 
+def build_weekly_planner(user: dict[str, Any], calendar: list[dict[str, Any]], assistant: dict[str, Any]) -> list[dict[str, Any]]:
+    existing = {item["event_date"]: item for item in calendar}
+    coach_name = assistant["coach_name"]
+    fallback_titles = {
+        "performance": "Performance session",
+        "muscle": "Growth session",
+        "cut": "Conditioning session",
+    }
+    planner = []
+    for offset in range(7):
+        day = date.today() + timedelta(days=offset)
+        day_key = day.isoformat()
+        item = existing.get(day_key)
+        if item:
+            planner.append(
+                {
+                    "day_label": day.strftime("%a"),
+                    "date": day_key,
+                    "title": item["title"],
+                    "type": item["event_type"],
+                    "details": item["details"],
+                }
+            )
+            continue
+        planner.append(
+            {
+                "day_label": day.strftime("%a"),
+                "date": day_key,
+                "title": fallback_titles.get(str(user["goal"]).lower(), "Training day"),
+                "type": "adaptive",
+                "details": f"{coach_name} keeps this day open for your selected plan and recovery state.",
+            }
+        )
+    return planner
+
+
+def build_pr_tracker(exercises: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    prs: dict[str, dict[str, Any]] = {}
+    for item in exercises:
+        name = str(item["exercise_name"])
+        load = float(item["weight_kg"])
+        current = prs.get(name)
+        if not current or load > current["weight_kg"]:
+            prs[name] = {
+                "exercise_name": name,
+                "weight_kg": load,
+                "reps_text": item["reps_text"],
+                "logged_at": item["logged_at"],
+                "category": item["category"],
+            }
+    ranked = sorted(prs.values(), key=lambda row: row["weight_kg"], reverse=True)
+    return ranked[:6]
+
+
+def build_wellness_panel(user: dict[str, Any], scores: dict[str, Any]) -> dict[str, Any]:
+    gender = str(user.get("gender", "male")).lower()
+    cycle_phase = str(user.get("cycle_phase", "neutral")).lower()
+    fatigue = str(user.get("fatigue_state", "steady")).lower()
+
+    if gender != "female":
+        return {
+            "title": "Recovery advisory",
+            "tone": "Use fatigue and recovery score to auto-regulate volume and intensity.",
+            "points": [
+                f"Current fatigue state is {fatigue}.",
+                f"Recovery score is {scores['recovery_score']}/10.",
+                "Keep hydration, sleep and lower-stress accessories aligned with the current week.",
+            ],
+        }
+
+    phase_guidance = {
+        "neutral": "Balanced phase, normal progression and standard recovery.",
+        "performance": "Performance phase, push quality work and harder top sets if readiness is good.",
+        "recovery": "Recovery phase, reduce junk fatigue and protect sleep, iron intake and mobility.",
+        "late_cycle": "Late cycle, keep execution sharp while lowering unnecessary stress.",
+    }
+    return {
+        "title": "Female wellness panel",
+        "tone": phase_guidance.get(cycle_phase, phase_guidance["neutral"]),
+        "points": [
+            f"Cycle mode is {cycle_phase}.",
+            f"Fatigue state is {fatigue} and recovery score is {scores['recovery_score']}/10.",
+            "Use this panel to bias recovery, food quality and session density before intensity.",
+        ],
+    }
+
+
 def build_assistant_plan(
     user: dict[str, Any],
     workouts: list[dict[str, Any]],
@@ -1386,6 +1762,9 @@ def build_assistant_plan(
     latest_metric = metrics[0] if metrics else None
     weight = float(latest_metric["body_weight"]) if latest_metric else float(user["weight_kg"])
     goal = str(user["goal"]).lower()
+    equipment = str(user.get("equipment_access", "full gym")).lower()
+    fatigue = str(user.get("fatigue_state", "steady")).lower()
+    cycle_phase = str(user.get("cycle_phase", "neutral")).lower()
     protein_target = round(weight * (2.2 if goal == "muscle" else 2.0 if goal == "performance" else 1.9))
     carbs_target = round(weight * (4.0 if goal == "performance" else 3.3 if goal == "muscle" else 2.4))
     fats_target = round(weight * 0.8)
@@ -1400,8 +1779,12 @@ def build_assistant_plan(
     training_summary = [
         f"{training_days} training days this week with 1 recovery emphasis day.",
         f"Main lane: {COACHES[assistant_coach]['role']} with progressive overload and logged RPE.",
-        f"Body profile: {user['height_cm']} cm, {round(weight, 1)} kg, age {user['age']}.",
+        f"Body profile: {user['height_cm']} cm, {round(weight, 1)} kg, age {user['age']}, equipment {equipment}.",
     ]
+    if fatigue in {"high", "drained"}:
+        training_summary.append("Fatigue state is elevated, so current blocks should stay cleaner and lower in junk volume.")
+    if str(user.get("gender", "male")).lower() == "female" and cycle_phase != "neutral":
+        training_summary.append(f"Current cycle mode is {cycle_phase}, so recovery and intensity are adjusted more intelligently.")
     if workouts:
         training_summary.append(f"Latest logged session: {workouts[0]['focus']} on {workouts[0]['workout_date']}.")
     if latest_metric:
@@ -1414,6 +1797,10 @@ def build_assistant_plan(
         "Anchor each meal with lean protein, structured carbs around training and stable hydration.",
         "Use recipes in the nutrition lab to stay aligned with the current goal.",
     ]
+    if fatigue in {"high", "drained"}:
+        nutrition_summary.append("Push easier-to-digest meals and tighter hydration because current fatigue is high.")
+    if str(user.get("gender", "male")).lower() == "female" and cycle_phase in {"recovery", "late_cycle"}:
+        nutrition_summary.append("Bias recovery foods, iron-rich choices and lower stress meal timing in this phase.")
     if meals:
         nutrition_summary.append(f"Most recent meal logged: {meals[0]['food_name']} ({meals[0]['meal_type']}).")
 
@@ -1475,11 +1862,16 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     seed["user"]["readiness"] = 86 if stats["latest_metric"] else 74
     seed["user"]["streak_days"] = max(3, len(workouts) * 4)
 
-    assistant = build_assistant_plan(user, workouts, metrics, meals, calendar)
+    assistant = build_assistant_plan(user, workouts, metrics, meals, calendar, training_days=goal_training_days(user))
     scores = build_athlete_scores(workouts, metrics, meals)
     meal_suggestions = build_meal_suggestions(str(user["goal"]).lower(), assistant["targets"]["calories"], assistant["targets"]["protein"])
     daily_mission = build_daily_mission(user, assistant, stats)
     achievements = build_achievements(stats, workouts, metrics)
+    adaptive_filters = build_adaptive_filters(user)
+    folder_cards = build_folder_cards(user, assistant)
+    weekly_planner = build_weekly_planner(user, calendar, assistant)
+    pr_tracker = build_pr_tracker(exercises)
+    wellness_panel = build_wellness_panel(user, scores)
 
     return {
         "seed": seed,
@@ -1496,6 +1888,11 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "meal_suggestions": meal_suggestions,
         "daily_mission": daily_mission,
         "achievements": achievements,
+        "adaptive_filters": adaptive_filters,
+        "folder_cards": folder_cards,
+        "weekly_planner": weekly_planner,
+        "pr_tracker": pr_tracker,
+        "wellness_panel": wellness_panel,
         "calendar": calendar,
         "meals": meals,
         "exercises": exercises,
@@ -1537,6 +1934,69 @@ def login():
     return render_template_string(INLINE_LOGIN_TEMPLATE)
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user():
+        return redirect(url_for("onboarding") if needs_onboarding(current_user()) else url_for("dashboard"))
+
+    if request.method == "POST":
+        full_name = str(request.form.get("full_name") or "").strip()[:80]
+        username = str(request.form.get("username") or "").strip().lower()[:40]
+        password = str(request.form.get("password") or "").strip()
+
+        if not full_name or not username or not password:
+            flash("Ime, username i password su obavezni.")
+            return render_template_string(INLINE_REGISTER_TEMPLATE)
+
+        if fetch_user(username):
+            flash("Taj username vec postoji.")
+            return render_template_string(INLINE_REGISTER_TEMPLATE)
+
+        gender = str(request.form.get("gender") or "male").strip().lower()[:20]
+        cycle_phase = "neutral"
+        equipment_access = str(request.form.get("equipment_access") or "full gym").strip().lower()[:30]
+        fatigue_state = str(request.form.get("fatigue_state") or "steady").strip().lower()[:20]
+        age = clamp_int(request.form.get("age"), 25, 13, 100)
+        height_cm = clamp_float(request.form.get("height_cm"), 180.0, 100.0, 250.0)
+        weight_kg = clamp_float(request.form.get("weight_kg"), 80.0, 30.0, 350.0)
+        goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
+        experience_level = str(request.form.get("experience_level") or "beginner").strip().lower()[:30]
+
+        with get_db() as db:
+            db.execute(
+                """
+                INSERT INTO users (
+                    username, password_hash, full_name, role, gender, cycle_phase,
+                    equipment_access, fatigue_state, age, height_cm, weight_kg,
+                    goal, experience_level, profile_completed, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    username,
+                    generate_password_hash(password),
+                    full_name,
+                    "member",
+                    gender,
+                    cycle_phase,
+                    equipment_access,
+                    fatigue_state,
+                    age,
+                    height_cm,
+                    weight_kg,
+                    goal,
+                    experience_level,
+                    0,
+                    datetime.utcnow().isoformat(timespec="seconds"),
+                ),
+            )
+
+        session["username"] = username
+        flash("Nalog je napravljen. Dovrsi svoj profil i filtere.")
+        return redirect(url_for("onboarding"))
+
+    return render_template_string(INLINE_REGISTER_TEMPLATE)
+
+
 @app.route("/logout")
 def logout():
     session.clear()
@@ -1559,6 +2019,10 @@ def onboarding():
     user = current_user()
     if request.method == "POST":
         full_name = str(request.form.get("full_name") or user["full_name"]).strip()[:80]
+        gender = str(request.form.get("gender") or user.get("gender") or "male").strip().lower()[:20]
+        cycle_phase = str(request.form.get("cycle_phase") or user.get("cycle_phase") or "neutral").strip().lower()[:20]
+        equipment_access = str(request.form.get("equipment_access") or user.get("equipment_access") or "full gym").strip().lower()[:30]
+        fatigue_state = str(request.form.get("fatigue_state") or user.get("fatigue_state") or "steady").strip().lower()[:20]
         age = clamp_int(request.form.get("age"), int(user["age"]), 13, 100)
         height_cm = clamp_float(request.form.get("height_cm"), float(user["height_cm"]), 100.0, 250.0)
         weight_kg = clamp_float(request.form.get("weight_kg"), float(user["weight_kg"]), 30.0, 350.0)
@@ -1569,10 +2033,10 @@ def onboarding():
             db.execute(
                 """
                 UPDATE users
-                SET full_name = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
+                SET full_name = ?, gender = ?, cycle_phase = ?, equipment_access = ?, fatigue_state = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
                 WHERE id = ?
                 """,
-                (full_name, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
+                (full_name, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
             )
 
         flash("Profil je sacuvan. Forge sada pravi plan za tebe.")
@@ -1601,9 +2065,9 @@ def health():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V5",
-        "login_title": "Login i personal athlete sistem V5",
-        "dashboard_title": "Login + onboarding + plans V5",
+        "build": "APP.PY ONLY BUILD V7",
+        "login_title": "Secure athlete login V7",
+        "dashboard_title": "Adaptive athlete dashboard V7",
     }
 
 
@@ -1722,6 +2186,10 @@ def create_user():
         return redirect(url_for("dashboard") + "#admin")
 
     age = clamp_int(request.form.get("age"), 25, 13, 100)
+    gender = str(request.form.get("gender") or "male").strip().lower()[:20]
+    cycle_phase = str(request.form.get("cycle_phase") or "neutral").strip().lower()[:20]
+    equipment_access = str(request.form.get("equipment_access") or "full gym").strip().lower()[:30]
+    fatigue_state = str(request.form.get("fatigue_state") or "steady").strip().lower()[:20]
     height_cm = clamp_float(request.form.get("height_cm"), 180.0, 100.0, 250.0)
     weight_kg = clamp_float(request.form.get("weight_kg"), 80.0, 30.0, 350.0)
     goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
@@ -1732,14 +2200,18 @@ def create_user():
         db.execute(
             """
             INSERT INTO users (
-                username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                username, password_hash, full_name, role, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 username,
                 generate_password_hash(password),
                 full_name,
                 role,
+                gender,
+                cycle_phase,
+                equipment_access,
+                fatigue_state,
                 age,
                 height_cm,
                 weight_kg,
@@ -1989,6 +2461,7 @@ def add_calendar_event():
 def update_profile():
     user = current_user()
     full_name = str(request.form.get("full_name") or user["full_name"]).strip()[:80]
+    gender = str(request.form.get("gender") or user.get("gender") or "male").strip().lower()[:20]
     age = clamp_int(request.form.get("age"), int(user["age"]), 13, 100)
     height_cm = clamp_float(request.form.get("height_cm"), float(user["height_cm"]), 100.0, 250.0)
     weight_kg = clamp_float(request.form.get("weight_kg"), float(user["weight_kg"]), 30.0, 350.0)
@@ -1999,10 +2472,10 @@ def update_profile():
         db.execute(
             """
             UPDATE users
-            SET full_name = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
+            SET full_name = ?, gender = ?, age = ?, height_cm = ?, weight_kg = ?, goal = ?, experience_level = ?, profile_completed = 1
             WHERE id = ?
             """,
-            (full_name, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
+            (full_name, gender, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
         )
 
     flash("Profil je ažuriran i preporuke su osvježene.")
