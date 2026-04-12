@@ -8,7 +8,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, render_template_string, request, send_from_directory, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -51,6 +51,348 @@ COACHES = {
         "accent": "sand",
     },
 }
+
+
+INLINE_LOGIN_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Login</title>
+  <style>
+    :root { --bg:#060606; --panel:#111315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c4b39d; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:20px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.22), transparent 28%), linear-gradient(180deg,#050505,#111); }
+    .card { width:min(560px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:28px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); }
+    .eyebrow,.mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:700; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:12px 0 8px; font-size:44px; line-height:.96; font-family:Georgia,serif; }
+    p { color:#eadbc8; line-height:1.7; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin:22px 0; }
+    .feature,.note,.flash { padding:14px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
+    .feature strong,.note strong { display:block; margin-top:8px; font-size:18px; }
+    form { display:grid; gap:12px; margin-top:14px; }
+    label { display:grid; gap:8px; font-size:14px; color:var(--muted); }
+    input,button { min-height:54px; border-radius:16px; border:1px solid var(--line); }
+    input { width:100%; padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
+    .stack { display:grid; gap:10px; margin:14px 0; }
+    @media (max-width: 720px) { .grid { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="pill">V4 App Login</div>
+    <div class="eyebrow" style="margin-top:14px;">Forge Athlete OS</div>
+    <h1>Login i personal athlete sistem</h1>
+    <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar.</p>
+    <div class="grid">
+      <article class="feature"><div class="mini">Profile</div><strong>Custom athlete data</strong><p>Ime, prezime, visina, kilaza, godine i cilj po korisniku.</p></article>
+      <article class="feature"><div class="mini">Training</div><strong>3 predloga plana</strong><p>Biranje vise predlozenih treninga prema cilju korisnika.</p></article>
+      <article class="feature"><div class="mini">Calendar</div><strong>Plan po danima</strong><p>Izabrani plan ide direktno u korisnicki kalendar.</p></article>
+    </div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="stack">
+        {% for message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    <form method="post">
+      <label>Username <input type="text" name="username" placeholder="admin" required></label>
+      <label>Password <input type="password" name="password" placeholder="Password" required></label>
+      <button type="submit">Udji u Forge</button>
+    </form>
+    <div class="note" style="margin-top:14px;">
+      <div class="mini">Admin login</div>
+      <strong>admin</strong>
+      <p>Lozinka: <code>daljamtelemont1</code></p>
+    </div>
+  </main>
+</body>
+</html>
+"""
+
+
+INLINE_DASHBOARD_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Dashboard</title>
+  <style>
+    :root { --bg:#050505; --panel:rgba(17,17,19,.92); --line:rgba(255,255,255,.08); --text:#f7efdf; --muted:#baa992; --orange:#f15a24; --gold:#ffb000; --red:#cf3342; --green:#4eba72; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--text); background:radial-gradient(circle at top left, rgba(241,90,36,.18), transparent 24%), radial-gradient(circle at right 18%, rgba(255,176,0,.16), transparent 20%), linear-gradient(180deg,#050505,#101112 58%,#070707); font-family:Arial,Helvetica,sans-serif; }
+    .shell { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:16px 0 110px; }
+    .topbar,.hero,.panel,.option,.flash { background:var(--panel); border:1px solid var(--line); border-radius:26px; box-shadow:0 28px 90px rgba(0,0,0,.42); }
+    .topbar { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px; position:sticky; top:10px; z-index:4; backdrop-filter:blur(18px); margin-bottom:14px; }
+    .toplinks { display:grid; grid-auto-flow:column; gap:10px; }
+    .toplinks a,.logout,.pill,.tag { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; }
+    .pill,.logout { color:#17110a; background:linear-gradient(135deg,var(--orange),var(--gold)); }
+    .toplinks a,.tag { border:1px solid var(--line); background:rgba(255,255,255,.05); }
+    .hero { padding:28px; background:linear-gradient(135deg, rgba(241,90,36,.18), rgba(12,12,13,.96) 34%, rgba(255,176,0,.1)); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    h1,h2,h3 { margin:0; font-family:Georgia,serif; line-height:.96; }
+    h1 { font-size:clamp(38px, 7vw, 76px); }
+    h2 { font-size:clamp(26px, 4vw, 42px); }
+    .hero-head,.hero-user,.split,.section-head,.head-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+    .hero p,.option p,.metric-note,.log p,.admin-note { color:#eadbc8; line-height:1.65; }
+    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid { display:grid; gap:14px; }
+    .hero-kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:18px; }
+    .grid3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .grid4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .quickbar { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
+    .quickbar a { padding:14px; border-radius:18px; text-decoration:none; text-align:center; background:rgba(255,255,255,.05); border:1px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; }
+    .kpi,.option,.log,.user-card,.flash { padding:18px; }
+    .kpi,.option,.log,.user-card { border-radius:22px; background:rgba(24,24,26,.98); border:1px solid rgba(255,255,255,.06); }
+    .kpi strong,.user-card strong,.option strong { display:block; margin-top:8px; font-size:24px; }
+    .page { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; margin-top:18px; }
+    .span { grid-column:1 / -1; }
+    .panel { padding:24px; }
+    .section-head { margin-bottom:14px; }
+    form { display:grid; gap:12px; }
+    .form2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .full { grid-column:1 / -1; }
+    label { display:grid; gap:8px; color:var(--muted); font-size:14px; }
+    input,select,textarea,button { width:100%; min-height:52px; border-radius:16px; border:1px solid var(--line); font:inherit; }
+    input,select,textarea { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    textarea { min-height:110px; resize:vertical; }
+    button { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#18110b; font-weight:800; cursor:pointer; }
+    .panel-grid { display:grid; gap:16px; grid-template-columns:1.05fr .95fr; }
+    .option-grid { margin-top:16px; }
+    .option { background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), linear-gradient(135deg, rgba(241,90,36,.12), rgba(18,18,19,.96)); }
+    .option ul,.list { margin:12px 0 0; padding-left:18px; display:grid; gap:8px; }
+    .next,.notice { margin-top:14px; padding:16px; border-radius:18px; }
+    .next { background:rgba(78,186,114,.12); border:1px solid rgba(78,186,114,.18); }
+    .notice { background:rgba(255,176,0,.08); border:1px solid rgba(255,176,0,.18); }
+    .logs { display:grid; gap:12px; max-height:780px; overflow:auto; }
+    .users-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
+    .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
+    .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
+    .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
+    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2 { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div>
+        <div class="mini">Forge athlete OS</div>
+        <strong style="display:block;margin-top:6px;font-size:20px;">V4 inline dashboard</strong>
+      </div>
+      <div class="toplinks">
+        <a href="#plans">Plans</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#admin">Users</a>
+        <a class="logout" href="/logout">Logout</a>
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="flash-stack">
+        {% for message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <div class="mini">Adaptive athlete system</div>
+          <h1>Forge</h1>
+          <p>Personalized gym app with separate user data, assistant logic, several goal-based plans and weekly calendar control.</p>
+        </div>
+        <div class="pill">New login + plan selector</div>
+      </div>
+      <div class="hero-user" style="margin-top:18px;">
+        <div>
+          <div class="mini">Athlete</div>
+          <h3 style="margin-top:8px;">{{ payload.user.full_name }}</h3>
+          <p>@{{ payload.user.username }} · {{ payload.user.age }} yrs · {{ payload.user.height_cm }} cm · {{ payload.user.weight_kg }} kg</p>
+        </div>
+        <div>
+          <div class="mini">Goal</div>
+          <h3 style="margin-top:8px;">{{ payload.user.goal|title }}</h3>
+          <p>{{ payload.user.experience_level|title }} athlete with personal dashboard and assistant.</p>
+        </div>
+      </div>
+      <div class="hero-kpis">
+        <article class="kpi"><span class="mini">Sessions</span><strong>{{ payload.stats.weekly_sessions }}</strong></article>
+        <article class="kpi"><span class="mini">Volume</span><strong>{{ payload.stats.weekly_volume }}</strong></article>
+        <article class="kpi"><span class="mini">Minutes</span><strong>{{ payload.stats.weekly_minutes }}</strong></article>
+        <article class="kpi"><span class="mini">Calories</span><strong>{{ payload.assistant.targets.calories }}</strong></article>
+      </div>
+      <div class="quickbar">
+        <a href="#plans">Goal plans</a>
+        <a href="#assistant">Assistant</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#profile">Profile</a>
+      </div>
+    </section>
+
+    <main class="page">
+      <section class="panel span" id="profile">
+        <div class="section-head">
+          <div><div class="mini">Athlete profile</div><h2>Your data</h2></div>
+        </div>
+        <div class="grid4">
+          <article class="kpi"><span class="mini">Full name</span><strong>{{ payload.user.full_name }}</strong></article>
+          <article class="kpi"><span class="mini">Age</span><strong>{{ payload.user.age }}</strong></article>
+          <article class="kpi"><span class="mini">Height / Weight</span><strong>{{ payload.user.height_cm }} / {{ payload.user.weight_kg }}</strong></article>
+          <article class="kpi"><span class="mini">Goal</span><strong>{{ payload.user.goal|title }}</strong></article>
+        </div>
+      </section>
+
+      <section class="panel span" id="plans">
+        <div class="section-head">
+          <div><div class="mini">Suggested training</div><h2>Choose your plan</h2></div>
+        </div>
+        <div class="option-grid">
+          {% for option in payload.assistant.suggestions %}
+          <article class="option">
+            <div class="head-row">
+              <div>
+                <div class="mini">{{ option.coach_role }}</div>
+                <strong>{{ option.title }}</strong>
+              </div>
+              <div class="tag">{{ option.days }} days</div>
+            </div>
+            <p>{{ option.summary }}</p>
+            <ul class="list">
+              {% for bullet in option.blocks %}
+              <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+            <div class="notice">Nutrition: {{ option.nutrition }}</div>
+            <form method="post" action="/plan/select" style="margin-top:14px;">
+              <input type="hidden" name="title" value="{{ option.title }}">
+              <input type="hidden" name="coach_key" value="{{ option.coach_key }}">
+              <input type="hidden" name="details" value="{{ option.summary }}">
+              <button type="submit">Izaberi ovaj plan</button>
+            </form>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel" id="assistant">
+        <div class="section-head">
+          <div><div class="mini">Assistant</div><h2>{{ payload.assistant.headline }}</h2></div>
+        </div>
+        <div class="grid3">
+          <article class="kpi"><span class="mini">Protein</span><strong>{{ payload.assistant.targets.protein }}g</strong></article>
+          <article class="kpi"><span class="mini">Carbs</span><strong>{{ payload.assistant.targets.carbs }}g</strong></article>
+          <article class="kpi"><span class="mini">Fats</span><strong>{{ payload.assistant.targets.fats }}g</strong></article>
+        </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          <div class="log">
+            <div class="mini">Training logic</div>
+            <ul class="list">
+              {% for item in payload.assistant.training_summary %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="log">
+            <div class="mini">Nutrition logic</div>
+            <ul class="list">
+              {% for item in payload.assistant.nutrition_summary %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="next">{{ payload.assistant.next_action }}</div>
+      </section>
+
+      <section class="panel" id="calendar">
+        <div class="section-head">
+          <div><div class="mini">Calendar</div><h2>Weekly plan</h2></div>
+        </div>
+        <div class="panel-grid">
+          <form method="post" action="/calendar/add" class="form2">
+            <label>Date<input type="date" name="event_date" value="{{ today }}"></label>
+            <label>Type
+              <select name="event_type"><option value="training">Training</option><option value="nutrition">Nutrition</option><option value="recovery">Recovery</option><option value="checkin">Check-in</option></select>
+            </label>
+            <label class="full">Title<input type="text" name="title" placeholder="Upper strength day"></label>
+            <label>Coach
+              <select name="coach_key"><option value="strength">Strength</option><option value="hypertrophy">Hypertrophy</option><option value="conditioning">Conditioning</option><option value="mobility">Recovery</option></select>
+            </label>
+            <label class="full">Details<textarea name="details" placeholder="What is planned for that day"></textarea></label>
+            <button class="full" type="submit">Dodaj u kalendar</button>
+          </form>
+          <div class="logs">
+            {% for item in payload.calendar %}
+            <article class="log">
+              <div class="mini">{{ item.event_date }} · {{ item.event_type }}</div>
+              <strong style="display:block;margin-top:8px;font-size:22px;">{{ item.title }}</strong>
+              <p>{{ item.details }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      {% if payload.user.role == "admin" %}
+      <section class="panel span" id="admin">
+        <div class="section-head">
+          <div><div class="mini">Admin</div><h2>Create separate user accounts</h2></div>
+        </div>
+        <div class="panel-grid">
+          <form method="post" action="/admin/users" class="form2">
+            <label>Ime i prezime<input type="text" name="full_name" required></label>
+            <label>Username<input type="text" name="username" required></label>
+            <label>Password<input type="text" name="password" required></label>
+            <label>Goal
+              <select name="goal"><option value="performance">Performance</option><option value="muscle">Muscle</option><option value="cut">Cut</option></select>
+            </label>
+            <label>Years<input type="number" name="age" value="28"></label>
+            <label>Height cm<input type="number" step="0.1" name="height_cm" value="180"></label>
+            <label>Weight kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
+            <label>Experience
+              <select name="experience_level"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+            </label>
+            <label class="full">Role
+              <select name="role"><option value="member">Member</option><option value="admin">Admin</option></select>
+            </label>
+            <button class="full" type="submit">Create user</button>
+          </form>
+          <div class="users-grid">
+            {% for user in payload.users %}
+            <article class="user-card">
+              <div class="mini">{{ user.role }}</div>
+              <strong>{{ user.full_name }}</strong>
+              <p>@{{ user.username }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+      {% endif %}
+    </main>
+
+    <nav class="bottom">
+      <a href="#plans">Plans</a>
+      <a href="#assistant">AI</a>
+      <a href="#calendar">Plan</a>
+      <a href="#profile">Profile</a>
+      <a href="#admin">Users</a>
+    </nav>
+  </div>
+</body>
+</html>
+"""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -707,6 +1049,100 @@ def list_users() -> list[dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
+def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_days: int) -> list[dict[str, Any]]:
+    goal = str(user["goal"]).lower()
+    options = {
+        "performance": [
+            {
+                "title": "Strength performance split",
+                "coach_key": "strength",
+                "coach_role": COACHES["strength"]["role"],
+                "days": training_days,
+                "summary": "Heavy compounds, speed work and structured accessory balance for athletic output.",
+                "blocks": ["Day 1 upper strength", "Day 2 lower power", "Day 3 hypertrophy support", "Day 4 engine and mobility"],
+                "nutrition": "Higher carbs around lifts, stable protein and hydration.",
+            },
+            {
+                "title": "Athletic hybrid build",
+                "coach_key": "conditioning",
+                "coach_role": COACHES["conditioning"]["role"],
+                "days": training_days,
+                "summary": "Blend of force, conditioning and recovery for body recomposition with performance.",
+                "blocks": ["2 lifting days", "1 athletic conditioning day", "1 movement and trunk day"],
+                "nutrition": "Carb cycling around hardest sessions and lighter recovery day meals.",
+            },
+            {
+                "title": "Upper lower progression",
+                "coach_key": "strength",
+                "coach_role": COACHES["strength"]["role"],
+                "days": training_days,
+                "summary": "Simple progression model with repeatable upper and lower sessions and clean logbook focus.",
+                "blocks": ["Upper A", "Lower A", "Upper B", "Lower B"],
+                "nutrition": "Consistent calories with strong protein anchor every meal.",
+            },
+        ],
+        "muscle": [
+            {
+                "title": "Hypertrophy growth split",
+                "coach_key": "hypertrophy",
+                "coach_role": COACHES["hypertrophy"]["role"],
+                "days": training_days,
+                "summary": "High-quality volume, controlled execution and pump-biased finishers for muscle gain.",
+                "blocks": ["Push focus", "Pull focus", "Legs focus", "Upper density day"],
+                "nutrition": "Small calorie surplus with high protein and pre/post workout carbs.",
+            },
+            {
+                "title": "Upper lower muscle plan",
+                "coach_key": "hypertrophy",
+                "coach_role": COACHES["hypertrophy"]["role"],
+                "days": training_days,
+                "summary": "Reliable upper/lower template with more weekly frequency for growth.",
+                "blocks": ["Upper chest and back", "Lower quads and glutes", "Upper shoulders and arms", "Lower posterior chain"],
+                "nutrition": "Repeatable meal structure with protein at every feeding window.",
+            },
+            {
+                "title": "Bodybuilding recomposition",
+                "coach_key": "conditioning",
+                "coach_role": COACHES["conditioning"]["role"],
+                "days": training_days,
+                "summary": "Muscle-focused work with controlled conditioning to stay tighter while growing.",
+                "blocks": ["3 hypertrophy days", "1 low-impact conditioning day", "1 optional mobility session"],
+                "nutrition": "Moderate surplus on training days, cleaner intake on lighter days.",
+            },
+        ],
+        "cut": [
+            {
+                "title": "Fat loss performance plan",
+                "coach_key": "conditioning",
+                "coach_role": COACHES["conditioning"]["role"],
+                "days": training_days,
+                "summary": "Protect strength while increasing output and energy expenditure.",
+                "blocks": ["2 full body strength days", "2 conditioning finish days", "Daily steps target"],
+                "nutrition": "Calorie deficit with high protein and carbs focused around training.",
+            },
+            {
+                "title": "Lean athlete split",
+                "coach_key": "strength",
+                "coach_role": COACHES["strength"]["role"],
+                "days": training_days,
+                "summary": "Keep muscle signal high with lower junk volume and sharper recovery control.",
+                "blocks": ["Upper strength", "Lower strength", "Density accessories", "Zone 2 + mobility"],
+                "nutrition": "Protein first, moderate carbs, tighter food quality control.",
+            },
+            {
+                "title": "Conditioning driven cut",
+                "coach_key": "conditioning",
+                "coach_role": COACHES["conditioning"]["role"],
+                "days": training_days,
+                "summary": "Best for users who want aggressive output, sweat and calendar structure.",
+                "blocks": ["Intervals", "Carries and sleds", "Machine circuits", "Recovery mobility"],
+                "nutrition": "Low-fat peri-workout structure with precise calorie logging.",
+            },
+        ],
+    }
+    return options.get(goal, options["performance"])
+
+
 def build_assistant_plan(
     user: dict[str, Any],
     workouts: list[dict[str, Any]],
@@ -774,6 +1210,7 @@ def build_assistant_plan(
             "carbs": carbs_target,
             "fats": fats_target,
         },
+        "suggestions": build_goal_suggestions(user, assistant_coach, training_days),
         "next_action": "Log workouts, meals and check-ins daily so the assistant keeps adapting to this athlete profile.",
     }
 
@@ -854,7 +1291,7 @@ def login():
             return redirect(url_for("dashboard"))
         flash("Pogresan username ili password.")
 
-    return render_template("login.html")
+    return render_template_string(INLINE_LOGIN_TEMPLATE)
 
 
 @app.route("/logout")
@@ -867,7 +1304,7 @@ def logout():
 @login_required
 def dashboard():
     payload = dashboard_payload(current_user())
-    return render_template("index.html", payload=payload, today=date.today().isoformat())
+    return render_template_string(INLINE_DASHBOARD_TEMPLATE, payload=payload, today=date.today().isoformat())
 
 
 @app.route("/manifest.json")
@@ -953,6 +1390,37 @@ def assistant_plan_api():
     meals = recent_meals(int(user["id"]))
     calendar = calendar_items(int(user["id"]))
     return jsonify(build_assistant_plan(user, workouts, metrics, meals, calendar, energy=energy, training_days=training_days))
+
+
+@app.route("/plan/select", methods=["POST"])
+@login_required
+def select_plan():
+    user = current_user()
+    title = str(request.form.get("title") or "Selected plan").strip()[:120]
+    details = str(request.form.get("details") or "").strip()[:300]
+    coach_key = str(request.form.get("coach_key") or "strength").strip()[:40]
+    event_date = (date.today() + timedelta(days=1)).isoformat()
+
+    with get_db() as db:
+        db.execute(
+            """
+            INSERT INTO calendar_events (
+                user_id, event_date, event_type, title, details, coach_key, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                int(user["id"]),
+                event_date,
+                "training",
+                title,
+                details,
+                coach_key,
+                datetime.utcnow().isoformat(timespec="seconds"),
+            ),
+        )
+
+    flash(f"Izabran plan: {title}. Dodat je u tvoj kalendar.")
+    return redirect(url_for("dashboard") + "#calendar")
 
 
 @app.route("/admin/users", methods=["POST"])
