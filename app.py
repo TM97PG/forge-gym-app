@@ -83,9 +83,9 @@ INLINE_LOGIN_TEMPLATE = """
 </head>
 <body>
   <main class="card">
-    <div class="pill">V4 App Login</div>
+    <div class="pill">APP.PY ONLY BUILD V5</div>
     <div class="eyebrow" style="margin-top:14px;">Forge Athlete OS</div>
-    <h1>Login i personal athlete sistem</h1>
+    <h1>Login i personal athlete sistem V5</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar.</p>
     <div class="grid">
       <article class="feature"><div class="mini">Profile</div><strong>Custom athlete data</strong><p>Ime, prezime, visina, kilaza, godine i cilj po korisniku.</p></article>
@@ -185,7 +185,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-        <strong style="display:block;margin-top:6px;font-size:20px;">V4 inline dashboard</strong>
+        <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V5</strong>
       </div>
       <div class="toplinks">
         <a href="#plans">Plans</a>
@@ -212,7 +212,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>Personalized gym app with separate user data, assistant logic, several goal-based plans and weekly calendar control.</p>
         </div>
-        <div class="pill">New login + plan selector</div>
+        <div class="pill">Login + onboarding + plans V5</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -1426,6 +1426,15 @@ def service_worker():
 @app.route("/health")
 def health():
     return {"status": "ok", "app": "forge"}
+
+
+@app.route("/app-version")
+def app_version():
+    return {
+        "build": "APP.PY ONLY BUILD V5",
+        "login_title": "Login i personal athlete sistem V5",
+        "dashboard_title": "Login + onboarding + plans V5",
+    }
 
 
 @app.route("/api/dashboard")
