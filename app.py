@@ -85,9 +85,9 @@ INLINE_LOGIN_TEMPLATE = """
 </head>
 <body>
   <main class="card">
-    <div class="pill">APP.PY ONLY BUILD V7</div>
+    <div class="pill">APP.PY ONLY BUILD V8</div>
     <div class="eyebrow" style="margin-top:14px;">Forge Athlete OS</div>
-    <h1>Secure athlete login V7</h1>
+    <h1>Secure athlete login V8</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar.</p>
     <div class="grid">
       <article class="feature"><div class="mini">Profile</div><strong>Custom athlete data</strong><p>Ime, prezime, visina, kilaza, godine i cilj po korisniku.</p></article>
@@ -262,7 +262,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V7</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V8</strong>
       </div>
       <div class="toplinks">
         <a href="#folders">📁 Folders</a>
@@ -2065,9 +2065,9 @@ def health():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V7",
-        "login_title": "Secure athlete login V7",
-        "dashboard_title": "Adaptive athlete dashboard V7",
+        "build": "APP.PY ONLY BUILD V8",
+        "login_title": "Secure athlete login V8",
+        "dashboard_title": "Adaptive athlete dashboard V8",
     }
 
 
