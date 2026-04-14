@@ -23,6 +23,14 @@ DB_FILE = DATA_DIR / "forge.sqlite3"
 
 app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(TEMPLATES_DIR))
 app.secret_key = os.environ.get("FORGE_SECRET_KEY", "forge-secret-2026")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FORGE_COOKIE_SECURE", "0") == "1"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
+
+DEFAULT_ADMIN_USERNAME = os.environ.get("FORGE_ADMIN_USERNAME", "admin")
+DEFAULT_ADMIN_PASSWORD = os.environ.get("FORGE_ADMIN_PASSWORD", "daljamtelemont1")
+MIN_PASSWORD_LENGTH = 8
 
 
 COACHES = {
@@ -79,6 +87,9 @@ LANGUAGES = {
         "checkin_title": "Dnevni check-in",
         "shopping_title": "Shopping lista",
         "progress_title": "Trend napretka",
+        "pricing_title": "Planovi i pristup",
+        "legal_terms": "Uslovi korišćenja",
+        "legal_privacy": "Privatnost",
     },
     "en": {
         "code": "en",
@@ -106,8 +117,49 @@ LANGUAGES = {
         "checkin_title": "Daily check-in",
         "shopping_title": "Shopping list",
         "progress_title": "Progress trends",
+        "pricing_title": "Plans and access",
+        "legal_terms": "Terms",
+        "legal_privacy": "Privacy",
     },
 }
+
+SUBSCRIPTION_PLANS = [
+    {"key": "starter", "name": "Starter", "price": "0 EUR", "detail": "Core tracking, onboarding and weekly plans."},
+    {"key": "pro", "name": "Pro", "price": "19 EUR", "detail": "AI coach, adaptive calendar and detailed nutrition."},
+    {"key": "elite", "name": "Elite", "price": "49 EUR", "detail": "Full premium coaching flow, admin tools and launch-grade insights."},
+]
+
+COMMERCIAL_OFFERS = [
+    {"title": "By sessions weekly", "price": "14-29 EUR", "detail": "Charge more as the user unlocks 3, 4 or 6 guided sessions per week."},
+    {"title": "By coach access", "price": "19-39 EUR", "detail": "One coach lane for Starter, full coaching squad and AI trainer for higher tiers."},
+    {"title": "By goal system", "price": "24-49 EUR", "detail": "Bodybuilding, cut, muscle gain and performance can each be premium guided programs."},
+    {"title": "By accountability", "price": "9-19 EUR", "detail": "Daily check-ins, weekly reviews and stricter coaching feedback can be an add-on layer."},
+]
+
+DISCOUNT_CODES = {
+    "FORGE10": {"percent": 10, "label": "Launch 10%"},
+    "PRO20": {"percent": 20, "label": "Pro offer 20%"},
+    "ELITE25": {"percent": 25, "label": "Elite offer 25%"},
+}
+
+
+def plan_price_map() -> dict[str, int]:
+    return {"starter": 0, "pro": 19, "elite": 49}
+
+
+def resolve_discount_code(code: str) -> dict[str, Any]:
+    normalized = str(code or "").strip().upper()
+    if not normalized:
+        return {"code": "", "percent": 0, "label": "No discount"}
+    item = DISCOUNT_CODES.get(normalized)
+    if not item:
+        return {"code": normalized, "percent": 0, "label": "Invalid code"}
+    return {"code": normalized, "percent": int(item["percent"]), "label": str(item["label"])}
+
+
+def valid_subscription_tier(value: str, default: str = "starter") -> str:
+    allowed = {item["key"] for item in SUBSCRIPTION_PLANS}
+    return value if value in allowed else default
 
 
 INLINE_LOGIN_TEMPLATE = """
@@ -121,7 +173,7 @@ INLINE_LOGIN_TEMPLATE = """
     :root { --bg:#060606; --panel:#111315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c4b39d; --accent:#ff8b39; --accent2:#ffc14d; --glass:rgba(255,255,255,.045); }
     * { box-sizing:border-box; }
     body { margin:0; min-height:100vh; display:grid; place-items:center; padding:12px; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.22), transparent 28%), radial-gradient(circle at bottom right, rgba(255,193,77,.14), transparent 24%), linear-gradient(180deg,#050505,#111); }
-    .card { width:min(560px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:32px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); position:relative; overflow:hidden; }
+    .card { width:min(1080px,100%); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); border:1px solid var(--line); border-radius:32px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.45); position:relative; overflow:hidden; }
     .card:before { content:""; position:absolute; inset:0; background:linear-gradient(125deg, transparent 0 35%, rgba(255,255,255,.04) 50%, transparent 65%); pointer-events:none; }
     .eyebrow,.mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:700; }
     .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
@@ -135,17 +187,51 @@ INLINE_LOGIN_TEMPLATE = """
     input,button { min-height:54px; border-radius:16px; border:1px solid var(--line); }
     input { width:100%; padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
     button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
-    .stack,.login-shell-grid { display:grid; gap:10px; margin:14px 0; }
-    .login-shell-grid { grid-template-columns:1.15fr .85fr; align-items:start; }
-    @media (max-width: 720px) { .grid,.login-shell-grid { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; border-radius:26px; } }
+    .stack,.login-shell-grid,.pricing-login,.hero-gallery { display:grid; gap:10px; margin:14px 0; }
+    .login-shell-grid { grid-template-columns:1.1fr .9fr; align-items:start; }
+    .hero-gallery { grid-template-columns:1.1fr .9fr; margin-top:18px; }
+    .hero-photo { min-height:210px; border-radius:24px; border:1px solid var(--line); background-size:cover; background-position:center; position:relative; overflow:hidden; }
+    .hero-photo:after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55)); }
+    .hero-photo strong,.hero-photo span { position:relative; z-index:1; display:block; padding:16px 16px 0; }
+    .brand-row { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .logo-mark { width:58px; height:58px; border-radius:18px; display:grid; place-items:center; color:#17110a; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 14px 28px rgba(255,139,57,.24); overflow:hidden; }
+    .logo-mark svg { width:36px; height:36px; display:block; }
+    .pricing-login { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .offer { padding:14px; border-radius:20px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
+    .offer strong { display:block; margin:8px 0 6px; font-size:18px; }
+    .offer .price { display:inline-flex; margin-top:4px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); font-size:12px; font-weight:800; }
+    @media (max-width: 900px) { .grid,.login-shell-grid,.hero-gallery,.pricing-login { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; border-radius:26px; } }
   </style>
 </head>
 <body>
   <main class="card">
-    <div class="pill">APP.PY ONLY BUILD V10</div>
-    <div class="eyebrow" style="margin-top:14px;">Forge Athlete OS</div>
-    <h1>Secure athlete login V10</h1>
-    <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar.</p>
+    <div class="brand-row">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="logo-mark">
+          <svg viewBox="0 0 64 64" aria-hidden="true" fill="none">
+            <path d="M18 50V14h29v8H28v8h16v8H28v12H18Z" fill="#17110A"/>
+            <path d="M43 14h7l-7 7V14Z" fill="#17110A" opacity=".65"/>
+          </svg>
+        </div>
+        <div>
+    <div class="pill">APP.PY ONLY BUILD V13</div>
+          <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
+        </div>
+      </div>
+      <div class="mini">Premium gym performance system</div>
+    </div>
+    <h1>Secure athlete login V13</h1>
+    <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
+    <div class="hero-gallery">
+      <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
+        <strong>Elite gym atmosphere</strong>
+        <span>Strength, physique and performance in one polished flow.</span>
+      </article>
+      <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80');">
+        <strong>Personal coaching UX</strong>
+        <span>Built to feel like a private trainer, not just a tracker.</span>
+      </article>
+    </div>
     <div class="grid">
       <article class="feature"><div class="mini">Profile</div><strong>Custom athlete data</strong><p>Ime, prezime, visina, kilaza, godine i cilj po korisniku.</p></article>
       <article class="feature"><div class="mini">Training</div><strong>3 predloga plana</strong><p>Biranje vise predlozenih treninga prema cilju korisnika.</p></article>
@@ -171,6 +257,16 @@ INLINE_LOGIN_TEMPLATE = """
         <div class="mini">Private access</div>
         <strong>Mobile athlete login</strong>
         <p>Čist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
+        <div class="mini" style="margin-top:16px;">Monetization ideas</div>
+        <div class="pricing-login">
+          {% for item in commercial_offers %}
+          <article class="offer">
+            <div class="price">{{ item.price }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </main>
@@ -195,14 +291,15 @@ INLINE_REGISTER_TEMPLATE = """
     .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
     h1 { margin:12px 0 8px; font-size:42px; line-height:.96; font-family:Georgia,serif; }
     p { color:#eadbc8; line-height:1.7; }
-    .grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:18px; }
+    .grid,.plan-grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:18px; }
     label { display:grid; gap:8px; font-size:14px; color:var(--muted); }
     input,select,button { width:100%; min-height:52px; border-radius:16px; border:1px solid var(--line); font:inherit; }
     input,select { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
     button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
     .full { grid-column:1 / -1; }
-    .flash { margin:14px 0; padding:14px; border-radius:18px; background:var(--glass); border:1px solid var(--line); }
-    @media (max-width: 760px) { .grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
+    .flash,.plan-card { margin:14px 0; padding:14px; border-radius:18px; background:var(--glass); border:1px solid var(--line); }
+    .plan-card strong { display:block; margin:8px 0 6px; font-size:18px; }
+    @media (max-width: 760px) { .grid,.plan-grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
   </style>
 </head>
 <body>
@@ -211,6 +308,15 @@ INLINE_REGISTER_TEMPLATE = """
     <div class="mini" style="margin-top:14px;">Create your athlete account</div>
     <h1>Napravi svoj nalog</h1>
     <p>Korisnik može sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
+    <div class="plan-grid">
+      {% for plan in subscription_plans %}
+      <article class="plan-card">
+        <div class="mini">{{ plan.price }}</div>
+        <strong>{{ plan.name }}</strong>
+        <p>{{ plan.detail }}</p>
+      </article>
+      {% endfor %}
+    </div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         {% for message in messages %}
@@ -236,6 +342,13 @@ INLINE_REGISTER_TEMPLATE = """
           <option value="performance">Performance</option>
           <option value="muscle">Muscle</option>
           <option value="cut">Cut</option>
+        </select>
+      </label>
+      <label>Paket
+        <select name="subscription_tier">
+          {% for plan in subscription_plans %}
+          <option value="{{ plan.key }}">{{ plan.name }} · {{ plan.price }}</option>
+          {% endfor %}
         </select>
       </label>
       <button class="full" type="submit">Kreiraj nalog</button>
@@ -306,12 +419,13 @@ INLINE_DASHBOARD_TEMPLATE = """
     .filter-grid { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
     .achievement-grid { display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
     .pr-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
-    .coach-grid,.today-grid,.lang-switch,.calendar-lane,.trend-grid,.chat-grid { display:grid; gap:14px; }
+    .coach-grid,.today-grid,.lang-switch,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid { display:grid; gap:14px; }
     .coach-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
     .today-grid { grid-template-columns:1.1fr .9fr; margin-top:16px; }
     .calendar-lane { grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:16px; }
     .trend-grid { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
     .chat-grid { grid-template-columns:1fr 1fr; margin-top:16px; }
+    .pricing-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
     .lang-switch { grid-auto-flow:column; gap:8px; justify-content:end; }
     .lang-chip { display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:999px; border:1px solid var(--line); text-decoration:none; color:inherit; background:rgba(255,255,255,.04); font-size:11px; font-weight:800; letter-spacing:.08em; }
     .lang-chip.active { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
@@ -323,8 +437,8 @@ INLINE_DASHBOARD_TEMPLATE = """
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
-    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
+    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } }
   </style>
 </head>
 <body>
@@ -332,7 +446,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V10</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V13</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -365,7 +479,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>{{ payload.ui.hero_text }}</p>
         </div>
-        <div class="pill">AI coach + check-in + planner V10</div>
+        <div class="pill">Market ready + monetization V13</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -648,6 +762,48 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </section>
 
+      <section class="panel span" id="market">
+        <div class="section-head">
+          <div><div class="mini">Launch</div><h2>{{ payload.ui.pricing_title }}</h2></div>
+        </div>
+        <div class="log" style="margin-bottom:16px;">
+          <strong>Aktivni paket: {{ payload.user.subscription_tier|title }}</strong>
+          <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} Â· Gift access{% endif %}</p>
+          <p>{% if payload.user.discount_code %}Discount code: {{ payload.user.discount_code }} ({{ payload.user.discount_percent }}%){% else %}Discount code jos nije iskoriscen.{% endif %}</p>
+        </div>
+        <div class="pricing-grid">
+          {% for plan in payload.subscription_plans %}
+          <article class="option">
+            <div class="mini">{{ plan.price }}</div>
+            <strong>{{ plan.name }}</strong>
+            <p>{{ plan.detail }}</p>
+            <form method="post" action="/subscribe" style="margin-top:14px;">
+              <input type="hidden" name="subscription_tier" value="{{ plan.key }}">
+              <label>Discount code<input type="text" name="discount_code" placeholder="FORGE10"></label>
+              <button type="submit">Aktiviraj {{ plan.name }}</button>
+            </form>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="planner-grid">
+          {% for item in payload.market_flags %}
+          <article class="option">
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="pricing-grid">
+          {% for item in payload.commercial_offers %}
+          <article class="option">
+            <div class="mini">{{ item.price }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
       <section class="panel" id="wellness">
         <div class="section-head">
           <div><div class="mini">{{ payload.ui.wellness_title }}</div><h2>{{ payload.wellness_panel.title }}</h2></div>
@@ -802,6 +958,13 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="section-head">
           <div><div class="mini">Admin</div><h2>Create separate user accounts</h2></div>
         </div>
+        <div class="trend-grid">
+          <article class="kpi"><span class="mini">Users</span><strong>{{ payload.business.total_users }}</strong></article>
+          <article class="kpi"><span class="mini">Members</span><strong>{{ payload.business.total_members }}</strong></article>
+          <article class="kpi"><span class="mini">Paid</span><strong>{{ payload.business.active_paid_users }}</strong></article>
+          <article class="kpi"><span class="mini">Gifted</span><strong>{{ payload.business.gifted_users }}</strong></article>
+          <article class="kpi"><span class="mini">MRR</span><strong>{{ payload.business.mrr }} EUR</strong></article>
+        </div>
         <div class="panel-grid">
           <form method="post" action="/admin/users" class="form2">
             <label>Ime i prezime<input type="text" name="full_name" required></label>
@@ -838,6 +1001,9 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Goal
               <select name="goal"><option value="performance">Performance</option><option value="muscle">Muscle</option><option value="cut">Cut</option></select>
             </label>
+            <label>Subscription
+              <select name="subscription_tier"><option value="starter">Starter</option><option value="pro">Pro</option><option value="elite">Elite</option></select>
+            </label>
             <label>Years<input type="number" name="age" value="28"></label>
             <label>Height cm<input type="number" step="0.1" name="height_cm" value="180"></label>
             <label>Weight kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
@@ -849,18 +1015,49 @@ INLINE_DASHBOARD_TEMPLATE = """
             </label>
             <button class="full" type="submit">Create user</button>
           </form>
+          <form method="post" action="/admin/gift-package" class="form2" style="margin-bottom:14px;">
+            <label>Korisnik
+              <select name="user_id">
+                {% for user in payload.users if user.role != "admin" %}
+                <option value="{{ user.id }}">{{ user.full_name }} (@{{ user.username }})</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label>Gift paket
+              <select name="subscription_tier">
+                {% for plan in payload.subscription_plans if plan.key != "starter" %}
+                <option value="{{ plan.key }}">{{ plan.name }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label class="full">Napomena<input type="text" name="gift_note" placeholder="Founder gift, launch partner..."></label>
+            <button class="full" type="submit">Dodijeli gift paket</button>
+          </form>
           <div class="users-grid">
             {% for user in payload.users %}
             <article class="user-card">
-              <div class="mini">{{ user.role }}</div>
+              <div class="mini">{{ user.role }} Â· {{ user.billing_status|title }}</div>
               <strong>{{ user.full_name }}</strong>
-              <p>@{{ user.username }} · {{ user.gender|title }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
+              <p>Gift: {{ "Yes" if user.gift_package else "No" }}{% if user.gifted_by %} Â· by {{ user.gifted_by }}{% endif %}</p>
+              <p>Discount: {% if user.discount_code %}{{ user.discount_code }} ({{ user.discount_percent }}%){% else %}None{% endif %}</p>
+              <p>@{{ user.username }} · {{ user.subscription_tier|title }} · {{ user.gender|title }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
             </article>
             {% endfor %}
           </div>
         </div>
       </section>
       {% endif %}
+      <section class="panel span" id="legal">
+        <div class="section-head">
+          <div><div class="mini">Legal</div><h2>Launch footer</h2></div>
+        </div>
+        <div class="quickbar">
+          <a href="/terms">{{ payload.ui.legal_terms }}</a>
+          <a href="/privacy">{{ payload.ui.legal_privacy }}</a>
+          <a href="/app-version">Build</a>
+          <a href="/health">Health</a>
+        </div>
+      </section>
     </main>
 
     <nav class="bottom">
@@ -992,6 +1189,12 @@ def init_db() -> None:
                 password_hash TEXT NOT NULL,
                 full_name TEXT NOT NULL,
                 role TEXT NOT NULL DEFAULT 'member',
+                subscription_tier TEXT NOT NULL DEFAULT 'starter',
+                billing_status TEXT NOT NULL DEFAULT 'inactive',
+                gift_package INTEGER NOT NULL DEFAULT 0,
+                gifted_by TEXT NOT NULL DEFAULT '',
+                discount_code TEXT NOT NULL DEFAULT '',
+                discount_percent INTEGER NOT NULL DEFAULT 0,
                 gender TEXT NOT NULL DEFAULT 'male',
                 cycle_phase TEXT NOT NULL DEFAULT 'neutral',
                 equipment_access TEXT NOT NULL DEFAULT 'full gym',
@@ -1117,6 +1320,12 @@ def init_db() -> None:
         ensure_column(db, "users", "equipment_access", "equipment_access TEXT NOT NULL DEFAULT 'full gym'")
         ensure_column(db, "users", "fatigue_state", "fatigue_state TEXT NOT NULL DEFAULT 'steady'")
         ensure_column(db, "users", "profile_completed", "profile_completed INTEGER NOT NULL DEFAULT 0")
+        ensure_column(db, "users", "subscription_tier", "subscription_tier TEXT NOT NULL DEFAULT 'starter'")
+        ensure_column(db, "users", "billing_status", "billing_status TEXT NOT NULL DEFAULT 'inactive'")
+        ensure_column(db, "users", "gift_package", "gift_package INTEGER NOT NULL DEFAULT 0")
+        ensure_column(db, "users", "gifted_by", "gifted_by TEXT NOT NULL DEFAULT ''")
+        ensure_column(db, "users", "discount_code", "discount_code TEXT NOT NULL DEFAULT ''")
+        ensure_column(db, "users", "discount_percent", "discount_percent INTEGER NOT NULL DEFAULT 0")
         ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -1125,19 +1334,20 @@ def init_db() -> None:
         ensure_column(db, "body_metrics", "form_score", "form_score INTEGER NOT NULL DEFAULT 7")
         ensure_column(db, "body_metrics", "checkin_note", "checkin_note TEXT NOT NULL DEFAULT ''")
 
-        admin_exists = db.execute("SELECT id FROM users WHERE username = 'admin'").fetchone()
+        admin_exists = db.execute("SELECT id FROM users WHERE username = ?", (DEFAULT_ADMIN_USERNAME,)).fetchone()
         if not admin_exists:
             db.execute(
                 """
                 INSERT INTO users (
-                    username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    username, password_hash, full_name, role, subscription_tier, age, height_cm, weight_kg, goal, experience_level, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
-                    "admin",
-                    generate_password_hash("daljamtelemont1"),
+                    DEFAULT_ADMIN_USERNAME,
+                    generate_password_hash(DEFAULT_ADMIN_PASSWORD),
                     "Forge Admin",
                     "admin",
+                    "elite",
                     30,
                     180,
                     84,
@@ -1308,7 +1518,8 @@ def fetch_user(username: str = "") -> dict[str, Any] | None:
         row = db.execute(
             """
             SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed,
-                   gender, cycle_phase, equipment_access, fatigue_state
+                   gender, cycle_phase, equipment_access, fatigue_state, subscription_tier, billing_status,
+                   gift_package, gifted_by, discount_code, discount_percent
             FROM users
             WHERE username = ?
             """,
@@ -1692,7 +1903,9 @@ def list_users() -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
             """
-            SELECT id, username, full_name, role, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, created_at
+            SELECT id, username, full_name, role, subscription_tier, billing_status, gift_package, gifted_by,
+                   discount_code, discount_percent, gender, cycle_phase, equipment_access, fatigue_state,
+                   age, height_cm, weight_kg, goal, experience_level, created_at
             FROM users
             ORDER BY role DESC, created_at ASC, id ASC
             """
@@ -2199,6 +2412,50 @@ def build_progress_trends(metrics: list[dict[str, Any]], workouts: list[dict[str
     ]
 
 
+def business_overview() -> dict[str, Any]:
+    with get_db() as db:
+        total_users = int(db.execute("SELECT COUNT(*) FROM users").fetchone()[0])
+        total_members = int(db.execute("SELECT COUNT(*) FROM users WHERE role = 'member'").fetchone()[0])
+        pro_users = int(db.execute("SELECT COUNT(*) FROM users WHERE subscription_tier = 'pro'").fetchone()[0])
+        elite_users = int(db.execute("SELECT COUNT(*) FROM users WHERE subscription_tier = 'elite'").fetchone()[0])
+        active_paid_users = int(db.execute("SELECT COUNT(*) FROM users WHERE billing_status = 'paid'").fetchone()[0])
+        gifted_users = int(db.execute("SELECT COUNT(*) FROM users WHERE gift_package = 1").fetchone()[0])
+        mrr = int(
+            db.execute(
+                """
+                SELECT COALESCE(SUM(
+                    CASE subscription_tier
+                        WHEN 'pro' THEN 19
+                        WHEN 'elite' THEN 49
+                        ELSE 0
+                    END
+                ), 0)
+                FROM users
+                WHERE billing_status = 'paid'
+                """
+            ).fetchone()[0]
+        )
+    return {
+        "total_users": total_users,
+        "total_members": total_members,
+        "pro_users": pro_users,
+        "elite_users": elite_users,
+        "active_paid_users": active_paid_users,
+        "gifted_users": gifted_users,
+        "mrr": mrr,
+    }
+
+
+def market_readiness_flags() -> list[dict[str, str]]:
+    return [
+        {"title": "Session security", "detail": "HTTPOnly, SameSite and optional secure session cookies are enabled."},
+        {"title": "Safer auth defaults", "detail": f"Minimum password length is {MIN_PASSWORD_LENGTH} and admin seed supports env overrides."},
+        {"title": "Monetization layer", "detail": "Starter, Pro and Elite tiers are available in the user model and admin tools."},
+        {"title": "Discount codes", "detail": "Users can enter discount codes at package activation, while admins can gift premium access."},
+        {"title": "Launch docs", "detail": "Terms and Privacy pages are exposed for public-facing deployment."},
+    ]
+
+
 def build_ai_trainer_reply(
     user: dict[str, Any],
     message: str,
@@ -2365,6 +2622,8 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
+    market_flags = market_readiness_flags()
+    business = business_overview() if user.get("role") == "admin" else None
 
     return {
         "seed": seed,
@@ -2400,6 +2659,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "coach_messages": coach_messages,
         "shopping_list": shopping_list,
         "progress_trends": progress_trends,
+        "subscription_plans": SUBSCRIPTION_PLANS,
+        "commercial_offers": COMMERCIAL_OFFERS,
+        "market_flags": market_flags,
+        "business": business,
         "trainers": trainer_profiles(),
         "exercise_library": exercise_library(),
         "food_filters": catalog["filters"],
@@ -2446,7 +2709,7 @@ def login():
             return redirect(url_for("onboarding") if needs_onboarding(user) else url_for("dashboard"))
         flash("Pogresan username ili password.")
 
-    return render_template_string(INLINE_LOGIN_TEMPLATE)
+    return render_template_string(INLINE_LOGIN_TEMPLATE, commercial_offers=COMMERCIAL_OFFERS)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -2461,11 +2724,14 @@ def register():
 
         if not full_name or not username or not password:
             flash("Ime, username i password su obavezni.")
-            return render_template_string(INLINE_REGISTER_TEMPLATE)
+            return render_template_string(INLINE_REGISTER_TEMPLATE, subscription_plans=SUBSCRIPTION_PLANS)
+        if len(password) < MIN_PASSWORD_LENGTH:
+            flash(f"Password mora imati najmanje {MIN_PASSWORD_LENGTH} karaktera.")
+            return render_template_string(INLINE_REGISTER_TEMPLATE, subscription_plans=SUBSCRIPTION_PLANS)
 
         if fetch_user(username):
             flash("Taj username vec postoji.")
-            return render_template_string(INLINE_REGISTER_TEMPLATE)
+            return render_template_string(INLINE_REGISTER_TEMPLATE, subscription_plans=SUBSCRIPTION_PLANS)
 
         gender = str(request.form.get("gender") or "male").strip().lower()[:20]
         cycle_phase = "neutral"
@@ -2476,21 +2742,23 @@ def register():
         weight_kg = clamp_float(request.form.get("weight_kg"), 80.0, 30.0, 350.0)
         goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
         experience_level = str(request.form.get("experience_level") or "beginner").strip().lower()[:30]
+        subscription_tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower())
 
         with get_db() as db:
             db.execute(
                 """
                 INSERT INTO users (
-                    username, password_hash, full_name, role, gender, cycle_phase,
+                    username, password_hash, full_name, role, subscription_tier, gender, cycle_phase,
                     equipment_access, fatigue_state, age, height_cm, weight_kg,
                     goal, experience_level, profile_completed, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     username,
                     generate_password_hash(password),
                     full_name,
                     "member",
+                    subscription_tier,
                     gender,
                     cycle_phase,
                     equipment_access,
@@ -2509,7 +2777,7 @@ def register():
         flash("Nalog je napravljen. Dovrsi svoj profil i filtere.")
         return redirect(url_for("onboarding"))
 
-    return render_template_string(INLINE_REGISTER_TEMPLATE)
+    return render_template_string(INLINE_REGISTER_TEMPLATE, subscription_plans=SUBSCRIPTION_PLANS)
 
 
 @app.route("/logout")
@@ -2577,12 +2845,44 @@ def health():
     return {"status": "ok", "app": "forge"}
 
 
+@app.route("/terms")
+def terms():
+    return render_template_string(
+        """
+        <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Forge Terms</title></head>
+        <body style="margin:0;padding:24px;background:#0b0b0c;color:#f6efdf;font-family:Arial,Helvetica,sans-serif;">
+        <div style="max-width:820px;margin:0 auto;">
+        <h1>Forge Terms</h1>
+        <p>Forge provides fitness planning, tracking and coaching guidance for informational use. Users remain responsible for training choices, medical clearance and safe execution.</p>
+        <p>Accounts are personal, subscription access may vary by plan, and abuse or misuse can lead to suspension.</p>
+        <p><a href="/login" style="color:#ffb000;">Back to app</a></p>
+        </div></body></html>
+        """
+    )
+
+
+@app.route("/privacy")
+def privacy():
+    return render_template_string(
+        """
+        <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Forge Privacy</title></head>
+        <body style="margin:0;padding:24px;background:#0b0b0c;color:#f6efdf;font-family:Arial,Helvetica,sans-serif;">
+        <div style="max-width:820px;margin:0 auto;">
+        <h1>Forge Privacy</h1>
+        <p>Forge stores account, training, nutrition and progress data to personalize coaching, planning and analytics.</p>
+        <p>Sensitive data should be protected in production with secure hosting, backups, environment-managed secrets and proper access controls.</p>
+        <p><a href="/login" style="color:#ffb000;">Back to app</a></p>
+        </div></body></html>
+        """
+    )
+
+
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V10",
-        "login_title": "Secure athlete login V10",
-        "dashboard_title": "Adaptive athlete dashboard V10",
+        "build": "APP.PY ONLY BUILD V13",
+        "login_title": "Secure athlete login V13",
+        "dashboard_title": "Adaptive athlete dashboard V13",
     }
 
 
@@ -2685,6 +2985,56 @@ def select_plan():
     return redirect(url_for("dashboard") + "#calendar")
 
 
+@app.route("/subscribe", methods=["POST"])
+@login_required
+def subscribe():
+    user = current_user()
+    tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower())
+    discount = resolve_discount_code(request.form.get("discount_code"))
+    with get_db() as db:
+        db.execute(
+            """
+            UPDATE users
+            SET subscription_tier = ?, billing_status = ?, gift_package = 0, gifted_by = '', discount_code = ?, discount_percent = ?
+            WHERE id = ?
+            """,
+            (tier, "active" if tier == "starter" else "paid", discount["code"], discount["percent"], int(user["id"])),
+        )
+    if discount["percent"] > 0:
+        flash(f"Paket {tier.title()} je aktiviran uz kod {discount['code']} i popust od {discount['percent']}%.")
+    elif discount["code"]:
+        flash(f"Paket {tier.title()} je aktiviran, ali kod {discount['code']} nije validan.")
+    else:
+        flash(f"Paket {tier.title()} je aktiviran.")
+    return redirect(url_for("dashboard") + "#market")
+
+
+@app.route("/admin/gift-package", methods=["POST"])
+@admin_required
+def admin_gift_package():
+    admin = current_user()
+    user_id = clamp_int(request.form.get("user_id"), 0, 0, 10_000_000)
+    tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "pro").strip().lower(), "pro")
+    gift_note = str(request.form.get("gift_note") or "").strip()
+
+    if not user_id:
+        flash("Izaberi korisnika za gift paket.")
+        return redirect(url_for("dashboard") + "#admin")
+
+    with get_db() as db:
+        db.execute(
+            """
+            UPDATE users
+            SET subscription_tier = ?, billing_status = 'gifted', gift_package = 1, gifted_by = ?, discount_code = ?, discount_percent = 100
+            WHERE id = ? AND role != 'admin'
+            """,
+            (tier, admin["username"], f"GIFT:{gift_note[:30] if gift_note else 'ADMIN'}", user_id),
+        )
+
+    flash(f"Gift paket {tier.title()} je dodijeljen korisniku.")
+    return redirect(url_for("dashboard") + "#admin")
+
+
 @app.route("/assistant/chat", methods=["POST"])
 @login_required
 def assistant_chat():
@@ -2753,6 +3103,9 @@ def create_user():
     if not username or not password or not full_name:
         flash("Username, password i puno ime su obavezni.")
         return redirect(url_for("dashboard") + "#admin")
+    if len(password) < MIN_PASSWORD_LENGTH:
+        flash(f"Password mora imati najmanje {MIN_PASSWORD_LENGTH} karaktera.")
+        return redirect(url_for("dashboard") + "#admin")
 
     if fetch_user(username):
         flash("Taj username vec postoji.")
@@ -2767,20 +3120,22 @@ def create_user():
     weight_kg = clamp_float(request.form.get("weight_kg"), 80.0, 30.0, 350.0)
     goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
     experience_level = str(request.form.get("experience_level") or "intermediate").strip().lower()[:30]
+    subscription_tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower(), "starter")
     role = "admin" if str(request.form.get("role") or "member").strip().lower() == "admin" else "member"
 
     with get_db() as db:
         db.execute(
             """
             INSERT INTO users (
-                username, password_hash, full_name, role, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                username, password_hash, full_name, role, subscription_tier, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 username,
                 generate_password_hash(password),
                 full_name,
                 role,
+                subscription_tier,
                 gender,
                 cycle_phase,
                 equipment_access,
