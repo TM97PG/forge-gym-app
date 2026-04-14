@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import os
@@ -30,6 +30,8 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
 DEFAULT_ADMIN_USERNAME = os.environ.get("FORGE_ADMIN_USERNAME", "admin")
 DEFAULT_ADMIN_PASSWORD = os.environ.get("FORGE_ADMIN_PASSWORD", "daljamtelemont1")
+DEFAULT_MITAR_USERNAME = os.environ.get("FORGE_MITAR_USERNAME", "mitar")
+DEFAULT_MITAR_PASSWORD = os.environ.get("FORGE_MITAR_PASSWORD", "mitar12345")
 MIN_PASSWORD_LENGTH = 8
 TRIAL_DAYS = 15
 
@@ -64,7 +66,7 @@ COACHES = {
 LANGUAGES = {
     "me": {
         "code": "me",
-        "flag": "🇲🇪",
+        "flag": "đź‡˛đź‡Ş",
         "name": "CG",
         "folders": "Folderi",
         "plans": "Planovi",
@@ -72,14 +74,14 @@ LANGUAGES = {
         "users": "Korisnici",
         "logout": "Izlaz",
         "hero_kicker": "Adaptivni atletski sistem",
-        "hero_text": "Lična gym aplikacija sa posebnim korisničkim profilom, trenerima, dnevnim zadacima i kalendarom koji se prilagođava cilju osobe.",
+        "hero_text": "LiÄŤna gym aplikacija sa posebnim korisniÄŤkim profilom, trenerima, dnevnim zadacima i kalendarom koji se prilagoÄ‘ava cilju osobe.",
         "mobile_center": "Mobilni kontrolni centar",
         "profile_title": "Tvoji podaci",
         "plans_title": "Izaberi svoj plan",
         "assistant_title": "Personalni trener",
         "mission_title": "Sta je danas bitno",
         "wellness_title": "Wellness",
-        "planner_title": "Sedmični raspored",
+        "planner_title": "SedmiÄŤni raspored",
         "calendar_title": "Licni kalendar",
         "coaches_title": "Tvoj coaching tim",
         "today_title": "Danasnji plan",
@@ -89,12 +91,12 @@ LANGUAGES = {
         "shopping_title": "Shopping lista",
         "progress_title": "Trend napretka",
         "pricing_title": "Planovi i pristup",
-        "legal_terms": "Uslovi korišćenja",
+        "legal_terms": "Uslovi koriĹˇÄ‡enja",
         "legal_privacy": "Privatnost",
     },
     "en": {
         "code": "en",
-        "flag": "🇬🇧",
+        "flag": "đź‡¬đź‡§",
         "name": "EN",
         "folders": "Folders",
         "plans": "Plans",
@@ -215,13 +217,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V14</div>
+    <div class="pill">APP.PY ONLY BUILD V15</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V14</h1>
+    <h1>Secure athlete login V15</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -257,7 +259,7 @@ INLINE_LOGIN_TEMPLATE = """
       <div class="login-side">
         <div class="mini">Private access</div>
         <strong>Mobile athlete login</strong>
-        <p>Čist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
+        <p>ÄŚist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
         <div class="mini" style="margin-top:16px;">Monetization ideas</div>
         <div class="pricing-login">
           {% for item in commercial_offers %}
@@ -308,7 +310,7 @@ INLINE_REGISTER_TEMPLATE = """
     <div class="pill">Forge registration</div>
     <div class="mini" style="margin-top:14px;">Create your athlete account</div>
     <h1>Napravi svoj nalog</h1>
-    <p>Korisnik može sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
+    <p>Korisnik moĹľe sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
     <div class="plan-grid">
       {% for plan in subscription_plans %}
       <article class="plan-card">
@@ -331,13 +333,13 @@ INLINE_REGISTER_TEMPLATE = """
       <label>Password<input type="password" name="password" required></label>
       <label>Pol
         <select name="gender">
-          <option value="male">Muško</option>
-          <option value="female">Žensko</option>
+          <option value="male">MuĹˇko</option>
+          <option value="female">Ĺ˝ensko</option>
         </select>
       </label>
       <label>Godine<input type="number" name="age" value="25" min="13" max="100"></label>
       <label>Visina cm<input type="number" step="0.1" name="height_cm" value="180"></label>
-      <label>Kilaža kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
+      <label>KilaĹľa kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
       <label>Cilj
         <select name="goal">
           <option value="performance">Performance</option>
@@ -348,7 +350,7 @@ INLINE_REGISTER_TEMPLATE = """
       <label>Paket
         <select name="subscription_tier">
           {% for plan in subscription_plans %}
-          <option value="{{ plan.key }}">{{ plan.name }} · {{ plan.price }}</option>
+          <option value="{{ plan.key }}">{{ plan.name }} Â· {{ plan.price }}</option>
           {% endfor %}
         </select>
       </label>
@@ -447,7 +449,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V14</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V15</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -455,10 +457,10 @@ INLINE_DASHBOARD_TEMPLATE = """
           <a class="lang-chip {% if item.code == payload.lang %}active{% endif %}" href="/set-language?lang={{ item.code }}&next=/dashboard">{{ item.flag }} {{ item.name }}</a>
           {% endfor %}
         </div>
-        <a href="#folders">📁 {{ payload.ui.folders }}</a>
-        <a href="#plans">🏋️ {{ payload.ui.plans }}</a>
-        <a href="#calendar">🗓️ {{ payload.ui.calendar }}</a>
-        <a href="#admin">👥 {{ payload.ui.users }}</a>
+        <a href="#folders">đź“ {{ payload.ui.folders }}</a>
+        <a href="#plans">đźŹ‹ď¸Ź {{ payload.ui.plans }}</a>
+        <a href="#calendar">đź—“ď¸Ź {{ payload.ui.calendar }}</a>
+        <a href="#admin">đź‘Ą {{ payload.ui.users }}</a>
         <a class="logout" href="/logout">{{ payload.ui.logout }}</a>
       </div>
     </div>
@@ -480,13 +482,13 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>{{ payload.ui.hero_text }}</p>
         </div>
-        <div class="pill">Market ready + monetization V14</div>
+        <div class="pill">Market ready + monetization V15</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
           <div class="mini">Athlete</div>
           <h3 style="margin-top:8px;">{{ payload.user.full_name }}</h3>
-          <p>@{{ payload.user.username }} · {{ payload.user.age }} yrs · {{ payload.user.height_cm }} cm · {{ payload.user.weight_kg }} kg</p>
+          <p>@{{ payload.user.username }} Â· {{ payload.user.age }} yrs Â· {{ payload.user.height_cm }} cm Â· {{ payload.user.weight_kg }} kg</p>
         </div>
         <div>
           <div class="mini">Goal</div>
@@ -506,10 +508,10 @@ INLINE_DASHBOARD_TEMPLATE = """
         <article class="kpi"><span class="mini">Consistency</span><strong>{{ payload.scores.consistency_score }}%</strong></article>
       </div>
       <div class="quickbar">
-        <a href="#folders">📁 {{ payload.ui.folders }}</a>
-        <a href="#plans">🏋️ {{ payload.ui.plans }}</a>
-        <a href="#assistant">🧠 {{ payload.ui.assistant_title }}</a>
-        <a href="#profile">👤 Profile</a>
+        <a href="#folders">đź“ {{ payload.ui.folders }}</a>
+        <a href="#plans">đźŹ‹ď¸Ź {{ payload.ui.plans }}</a>
+        <a href="#assistant">đź§  {{ payload.ui.assistant_title }}</a>
+        <a href="#profile">đź‘¤ Profile</a>
       </div>
       <div class="filter-grid">
         {% for item in payload.adaptive_filters %}
@@ -556,8 +558,8 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Ime i prezime<input type="text" name="full_name" value="{{ payload.user.full_name }}" required></label>
             <label>Pol
               <select name="gender">
-                <option value="male" {% if payload.user.gender == 'male' %}selected{% endif %}>Muško</option>
-                <option value="female" {% if payload.user.gender == 'female' %}selected{% endif %}>Žensko</option>
+                <option value="male" {% if payload.user.gender == 'male' %}selected{% endif %}>MuĹˇko</option>
+                <option value="female" {% if payload.user.gender == 'female' %}selected{% endif %}>Ĺ˝ensko</option>
               </select>
             </label>
             <label>Godine<input type="number" name="age" value="{{ payload.user.age }}" min="13" max="100"></label>
@@ -599,7 +601,7 @@ INLINE_DASHBOARD_TEMPLATE = """
                 <option value="late_cycle" {% if payload.user.cycle_phase == 'late_cycle' %}selected{% endif %}>Late cycle</option>
               </select>
             </label>
-            <button class="full" type="submit">Sačuvaj profil</button>
+            <button class="full" type="submit">SaÄŤuvaj profil</button>
           </form>
           <div>
             <div class="mini">Achievements</div>
@@ -656,28 +658,56 @@ INLINE_DASHBOARD_TEMPLATE = """
           <article class="option">
             <div class="head-row">
               <div>
-                <div class="mini">{{ payload.today_blueprint.coach_role }}</div>
+                <div class="mini">{{ payload.today_blueprint.coach_role }} Â· {{ payload.today_blueprint.status_label }}</div>
                 <strong>{{ payload.today_blueprint.title }}</strong>
               </div>
               <div class="tag">{{ payload.today_blueprint.duration }}</div>
             </div>
             <p>Coach: {{ payload.today_blueprint.coach_name }}</p>
             <div class="notice">{{ payload.today_blueprint.warmup }}</div>
-            <ul class="list">
+            <p>{{ payload.today_blueprint.focus_line }}</p>
+            {% if payload.today_blueprint.day_type == "training" %}
+            <div class="stack" style="margin-top:14px;">
               {% for item in payload.today_blueprint.exercises %}
-              <li><strong>{{ item.name }}</strong> · {{ item.sets }} sets · {{ item.reps }} reps · rest {{ item.rest }}. {{ item.note }}</li>
+              <article class="log">
+                <div class="mini">Step {{ item.order }} Â· {{ item.block }} Â· {{ item.duration }}</div>
+                <strong style="display:block;margin-top:6px;">{{ item.name }}</strong>
+                <p>{{ item.sets }} serija Â· {{ item.reps }} ponavljanja Â· odmor {{ item.rest }}</p>
+                <p>{{ item.note }}</p>
+                <form method="post" action="/today/check" style="margin-top:10px;">
+                  <input type="hidden" name="item_type" value="exercise">
+                  <input type="hidden" name="item_key" value="{{ item.item_key }}">
+                  <button type="submit">{% if item.item_key in payload.completed_today %}Zavrseno{% else %}Oznaci kao zavrseno{% endif %}</button>
+                </form>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <ul class="list">
+              {% for item in payload.today_blueprint.rest_day_actions %}
+              <li>{{ item }}</li>
               {% endfor %}
             </ul>
+            {% endif %}
             <div class="next">Latest athlete note: {{ payload.today_blueprint.latest_note }}</div>
           </article>
           <article class="option">
             <div class="mini">{{ payload.ui.nutrition_title }}</div>
-            <strong>Coach meal structure</strong>
-            <ul class="list">
+            <strong>{% if payload.today_blueprint.day_type == "training" %}Coach meal structure{% else %}Recovery nutrition{% endif %}</strong>
+            <div class="stack" style="margin-top:14px;">
               {% for item in payload.today_blueprint.nutrition %}
-              <li>{{ item }}</li>
+              <article class="log">
+                <div class="mini">{{ item.time }} Â· {{ item.title }}</div>
+                <strong style="display:block;margin-top:6px;">{{ item.meal }}</strong>
+                <p>{{ item.purpose }}</p>
+                <form method="post" action="/today/check" style="margin-top:10px;">
+                  <input type="hidden" name="item_type" value="meal">
+                  <input type="hidden" name="item_key" value="{{ item.item_key }}">
+                  <button type="submit">{% if item.item_key in payload.completed_today %}Zavrseno{% else %}Oznaci obrok{% endif %}</button>
+                </form>
+              </article>
               {% endfor %}
-            </ul>
+            </div>
           </article>
         </div>
       </section>
@@ -769,7 +799,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
         <div class="log" style="margin-bottom:16px;">
           <strong>Aktivni paket: {{ payload.user.subscription_tier|title }}</strong>
-          <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} Â· Gift access{% endif %}</p>
+          <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} Ă‚Â· Gift access{% endif %}</p>
           <p>{% if payload.user.discount_code %}Discount code: {{ payload.user.discount_code }} ({{ payload.user.discount_percent }}%){% else %}Discount code jos nije iskoriscen.{% endif %}</p>
           <p>Trial: {{ payload.access.status_label }}</p>
           <p>Preporuceni paket: {{ payload.access.recommended_tier|title }}</p>
@@ -832,7 +862,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="planner-grid">
           {% for item in payload.weekly_planner %}
           <article class="option">
-            <div class="mini">{{ item.day_label }} · {{ item.date }}</div>
+            <div class="mini">{{ item.day_label }} Â· {{ item.date }}</div>
             <strong>{{ item.title }}</strong>
             <div class="notice">{{ item.type }}</div>
             <p>{{ item.details }}</p>
@@ -845,16 +875,27 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="section-head">
           <div><div class="mini">AI</div><h2>{{ payload.ui.chat_title }}</h2></div>
         </div>
+        <div class="log" style="margin-bottom:16px;">
+          <strong>{{ payload.ai_concierge.name }}</strong>
+          <p>{{ payload.ai_concierge.greeting }}</p>
+        </div>
         <div class="chat-grid">
           <div>
+            {% if payload.ai_concierge.enabled %}
             <form method="post" action="/assistant/chat">
               <label>Poruka treneru<textarea name="message" placeholder="Npr. sta da radim danas ako sam umoran?"></textarea></label>
               <button type="submit">Posalji AI treneru</button>
             </form>
+            {% else %}
+            <div class="log">
+              <strong>Elite AI trener</strong>
+              <p>Puni personalni AI chat je dostupan u Elite paketu ili tokom trial perioda.</p>
+            </div>
+            {% endif %}
             <div class="chat-stack">
               {% for item in payload.coach_messages %}
               <article class="bubble {% if item.sender == 'user' %}user{% else %}coach{% endif %}">
-                <div class="mini">{{ item.sender }} · {{ item.created_at }}</div>
+                <div class="mini">{{ item.sender }} Â· {{ item.created_at }}</div>
                 <p>{{ item.message }}</p>
               </article>
               {% endfor %}
@@ -874,14 +915,14 @@ INLINE_DASHBOARD_TEMPLATE = """
               <label>Energy<input type="number" name="energy_score" value="7" min="1" max="10"></label>
               <label>Soreness<input type="number" name="soreness_score" value="4" min="1" max="10"></label>
               <label>Motivation<input type="number" name="motivation_score" value="7" min="1" max="10"></label>
-              <label class="full">Note<textarea name="note" placeholder="Kako se osjećaš, šta te boli, kako si spavao?"></textarea></label>
+              <label class="full">Note<textarea name="note" placeholder="Kako se osjeÄ‡aĹˇ, Ĺˇta te boli, kako si spavao?"></textarea></label>
               <button class="full" type="submit">Sacuvaj daily check-in</button>
             </form>
             <div class="chat-stack">
               {% for item in payload.checkins %}
               <article class="bubble coach">
-                <div class="mini">{{ item.checkin_date }} · mood {{ item.mood }}</div>
-                <p>Energy {{ item.energy_score }}/10 · soreness {{ item.soreness_score }}/10 · motivation {{ item.motivation_score }}/10</p>
+                <div class="mini">{{ item.checkin_date }} Â· mood {{ item.mood }}</div>
+                <p>Energy {{ item.energy_score }}/10 Â· soreness {{ item.soreness_score }}/10 Â· motivation {{ item.motivation_score }}/10</p>
                 <p>{{ item.note }}</p>
               </article>
               {% endfor %}
@@ -899,7 +940,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <article class="option">
             <div class="mini">{{ item.category }}</div>
             <strong>{{ item.exercise_name }}</strong>
-            <div class="notice">{{ item.weight_kg }} kg · {{ item.reps_text }}</div>
+            <div class="notice">{{ item.weight_kg }} kg Â· {{ item.reps_text }}</div>
             <p>{{ item.logged_at }}</p>
           </article>
           {% endfor %}
@@ -925,11 +966,11 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="calendar-lane">
           {% for day in payload.personal_calendar %}
           <article class="option">
-            <div class="mini">{{ day.day_label }} · {{ day.date }}</div>
+            <div class="mini">{{ day.day_label }} Â· {{ day.date }}</div>
             <strong>Coach day flow</strong>
             <ul class="list">
               {% for slot in day.slots %}
-              <li><strong>{{ slot.time }}</strong> · {{ slot.title }} · {{ slot.detail }}</li>
+              <li><strong>{{ slot.time }}</strong> Â· {{ slot.title }} Â· {{ slot.detail }}</li>
               {% endfor %}
             </ul>
           </article>
@@ -951,7 +992,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <div class="logs">
             {% for item in payload.calendar %}
             <article class="log">
-              <div class="mini">{{ item.event_date }} · {{ item.event_type }}</div>
+              <div class="mini">{{ item.event_date }} Â· {{ item.event_type }}</div>
               <strong style="display:block;margin-top:8px;font-size:22px;">{{ item.title }}</strong>
               <p>{{ item.details }}</p>
             </article>
@@ -979,8 +1020,8 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Password<input type="text" name="password" required></label>
             <label>Pol
               <select name="gender">
-                <option value="male">Muško</option>
-                <option value="female">Žensko</option>
+                <option value="male">MuĹˇko</option>
+                <option value="female">Ĺ˝ensko</option>
               </select>
             </label>
             <label>Cycle mode
@@ -1043,11 +1084,11 @@ INLINE_DASHBOARD_TEMPLATE = """
           <div class="users-grid">
             {% for user in payload.users %}
             <article class="user-card">
-              <div class="mini">{{ user.role }} Â· {{ user.billing_status|title }}</div>
+              <div class="mini">{{ user.role }} Ă‚Â· {{ user.billing_status|title }}</div>
               <strong>{{ user.full_name }}</strong>
-              <p>Gift: {{ "Yes" if user.gift_package else "No" }}{% if user.gifted_by %} Â· by {{ user.gifted_by }}{% endif %}</p>
+              <p>Gift: {{ "Yes" if user.gift_package else "No" }}{% if user.gifted_by %} Ă‚Â· by {{ user.gifted_by }}{% endif %}</p>
               <p>Discount: {% if user.discount_code %}{{ user.discount_code }} ({{ user.discount_percent }}%){% else %}None{% endif %}</p>
-              <p>@{{ user.username }} · {{ user.subscription_tier|title }} · {{ user.gender|title }} · {{ user.age }} yrs · {{ user.height_cm }} cm · {{ user.weight_kg }} kg · {{ user.goal }}</p>
+              <p>@{{ user.username }} Â· {{ user.subscription_tier|title }} Â· {{ user.gender|title }} Â· {{ user.age }} yrs Â· {{ user.height_cm }} cm Â· {{ user.weight_kg }} kg Â· {{ user.goal }}</p>
             </article>
             {% endfor %}
           </div>
@@ -1115,16 +1156,16 @@ INLINE_ONBOARDING_TEMPLATE = """
     <h1>Popuni svoj profil</h1>
     <p>Unesi ime, godine, visinu, kilazu i cilj. Na osnovu toga Forge ti daje predloge treninga, ishrane i kalendar plana.</p>
     <div class="grid">
-      <article class="tile"><div class="mini">Goal</div><strong>Personalized training</strong><p>Dobijaš više planova za performance, muscle ili cut cilj.</p></article>
-      <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se računaju po tvom profilu.</p></article>
+      <article class="tile"><div class="mini">Goal</div><strong>Personalized training</strong><p>DobijaĹˇ viĹˇe planova za performance, muscle ili cut cilj.</p></article>
+      <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se raÄŤunaju po tvom profilu.</p></article>
       <article class="tile"><div class="mini">Calendar</div><strong>Planned routine</strong><p>Izabrani plan i preporuke ulaze u tvoj kalendar.</p></article>
     </div>
     <form method="post">
       <label>Ime i prezime<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
       <label>Pol
         <select name="gender">
-          <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Muško</option>
-          <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Žensko</option>
+          <option value="male" {% if user.gender == 'male' %}selected{% endif %}>MuĹˇko</option>
+          <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Ĺ˝ensko</option>
         </select>
       </label>
       <label>Oprema
@@ -1151,7 +1192,7 @@ INLINE_ONBOARDING_TEMPLATE = """
       </label>
       <label>Godine<input type="number" name="age" value="{{ user.age }}" min="13" max="100" required></label>
       <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ user.height_cm }}" required></label>
-      <label>Kilaža kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
+      <label>KilaĹľa kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
       <label class="full">Cilj
         <select name="goal">
           <option value="performance" {% if user.goal == 'performance' %}selected{% endif %}>Performance</option>
@@ -1166,7 +1207,7 @@ INLINE_ONBOARDING_TEMPLATE = """
           <option value="advanced" {% if user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
         </select>
       </label>
-      <button class="full" type="submit">Sačuvaj profil i nastavi</button>
+      <button class="full" type="submit">SaÄŤuvaj profil i nastavi</button>
     </form>
   </main>
 </body>
@@ -1321,6 +1362,16 @@ def init_db() -> None:
                 message TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS daily_plan_checks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
+                check_date TEXT NOT NULL,
+                item_type TEXT NOT NULL,
+                item_key TEXT NOT NULL,
+                completed INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL
+            );
             """
         )
         ensure_column(db, "workout_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -1337,6 +1388,7 @@ def init_db() -> None:
         ensure_column(db, "users", "discount_percent", "discount_percent INTEGER NOT NULL DEFAULT 0")
         ensure_column(db, "users", "trial_started_at", "trial_started_at TEXT NOT NULL DEFAULT ''")
         ensure_column(db, "users", "trial_ends_at", "trial_ends_at TEXT NOT NULL DEFAULT ''")
+        ensure_column(db, "daily_plan_checks", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -1350,8 +1402,8 @@ def init_db() -> None:
             db.execute(
                 """
                 INSERT INTO users (
-                    username, password_hash, full_name, role, subscription_tier, age, height_cm, weight_kg, goal, experience_level, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    username, password_hash, full_name, role, subscription_tier, billing_status, profile_completed, age, height_cm, weight_kg, goal, experience_level, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     DEFAULT_ADMIN_USERNAME,
@@ -1359,6 +1411,8 @@ def init_db() -> None:
                     "Forge Admin",
                     "admin",
                     "elite",
+                    "paid",
+                    1,
                     30,
                     180,
                     84,
@@ -1366,6 +1420,50 @@ def init_db() -> None:
                     "advanced",
                     datetime.utcnow().isoformat(timespec="seconds"),
                 ),
+            )
+        else:
+            db.execute(
+                """
+                UPDATE users
+                SET password_hash = ?, role = 'admin', subscription_tier = 'elite', billing_status = 'paid', profile_completed = 1
+                WHERE username = ?
+                """,
+                (generate_password_hash(DEFAULT_ADMIN_PASSWORD), DEFAULT_ADMIN_USERNAME),
+            )
+
+        mitar_exists = db.execute("SELECT id FROM users WHERE username = ?", (DEFAULT_MITAR_USERNAME,)).fetchone()
+        if not mitar_exists:
+            db.execute(
+                """
+                INSERT INTO users (
+                    username, password_hash, full_name, role, subscription_tier, billing_status, profile_completed, age, height_cm, weight_kg, goal, experience_level, gender, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    DEFAULT_MITAR_USERNAME,
+                    generate_password_hash(DEFAULT_MITAR_PASSWORD),
+                    "Mitar",
+                    "member",
+                    "elite",
+                    "paid",
+                    1,
+                    28,
+                    182,
+                    85,
+                    "muscle",
+                    "advanced",
+                    "male",
+                    datetime.utcnow().isoformat(timespec="seconds"),
+                ),
+            )
+        else:
+            db.execute(
+                """
+                UPDATE users
+                SET password_hash = ?, subscription_tier = 'elite', billing_status = 'paid', profile_completed = 1, full_name = 'Mitar'
+                WHERE username = ?
+                """,
+                (generate_password_hash(DEFAULT_MITAR_PASSWORD), DEFAULT_MITAR_USERNAME),
             )
 
         demo_exists = db.execute("SELECT id FROM users WHERE username = 'lenovo'").fetchone()
@@ -1392,7 +1490,7 @@ def init_db() -> None:
 
         demo_user = db.execute("SELECT id FROM users WHERE username = 'lenovo'").fetchone()
         demo_user_id = int(demo_user["id"])
-        db.execute("UPDATE users SET profile_completed = 1 WHERE username IN ('admin', 'lenovo')")
+        db.execute("UPDATE users SET profile_completed = 1 WHERE username IN (?, ?, 'lenovo')", (DEFAULT_ADMIN_USERNAME, DEFAULT_MITAR_USERNAME))
 
         existing_logs = db.execute("SELECT COUNT(*) AS count FROM workout_logs WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
         existing_metrics = db.execute("SELECT COUNT(*) AS count FROM body_metrics WHERE user_id = ?", (demo_user_id,)).fetchone()["count"]
@@ -1688,6 +1786,21 @@ def recent_coach_messages(user_id: int, limit: int = 10) -> list[dict[str, Any]]
     items = [dict(row) for row in rows]
     items.reverse()
     return items
+
+
+def today_plan_checks(user_id: int, check_date: str | None = None) -> set[str]:
+    key = check_date or date.today().isoformat()
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT item_key
+            FROM daily_plan_checks
+            WHERE user_id = ? AND check_date = ? AND completed = 1
+            ORDER BY id DESC
+            """,
+            (user_id, key),
+        ).fetchall()
+    return {str(row["item_key"]) for row in rows}
 
 
 def calendar_items(user_id: int, limit: int = 14) -> list[dict[str, Any]]:
@@ -2249,35 +2362,69 @@ def build_wellness_panel(user: dict[str, Any], scores: dict[str, Any]) -> dict[s
     }
 
 
-def build_today_blueprint(user: dict[str, Any], assistant: dict[str, Any], workouts: list[dict[str, Any]]) -> dict[str, Any]:
+def build_today_blueprint(
+    user: dict[str, Any],
+    assistant: dict[str, Any],
+    workouts: list[dict[str, Any]],
+    calendar: list[dict[str, Any]],
+) -> dict[str, Any]:
     goal = str(user["goal"]).lower()
     gender = str(user.get("gender", "male")).lower()
     fatigue = str(user.get("fatigue_state", "steady")).lower()
     equipment = str(user.get("equipment_access", "full gym")).lower()
-    coach_key = assistant["coach_key"]
+    today_key = date.today().isoformat()
+    today_event = next((item for item in calendar if item["event_date"] == today_key), None)
 
-    library = {
+    training_slots = [0, 1, 3, 4, 5][: goal_training_days(user)]
+    is_training_day = date.today().weekday() in training_slots
+    if today_event and today_event.get("event_type") in {"recovery", "nutrition", "checkin"}:
+        is_training_day = False
+    if today_event and today_event.get("event_type") == "training":
+        is_training_day = True
+
+    exercise_library = {
         "performance": [
-            {"name": "Back squat", "sets": "5", "reps": "5", "rest": "150 sec", "note": "Explosive first rep and clean bracing."},
-            {"name": "Bench press", "sets": "4", "reps": "6", "rest": "120 sec", "note": "Own the pause and smooth bar speed."},
-            {"name": "Chest supported row", "sets": "4", "reps": "8", "rest": "90 sec", "note": "Drive elbows and control the lowering."},
-            {"name": "Sled push / carries", "sets": "6", "reps": "20 m", "rest": "60 sec", "note": "Finish powerful, not sloppy."},
+            {"name": "Back squat", "sets": "5", "reps": "5", "rest": "150 sec", "block": "Primary strength", "duration": "18 min", "note": "Explosive first rep and clean bracing."},
+            {"name": "Bench press", "sets": "4", "reps": "6", "rest": "120 sec", "block": "Secondary strength", "duration": "14 min", "note": "Own the pause and smooth bar speed."},
+            {"name": "Chest supported row", "sets": "4", "reps": "8", "rest": "90 sec", "block": "Upper back support", "duration": "12 min", "note": "Drive elbows and control the lowering."},
+            {"name": "Sled push / carries", "sets": "6", "reps": "20 m", "rest": "60 sec", "block": "Athletic finisher", "duration": "10 min", "note": "Finish powerful, not sloppy."},
         ],
         "muscle": [
-            {"name": "Incline dumbbell press", "sets": "4", "reps": "8-10", "rest": "90 sec", "note": "Deep stretch and controlled squeeze."},
-            {"name": "Lat pulldown or pull-up", "sets": "4", "reps": "8-12", "rest": "75 sec", "note": "Full range and chest up."},
-            {"name": "Romanian deadlift", "sets": "4", "reps": "8", "rest": "120 sec", "note": "Hinge slow and own the hamstring stretch."},
-            {"name": "Cable lateral raise", "sets": "3", "reps": "15-20", "rest": "45 sec", "note": "Chase tension, not momentum."},
+            {"name": "Incline dumbbell press", "sets": "4", "reps": "8-10", "rest": "90 sec", "block": "Chest priority", "duration": "14 min", "note": "Deep stretch and controlled squeeze."},
+            {"name": "Lat pulldown or pull-up", "sets": "4", "reps": "8-12", "rest": "75 sec", "block": "Back thickness", "duration": "12 min", "note": "Full range and chest up."},
+            {"name": "Romanian deadlift", "sets": "4", "reps": "8", "rest": "120 sec", "block": "Posterior chain", "duration": "14 min", "note": "Hinge slow and own the hamstring stretch."},
+            {"name": "Cable lateral raise", "sets": "3", "reps": "15-20", "rest": "45 sec", "block": "Shoulder finisher", "duration": "8 min", "note": "Chase tension, not momentum."},
         ],
         "cut": [
-            {"name": "Goblet squat", "sets": "4", "reps": "10", "rest": "60 sec", "note": "Stay crisp and keep heart rate moving."},
-            {"name": "Push-up / machine press", "sets": "4", "reps": "12", "rest": "45 sec", "note": "Clean reps with short breaks."},
-            {"name": "Walking lunges", "sets": "3", "reps": "14/leg", "rest": "45 sec", "note": "Long strides and steady pace."},
-            {"name": "Bike or rower intervals", "sets": "10", "reps": "30/30", "rest": "30 sec", "note": "Hard efforts with full rhythm control."},
+            {"name": "Goblet squat", "sets": "4", "reps": "10", "rest": "60 sec", "block": "Density opener", "duration": "10 min", "note": "Stay crisp and keep heart rate moving."},
+            {"name": "Push-up / machine press", "sets": "4", "reps": "12", "rest": "45 sec", "block": "Upper density", "duration": "9 min", "note": "Clean reps with short breaks."},
+            {"name": "Walking lunges", "sets": "3", "reps": "14/leg", "rest": "45 sec", "block": "Lower burn", "duration": "10 min", "note": "Long strides and steady pace."},
+            {"name": "Bike or rower intervals", "sets": "10", "reps": "30/30", "rest": "30 sec", "block": "Conditioning", "duration": "12 min", "note": "Hard efforts with full rhythm control."},
         ],
     }
 
-    exercises = [dict(item) for item in library.get(goal, library["performance"])]
+    nutrition_library = {
+        "performance": [
+            {"time": "07:30", "title": "Breakfast", "meal": "Oats, Greek yogurt, banana and whey.", "purpose": "Stable energy before the day."},
+            {"time": "15:45", "title": "Pre-workout", "meal": "Rice cakes, honey and fruit.", "purpose": "Fast carbs before lifting."},
+            {"time": "19:30", "title": "Post-workout", "meal": "Chicken, rice and vegetables.", "purpose": "Refill glycogen and recovery."},
+            {"time": "21:30", "title": "Dinner", "meal": "Salmon, potatoes and salad.", "purpose": "Recovery and sleep support."},
+        ],
+        "muscle": [
+            {"time": "08:00", "title": "Breakfast", "meal": "Eggs, oats, yogurt and berries.", "purpose": "Start with protein and calories."},
+            {"time": "13:30", "title": "Lunch", "meal": "Beef or chicken with rice and olive oil.", "purpose": "Mass-building base meal."},
+            {"time": "17:00", "title": "Pre/Post workout", "meal": "Whey shake plus banana.", "purpose": "Training support and faster recovery."},
+            {"time": "20:30", "title": "Dinner", "meal": "Pasta with lean meat and parmesan.", "purpose": "Drive the daily surplus cleanly."},
+        ],
+        "cut": [
+            {"time": "08:00", "title": "Breakfast", "meal": "Egg whites, berries and skyr.", "purpose": "Protein-first low-calorie start."},
+            {"time": "13:00", "title": "Lunch", "meal": "Chicken salad with potatoes.", "purpose": "Stay full and sharp."},
+            {"time": "16:30", "title": "Pre-workout", "meal": "Fruit and lean protein.", "purpose": "Low-fat fuel before training."},
+            {"time": "20:00", "title": "Dinner", "meal": "White fish, rice and green vegetables.", "purpose": "Tight calorie finish."},
+        ],
+    }
+
+    exercises = [dict(item) for item in exercise_library.get(goal, exercise_library["performance"])]
     if fatigue in {"high", "drained"}:
         exercises = exercises[:3]
         exercises[0]["note"] = f"{exercises[0]['note']} Keep 1-2 reps in reserve because fatigue is elevated."
@@ -2289,47 +2436,75 @@ def build_today_blueprint(user: dict[str, Any], assistant: dict[str, Any], worko
             "Lat pulldown or pull-up": "Band pulldown / assisted pull-up",
             "Cable lateral raise": "DB lateral raise",
             "Bike or rower intervals": "Fast step-up intervals",
+            "Sled push / carries": "Farmer carries / loaded step march",
         }
         for item in exercises:
             item["name"] = replacements.get(item["name"], item["name"])
     if gender == "female" and goal == "muscle":
-        exercises.append({"name": "Hip thrust", "sets": "3", "reps": "10-12", "rest": "75 sec", "note": "Use glute lockout and full control."})
+        exercises.append(
+            {
+                "name": "Hip thrust",
+                "sets": "3",
+                "reps": "10-12",
+                "rest": "75 sec",
+                "block": "Glute finisher",
+                "duration": "8 min",
+                "note": "Use glute lockout and full control.",
+            }
+        )
 
-    nutrition = {
-        "performance": [
-            "Breakfast: oats, Greek yogurt, banana and whey.",
-            "Pre-workout: rice cakes, honey and fruit.",
-            "Post-workout: chicken, rice and vegetables.",
-            "Dinner: salmon, potatoes and salad.",
-        ],
-        "muscle": [
-            "Breakfast: eggs, oats, yogurt and berries.",
-            "Lunch: beef or chicken with rice and olive oil.",
-            "Post-workout: whey shake plus banana.",
-            "Dinner: pasta with lean meat and parmesan.",
-        ],
-        "cut": [
-            "Breakfast: egg whites, berries and skyr.",
-            "Lunch: chicken salad with potatoes.",
-            "Pre-workout: fruit and lean protein.",
-            "Dinner: white fish, rice and green vegetables.",
-        ],
-    }
-    focus = {
-        "performance": "Heavy compound execution and speed quality.",
-        "muscle": "High-quality hypertrophy with stretch and control.",
-        "cut": "Dense work, calorie burn and muscle retention.",
-    }
+    for idx, item in enumerate(exercises, start=1):
+        item["order"] = idx
+        item["item_key"] = f"exercise-{idx}-{item['name'].lower().replace(' ', '-').replace('/', '-')}"
+
     latest_note = workouts[0]["focus"] if workouts else "No previous session logged yet."
+    total_minutes = sum(clamp_int(item["duration"].split()[0], 10, 1, 60) for item in exercises)
+    estimated_duration = f"{total_minutes + 10} min"
+
+    rest_day_actions = [
+        "20-30 min lagana setnja ili zone 2 cardio.",
+        "10 min mobilnosti za kukove, grudni dio i ramena.",
+        "Unesi korake, hidriraj se i idi ranije na spavanje.",
+    ]
+    if fatigue in {"high", "drained"}:
+        rest_day_actions.insert(0, "Danas je recovery prioritet: bez jakog treninga i bez ego rada.")
+
+    nutrition = nutrition_library.get(goal, nutrition_library["performance"])
+    if not is_training_day:
+        nutrition = [
+            {"time": "08:00", "title": "Breakfast", "meal": nutrition[0]["meal"], "purpose": "Protein anchor and lower stress morning."},
+            {"time": "13:00", "title": "Lunch", "meal": nutrition[1]["meal"], "purpose": "Keep calories structured without overeating."},
+            {"time": "19:30", "title": "Dinner", "meal": nutrition[-1]["meal"], "purpose": "Recovery-focused finish for tomorrow."},
+        ]
+    for idx, meal in enumerate(nutrition, start=1):
+        meal["item_key"] = f"meal-{idx}-{meal['title'].lower().replace(' ', '-')}"
+
+    title_map = {
+        "performance": "Performance execution day",
+        "muscle": "Hypertrophy growth day",
+        "cut": "Conditioning and fat-loss day",
+    }
+
+    if today_event and today_event.get("event_type") == "training":
+        title = today_event.get("title") or title_map.get(goal, "Training day")
+    elif is_training_day:
+        title = title_map.get(goal, "Training day")
+    else:
+        title = "Recovery / rest day"
+
     return {
-        "title": focus.get(goal, focus["performance"]),
+        "day_type": "training" if is_training_day else "recovery",
+        "status_label": "Training day" if is_training_day else "Recovery day",
+        "title": title,
         "coach_name": assistant["coach_name"],
         "coach_role": assistant["coach_role"],
-        "duration": "70 min" if goal != "cut" else "60 min",
-        "warmup": "8 min mobility + activation + 2 ramp-up sets per first movement.",
+        "duration": estimated_duration if is_training_day else "35 min recovery flow",
+        "warmup": "8 min mobility + activation + 2 ramp-up sets per first movement." if is_training_day else "Lagani reset: setnja, disanje i mobilnost bez zamora.",
         "latest_note": latest_note,
-        "exercises": exercises,
-        "nutrition": nutrition.get(goal, nutrition["performance"]),
+        "exercises": exercises if is_training_day else [],
+        "nutrition": nutrition,
+        "focus_line": today_event.get("details") if today_event else ("Heavy compound execution and speed quality." if goal == "performance" else "High-quality hypertrophy with stretch and control." if goal == "muscle" else "Dense work, calorie burn and muscle retention."),
+        "rest_day_actions": rest_day_actions,
     }
 
 
@@ -2502,6 +2677,39 @@ def subscription_access_state(user: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def has_elite_ai_access(user: dict[str, Any], access: dict[str, Any]) -> bool:
+    tier = str(user.get("subscription_tier") or "starter").lower()
+    billing_status = str(user.get("billing_status") or "inactive").lower()
+    return bool(access.get("trial_active")) or tier == "elite" or (tier == "elite" and billing_status in {"paid", "gifted"})
+
+
+def build_ai_concierge(user: dict[str, Any], access: dict[str, Any]) -> dict[str, Any]:
+    full_name = str(user.get("full_name") or "").strip()
+    username = str(user.get("username") or "").strip().lower()
+    is_mitar = "mitar" in full_name.lower() or username == "mitar"
+    elite_access = has_elite_ai_access(user, access)
+    if is_mitar:
+        return {
+            "name": "Mitar Individual AI Coach",
+            "mode": "individual",
+            "greeting": "Mitra vodim kao privatni trener: govorim ti sta radis danas, kojim redom, kako izvodis i gdje pazis na tehniku.",
+            "enabled": True,
+        }
+    if elite_access:
+        return {
+            "name": "Forge Elite AI Concierge",
+            "mode": "elite",
+            "greeting": "Ovo je tvoj premium AI trener za dnevne treninge, tehniku, ishranu i prilagodjavanje plana.",
+            "enabled": True,
+        }
+    return {
+        "name": "Forge Coach Preview",
+        "mode": "preview",
+        "greeting": "AI trener u punom obliku je rezervisan za Elite ili za aktivni trial period.",
+        "enabled": False,
+    }
+
+
 def market_readiness_flags() -> list[dict[str, str]]:
     return [
         {"title": "Session security", "detail": "HTTPOnly, SameSite and optional secure session cookies are enabled."},
@@ -2518,32 +2726,39 @@ def build_ai_trainer_reply(
     assistant: dict[str, Any],
     today_blueprint: dict[str, Any],
     checkins: list[dict[str, Any]],
+    ai_concierge: dict[str, Any],
 ) -> str:
     prompt = message.strip().lower()
     goal = str(user["goal"]).lower()
     latest_checkin = checkins[0] if checkins else None
+    coach_name = ai_concierge["name"]
+    if not ai_concierge.get("enabled"):
+        return f"{coach_name}: otkljucaj Elite paket nakon triala da dobijes puni individualni AI coaching chat."
     if any(word in prompt for word in ["today", "danas", "workout", "trening"]):
+        if today_blueprint["day_type"] != "training":
+            return f"{coach_name}: danas ti je recovery dan. Odradi laganu setnju, mobilnost i drzi obroke ciste i proteinske."
         first = today_blueprint["exercises"][0]
         return (
-            f"Danas radi {today_blueprint['title']}. Kreni sa {first['name']} na {first['sets']} serija x {first['reps']} "
-            f"sa odmorom {first['rest']}, pa nastavi kroz ostatak plana bez žurbe."
+            f"{coach_name}: danas radi {today_blueprint['title']}. Kreni sa {first['name']} na {first['sets']} serija x {first['reps']} "
+            f"sa odmorom {first['rest']}, pa nastavi kroz ostatak plana bez Ĺľurbe."
         )
     if any(word in prompt for word in ["food", "meal", "eat", "jesti", "ishrana"]):
+        first_meal = today_blueprint["nutrition"][0]
         return (
-            f"Za cilj {goal} danas drži protein na {assistant['targets']['protein']}g i fokusiraj se na: "
-            f"{today_blueprint['nutrition'][0]} Poslije treninga idi na pun obrok sa proteinom i ugljenim hidratima."
+            f"{coach_name}: za cilj {goal} danas drĹľi protein na {assistant['targets']['protein']}g i fokusiraj se na {first_meal['title'].lower()} u {first_meal['time']}. "
+            f"Meal: {first_meal['meal']} Poslije treninga idi na pun obrok sa proteinom i ugljenim hidratima."
         )
     if any(word in prompt for word in ["tired", "umor", "sore", "bol"]):
         status = latest_checkin["mood"] if latest_checkin else "steady"
         return (
-            f"Ako si danas pod umorom ({status}), skrati zadnju vježbu, ostavi 1-2 reps in reserve i fokus prebaci na tehniku, hodanje i san."
+            f"{coach_name}: ako si danas pod umorom ({status}), skrati zadnju vjeĹľbu, ostavi 1-2 reps in reserve i fokus prebaci na tehniku, hodanje i san."
         )
     if any(word in prompt for word in ["mass", "muscle", "misi", "bodybuilding"]):
-        return "Za mišiće i bodybuilding sad ti je ključ: kvalitetan volumen, stabilan kalorijski suficit i uredan logbook na osnovnim vježbama."
+        return f"{coach_name}: za miĹˇiÄ‡e i bodybuilding sad ti je kljuÄŤ kvalitetan volumen, stabilan kalorijski suficit i uredan logbook na osnovnim vjeĹľbama."
     if any(word in prompt for word in ["cut", "mrsa", "fat loss"]):
-        return "Za mršanje zadrži snagu kao prioritet, deficit neka bude čist, a cardio neka bude dodatak, ne zamjena za trening."
+        return f"{coach_name}: za mrĹˇanje zadrĹľi snagu kao prioritet, deficit neka bude ÄŤist, a cardio neka bude dodatak, ne zamjena za trening."
     return (
-        f"Ja sam tvoj AI trener. Na osnovu cilja {goal}, današnjeg plana i check-in podataka vodiću te kroz trening, hranu i recovery svaki dan."
+        f"{coach_name}: na osnovu cilja {goal}, danaĹˇnjeg plana i check-in podataka vodiÄ‡u te kroz trening, hranu i recovery svaki dan."
     )
 
 
@@ -2642,6 +2857,9 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     checkins = recent_checkins(int(user["id"]))
     coach_messages = recent_coach_messages(int(user["id"]))
     calendar = calendar_items(int(user["id"]))
+    access = subscription_access_state(user)
+    ai_concierge = build_ai_concierge(user, access)
+    completed_today = today_plan_checks(int(user["id"]))
     stats = build_tracking_stats(workouts, metrics)
     nutrition_stats = build_nutrition_stats(meals)
     recommendation = build_recommendation(
@@ -2669,7 +2887,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     adaptive_filters = build_adaptive_filters(user)
     folder_cards = build_folder_cards(user, assistant)
     weekly_planner = build_weekly_planner(user, calendar, assistant)
-    today_blueprint = build_today_blueprint(user, assistant, workouts)
+    today_blueprint = build_today_blueprint(user, assistant, workouts, calendar)
     personal_trainers = build_personal_trainers(user, assistant)
     personal_calendar = build_personal_calendar(user, assistant, weekly_planner)
     shopping_list = build_shopping_list(str(user["goal"]).lower())
@@ -2680,7 +2898,6 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     ui = language_pack()
     market_flags = market_readiness_flags()
     business = business_overview() if user.get("role") == "admin" else None
-    access = subscription_access_state(user)
 
     return {
         "seed": seed,
@@ -2714,12 +2931,14 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "photos": photos,
         "checkins": checkins,
         "coach_messages": coach_messages,
+        "completed_today": list(completed_today),
         "shopping_list": shopping_list,
         "progress_trends": progress_trends,
         "subscription_plans": SUBSCRIPTION_PLANS,
         "commercial_offers": COMMERCIAL_OFFERS,
         "market_flags": market_flags,
         "access": access,
+        "ai_concierge": ai_concierge,
         "business": business,
         "trainers": trainer_profiles(),
         "exercise_library": exercise_library(),
@@ -2943,9 +3162,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V14",
-        "login_title": "Secure athlete login V14",
-        "dashboard_title": "Adaptive athlete dashboard V14",
+        "build": "APP.PY ONLY BUILD V15",
+        "login_title": "Secure athlete login V15",
+        "dashboard_title": "Adaptive athlete dashboard V15",
     }
 
 
@@ -3105,6 +3324,11 @@ def admin_gift_package():
 @login_required
 def assistant_chat():
     user = current_user()
+    access = subscription_access_state(user)
+    ai_concierge = build_ai_concierge(user, access)
+    if not ai_concierge["enabled"]:
+        flash("Puni AI trener je dostupan u Elite paketu ili tokom trial perioda.")
+        return redirect(url_for("dashboard") + "#ai-trainer")
     message = str(request.form.get("message") or "").strip()[:500]
     if not message:
         flash("Unesi poruku za AI trenera.")
@@ -3116,8 +3340,8 @@ def assistant_chat():
     calendar = calendar_items(int(user["id"]))
     checkins = recent_checkins(int(user["id"]))
     assistant = build_assistant_plan(user, workouts, metrics, meals, calendar, training_days=goal_training_days(user))
-    today_blueprint = build_today_blueprint(user, assistant, workouts)
-    reply = build_ai_trainer_reply(user, message, assistant, today_blueprint, checkins)
+    today_blueprint = build_today_blueprint(user, assistant, workouts, calendar)
+    reply = build_ai_trainer_reply(user, message, assistant, today_blueprint, checkins, ai_concierge)
 
     now = datetime.utcnow().isoformat(timespec="seconds")
     with get_db() as db:
@@ -3132,6 +3356,37 @@ def assistant_chat():
 
     flash("AI trener ti je poslao novi odgovor.")
     return redirect(url_for("dashboard") + "#ai-trainer")
+
+
+@app.route("/today/check", methods=["POST"])
+@login_required
+def mark_today_check():
+    user = current_user()
+    item_type = str(request.form.get("item_type") or "").strip().lower()[:20]
+    item_key = str(request.form.get("item_key") or "").strip()[:120]
+    if item_type not in {"exercise", "meal"} or not item_key:
+        flash("Nije prosao today check.")
+        return redirect(url_for("dashboard") + "#today-plan")
+
+    today_key = date.today().isoformat()
+    with get_db() as db:
+        existing = db.execute(
+            "SELECT id FROM daily_plan_checks WHERE user_id = ? AND check_date = ? AND item_type = ? AND item_key = ?",
+            (int(user["id"]), today_key, item_type, item_key),
+        ).fetchone()
+        if existing:
+            db.execute("UPDATE daily_plan_checks SET completed = 1 WHERE id = ?", (int(existing["id"]),))
+        else:
+            db.execute(
+                """
+                INSERT INTO daily_plan_checks (user_id, check_date, item_type, item_key, completed, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (int(user["id"]), today_key, item_type, item_key, 1, datetime.utcnow().isoformat(timespec="seconds")),
+            )
+
+    flash("Danasnji zadatak je oznacen kao zavrsen.")
+    return redirect(url_for("dashboard") + "#today-plan")
 
 
 @app.route("/checkin/daily", methods=["POST"])
@@ -3478,7 +3733,7 @@ def update_profile():
             (full_name, gender, age, height_cm, weight_kg, goal, experience_level, int(user["id"])),
         )
 
-    flash("Profil je ažuriran i preporuke su osvježene.")
+    flash("Profil je aĹľuriran i preporuke su osvjeĹľene.")
     return redirect(url_for("dashboard") + "#profile")
 
 
@@ -3487,3 +3742,5 @@ init_db()
 
 if __name__ == "__main__":
     app.run(debug=True, port=5055)
+
+
