@@ -2811,7 +2811,7 @@ def register():
                     username, password_hash, full_name, role, subscription_tier, gender, cycle_phase,
                     billing_status, trial_started_at, trial_ends_at, equipment_access, fatigue_state, age, height_cm, weight_kg,
                     goal, experience_level, profile_completed, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     username,
