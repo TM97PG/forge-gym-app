@@ -31,6 +31,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 DEFAULT_ADMIN_USERNAME = os.environ.get("FORGE_ADMIN_USERNAME", "admin")
 DEFAULT_ADMIN_PASSWORD = os.environ.get("FORGE_ADMIN_PASSWORD", "daljamtelemont1")
 MIN_PASSWORD_LENGTH = 8
+TRIAL_DAYS = 15
 
 
 COACHES = {
@@ -124,7 +125,7 @@ LANGUAGES = {
 }
 
 SUBSCRIPTION_PLANS = [
-    {"key": "starter", "name": "Starter", "price": "0 EUR", "detail": "Core tracking, onboarding and weekly plans."},
+    {"key": "starter", "name": "Starter", "price": "0 EUR", "detail": f"Free full-access trial for the first {TRIAL_DAYS} days."},
     {"key": "pro", "name": "Pro", "price": "19 EUR", "detail": "AI coach, adaptive calendar and detailed nutrition."},
     {"key": "elite", "name": "Elite", "price": "49 EUR", "detail": "Full premium coaching flow, admin tools and launch-grade insights."},
 ]
@@ -214,13 +215,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V13</div>
+    <div class="pill">APP.PY ONLY BUILD V14</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V13</h1>
+    <h1>Secure athlete login V14</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -446,7 +447,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V13</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V14</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -479,7 +480,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>{{ payload.ui.hero_text }}</p>
         </div>
-        <div class="pill">Market ready + monetization V13</div>
+        <div class="pill">Market ready + monetization V14</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -770,6 +771,8 @@ INLINE_DASHBOARD_TEMPLATE = """
           <strong>Aktivni paket: {{ payload.user.subscription_tier|title }}</strong>
           <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} Â· Gift access{% endif %}</p>
           <p>{% if payload.user.discount_code %}Discount code: {{ payload.user.discount_code }} ({{ payload.user.discount_percent }}%){% else %}Discount code jos nije iskoriscen.{% endif %}</p>
+          <p>Trial: {{ payload.access.status_label }}</p>
+          <p>Preporuceni paket: {{ payload.access.recommended_tier|title }}</p>
         </div>
         <div class="pricing-grid">
           {% for plan in payload.subscription_plans %}
@@ -777,11 +780,15 @@ INLINE_DASHBOARD_TEMPLATE = """
             <div class="mini">{{ plan.price }}</div>
             <strong>{{ plan.name }}</strong>
             <p>{{ plan.detail }}</p>
+            {% if plan.key == "starter" %}
+            <div class="notice">Starter je ukljucen automatski kao full trial tokom prvih {{ payload.access.days_left if payload.access.trial_active else 0 }} dana.</div>
+            {% else %}
             <form method="post" action="/subscribe" style="margin-top:14px;">
               <input type="hidden" name="subscription_tier" value="{{ plan.key }}">
               <label>Discount code<input type="text" name="discount_code" placeholder="FORGE10"></label>
               <button type="submit">Aktiviraj {{ plan.name }}</button>
             </form>
+            {% endif %}
           </article>
           {% endfor %}
         </div>
@@ -1195,6 +1202,8 @@ def init_db() -> None:
                 gifted_by TEXT NOT NULL DEFAULT '',
                 discount_code TEXT NOT NULL DEFAULT '',
                 discount_percent INTEGER NOT NULL DEFAULT 0,
+                trial_started_at TEXT NOT NULL DEFAULT '',
+                trial_ends_at TEXT NOT NULL DEFAULT '',
                 gender TEXT NOT NULL DEFAULT 'male',
                 cycle_phase TEXT NOT NULL DEFAULT 'neutral',
                 equipment_access TEXT NOT NULL DEFAULT 'full gym',
@@ -1326,6 +1335,8 @@ def init_db() -> None:
         ensure_column(db, "users", "gifted_by", "gifted_by TEXT NOT NULL DEFAULT ''")
         ensure_column(db, "users", "discount_code", "discount_code TEXT NOT NULL DEFAULT ''")
         ensure_column(db, "users", "discount_percent", "discount_percent INTEGER NOT NULL DEFAULT 0")
+        ensure_column(db, "users", "trial_started_at", "trial_started_at TEXT NOT NULL DEFAULT ''")
+        ensure_column(db, "users", "trial_ends_at", "trial_ends_at TEXT NOT NULL DEFAULT ''")
         ensure_column(db, "body_metrics", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "meal_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -1519,7 +1530,7 @@ def fetch_user(username: str = "") -> dict[str, Any] | None:
             """
             SELECT id, username, password_hash, full_name, role, age, height_cm, weight_kg, goal, experience_level, profile_completed,
                    gender, cycle_phase, equipment_access, fatigue_state, subscription_tier, billing_status,
-                   gift_package, gifted_by, discount_code, discount_percent
+                   gift_package, gifted_by, discount_code, discount_percent, trial_started_at, trial_ends_at
             FROM users
             WHERE username = ?
             """,
@@ -1904,7 +1915,7 @@ def list_users() -> list[dict[str, Any]]:
         rows = db.execute(
             """
             SELECT id, username, full_name, role, subscription_tier, billing_status, gift_package, gifted_by,
-                   discount_code, discount_percent, gender, cycle_phase, equipment_access, fatigue_state,
+                   discount_code, discount_percent, trial_started_at, trial_ends_at, gender, cycle_phase, equipment_access, fatigue_state,
                    age, height_cm, weight_kg, goal, experience_level, created_at
             FROM users
             ORDER BY role DESC, created_at ASC, id ASC
@@ -2446,6 +2457,51 @@ def business_overview() -> dict[str, Any]:
     }
 
 
+def subscription_access_state(user: dict[str, Any]) -> dict[str, Any]:
+    today = date.today()
+    billing_status = str(user.get("billing_status") or "inactive")
+    tier = str(user.get("subscription_tier") or "starter")
+    trial_started_at = str(user.get("trial_started_at") or "")
+    trial_ends_at = str(user.get("trial_ends_at") or "")
+
+    days_left = 0
+    trial_active = False
+    if trial_ends_at:
+        try:
+            end_date = date.fromisoformat(trial_ends_at[:10])
+            days_left = max((end_date - today).days, 0)
+            trial_active = today <= end_date
+        except ValueError:
+            trial_active = False
+
+    if billing_status in {"paid", "gifted"}:
+        status_label = "Paid access" if billing_status == "paid" else "Gift access"
+        full_access = True
+    elif trial_active:
+        status_label = f"Free trial active - {days_left} days left"
+        full_access = True
+    else:
+        status_label = "Trial finished - upgrade recommended"
+        full_access = tier != "starter"
+
+    recommended = "pro"
+    goal = str(user.get("goal") or "performance").lower()
+    if goal in {"muscle", "bodybuilding"}:
+        recommended = "elite"
+    elif goal in {"cut", "performance"}:
+        recommended = "pro"
+
+    return {
+        "status_label": status_label,
+        "trial_active": trial_active,
+        "days_left": days_left,
+        "full_access": full_access,
+        "recommended_tier": recommended,
+        "trial_started_at": trial_started_at,
+        "trial_ends_at": trial_ends_at,
+    }
+
+
 def market_readiness_flags() -> list[dict[str, str]]:
     return [
         {"title": "Session security", "detail": "HTTPOnly, SameSite and optional secure session cookies are enabled."},
@@ -2624,6 +2680,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     ui = language_pack()
     market_flags = market_readiness_flags()
     business = business_overview() if user.get("role") == "admin" else None
+    access = subscription_access_state(user)
 
     return {
         "seed": seed,
@@ -2662,6 +2719,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "subscription_plans": SUBSCRIPTION_PLANS,
         "commercial_offers": COMMERCIAL_OFFERS,
         "market_flags": market_flags,
+        "access": access,
         "business": business,
         "trainers": trainer_profiles(),
         "exercise_library": exercise_library(),
@@ -2743,15 +2801,17 @@ def register():
         goal = str(request.form.get("goal") or "performance").strip().lower()[:30]
         experience_level = str(request.form.get("experience_level") or "beginner").strip().lower()[:30]
         subscription_tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower())
+        trial_started_at = date.today().isoformat()
+        trial_ends_at = (date.today() + timedelta(days=TRIAL_DAYS)).isoformat()
 
         with get_db() as db:
             db.execute(
                 """
                 INSERT INTO users (
                     username, password_hash, full_name, role, subscription_tier, gender, cycle_phase,
-                    equipment_access, fatigue_state, age, height_cm, weight_kg,
+                    billing_status, trial_started_at, trial_ends_at, equipment_access, fatigue_state, age, height_cm, weight_kg,
                     goal, experience_level, profile_completed, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     username,
@@ -2761,6 +2821,9 @@ def register():
                     subscription_tier,
                     gender,
                     cycle_phase,
+                    "trial",
+                    trial_started_at,
+                    trial_ends_at,
                     equipment_access,
                     fatigue_state,
                     age,
@@ -2880,9 +2943,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V13",
-        "login_title": "Secure athlete login V13",
-        "dashboard_title": "Adaptive athlete dashboard V13",
+        "build": "APP.PY ONLY BUILD V14",
+        "login_title": "Secure athlete login V14",
+        "dashboard_title": "Adaptive athlete dashboard V14",
     }
 
 
@@ -2990,6 +3053,9 @@ def select_plan():
 def subscribe():
     user = current_user()
     tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower())
+    if tier == "starter":
+        flash(f"Starter je vec ukljucen kao besplatan full trial od {TRIAL_DAYS} dana.")
+        return redirect(url_for("dashboard") + "#market")
     discount = resolve_discount_code(request.form.get("discount_code"))
     with get_db() as db:
         db.execute(
@@ -3122,13 +3188,16 @@ def create_user():
     experience_level = str(request.form.get("experience_level") or "intermediate").strip().lower()[:30]
     subscription_tier = valid_subscription_tier(str(request.form.get("subscription_tier") or "starter").strip().lower(), "starter")
     role = "admin" if str(request.form.get("role") or "member").strip().lower() == "admin" else "member"
+    trial_started_at = date.today().isoformat() if role == "member" else ""
+    trial_ends_at = (date.today() + timedelta(days=TRIAL_DAYS)).isoformat() if role == "member" else ""
+    billing_status = "trial" if role == "member" else "active"
 
     with get_db() as db:
         db.execute(
             """
             INSERT INTO users (
-                username, password_hash, full_name, role, subscription_tier, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                username, password_hash, full_name, role, subscription_tier, billing_status, trial_started_at, trial_ends_at, gender, cycle_phase, equipment_access, fatigue_state, age, height_cm, weight_kg, goal, experience_level, profile_completed, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 username,
@@ -3136,6 +3205,9 @@ def create_user():
                 full_name,
                 role,
                 subscription_tier,
+                billing_status,
+                trial_started_at,
+                trial_ends_at,
                 gender,
                 cycle_phase,
                 equipment_access,
