@@ -19,7 +19,8 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 SEED_FILE = DATA_DIR / "seed.json"
 RESEARCH_FILE = DATA_DIR / "research_sources.json"
 FOODS_FILE = DATA_DIR / "foods.json"
-DB_FILE = DATA_DIR / "forge.sqlite3"
+DB_PATH_ENV = os.environ.get("FORGE_DB_PATH", "").strip()
+DB_FILE = Path(DB_PATH_ENV) if DB_PATH_ENV else DATA_DIR / "forge.sqlite3"
 
 app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(TEMPLATES_DIR))
 app.secret_key = os.environ.get("FORGE_SECRET_KEY", "forge-secret-2026")
@@ -66,7 +67,7 @@ COACHES = {
 LANGUAGES = {
     "me": {
         "code": "me",
-        "flag": "đź‡˛đź‡Ş",
+        "flag": "CG",
         "name": "CG",
         "folders": "Folderi",
         "plans": "Planovi",
@@ -74,14 +75,14 @@ LANGUAGES = {
         "users": "Korisnici",
         "logout": "Izlaz",
         "hero_kicker": "Adaptivni atletski sistem",
-        "hero_text": "LiÄŤna gym aplikacija sa posebnim korisniÄŤkim profilom, trenerima, dnevnim zadacima i kalendarom koji se prilagoÄ‘ava cilju osobe.",
+        "hero_text": "Licna gym aplikacija sa posebnim korisnickim profilom, trenerima, dnevnim zadacima i kalendarom koji se prilagodjava cilju osobe.",
         "mobile_center": "Mobilni kontrolni centar",
         "profile_title": "Tvoji podaci",
         "plans_title": "Izaberi svoj plan",
         "assistant_title": "Personalni trener",
         "mission_title": "Sta je danas bitno",
         "wellness_title": "Wellness",
-        "planner_title": "SedmiÄŤni raspored",
+        "planner_title": "Sedmicni raspored",
         "calendar_title": "Licni kalendar",
         "coaches_title": "Tvoj coaching tim",
         "today_title": "Danasnji plan",
@@ -91,12 +92,12 @@ LANGUAGES = {
         "shopping_title": "Shopping lista",
         "progress_title": "Trend napretka",
         "pricing_title": "Planovi i pristup",
-        "legal_terms": "Uslovi koriĹˇÄ‡enja",
+        "legal_terms": "Uslovi koriscenja",
         "legal_privacy": "Privatnost",
     },
     "en": {
         "code": "en",
-        "flag": "đź‡¬đź‡§",
+        "flag": "EN",
         "name": "EN",
         "folders": "Folders",
         "plans": "Plans",
@@ -143,6 +144,90 @@ DISCOUNT_CODES = {
     "FORGE10": {"percent": 10, "label": "Launch 10%"},
     "PRO20": {"percent": 20, "label": "Pro offer 20%"},
     "ELITE25": {"percent": 25, "label": "Elite offer 25%"},
+}
+
+EXERCISE_TECHNIQUE_GUIDES = {
+    "Back squat": {
+        "source_label": "ACE Squat fundamentals",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/135/bodyweight-squat/",
+        "cues": [
+            "Brace the core before the descent.",
+            "Keep chest up while hips move back.",
+            "Drive evenly through the floor on the way up.",
+        ],
+    },
+    "Bench press": {
+        "source_label": "ACE Chest Press",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/19/chest-press/",
+        "cues": [
+            "Pull shoulders down and back into the bench.",
+            "Lower under control to mid chest.",
+            "Press up without losing wrist position or arching hard.",
+        ],
+    },
+    "Romanian deadlift": {
+        "source_label": "ACE Romanian Deadlift",
+        "source_url": "https://www.acefitness.org/continuing-education/certified/may-2025/8865/the-ace-do-it-better-series-the-romanian-deadlift/",
+        "cues": [
+            "Push hips back first and keep a long spine.",
+            "Lower until hamstrings load, not until the back rounds.",
+            "Drive feet into the floor and finish with the hips.",
+        ],
+    },
+    "Lat pulldown or pull-up": {
+        "source_label": "ACE Seated Lat Pulldown",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/",
+        "cues": [
+            "Set shoulders down and back before pulling.",
+            "Drive elbows down toward the torso.",
+            "Return under control without shrugging up early.",
+        ],
+    },
+    "Chest supported row": {
+        "source_label": "ACE Seated Row",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/48/seated-row/",
+        "cues": [
+            "Stay tall through the chest and keep a flat torso.",
+            "Pull elbows back close to the rib cage.",
+            "Pause briefly, then extend the arms without rounding forward.",
+        ],
+    },
+    "Incline dumbbell press": {
+        "source_label": "ACE Chest Press",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/19/chest-press/",
+        "cues": [
+            "Pack the shoulders before the first rep.",
+            "Lower with control and keep forearms stacked.",
+            "Press to full extension without losing bench contact.",
+        ],
+    },
+    "Cable lateral raise": {
+        "source_label": "ACE Lateral Raise",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/26/lateral-raise/",
+        "cues": [
+            "Brace the torso and keep shoulders down.",
+            "Raise arms out and slightly forward, not straight behind the body.",
+            "Stop around shoulder height and lower smoothly.",
+        ],
+    },
+    "Goblet squat": {
+        "source_label": "ACE Squat fundamentals",
+        "source_url": "https://www.acefitness.org/resources/everyone/exercise-library/135/bodyweight-squat/",
+        "cues": [
+            "Hold the weight close and stay tall through the chest.",
+            "Sit between the hips with the core braced.",
+            "Drive out of the bottom through the whole foot.",
+        ],
+    },
+    "Hip thrust": {
+        "source_label": "ACE glute bridge / hip extension progression",
+        "source_url": "https://www.acefitness.org/resources/pros/expert-articles/7963/what-is-the-difference-between-romanian-deadlift-vs-deadlift/",
+        "cues": [
+            "Keep ribs down before the thrust.",
+            "Drive through heels and fully extend the hips.",
+            "Pause at lockout without overextending the lower back.",
+        ],
+    },
 }
 
 
@@ -217,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V15</div>
+    <div class="pill">APP.PY ONLY BUILD V22</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V15</h1>
+    <h1>Secure athlete login V22</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -310,7 +395,7 @@ INLINE_REGISTER_TEMPLATE = """
     <div class="pill">Forge registration</div>
     <div class="mini" style="margin-top:14px;">Create your athlete account</div>
     <h1>Napravi svoj nalog</h1>
-    <p>Korisnik moĹľe sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
+    <p>Korisnik moze sam da napravi nalog, pa ga Forge odmah vodi na onboarding da unese svoje adaptive filtere i ciljeve.</p>
     <div class="plan-grid">
       {% for plan in subscription_plans %}
       <article class="plan-card">
@@ -333,13 +418,13 @@ INLINE_REGISTER_TEMPLATE = """
       <label>Password<input type="password" name="password" required></label>
       <label>Pol
         <select name="gender">
-          <option value="male">MuĹˇko</option>
-          <option value="female">Ĺ˝ensko</option>
+          <option value="male">Musko</option>
+          <option value="female">Zensko</option>
         </select>
       </label>
       <label>Godine<input type="number" name="age" value="25" min="13" max="100"></label>
       <label>Visina cm<input type="number" step="0.1" name="height_cm" value="180"></label>
-      <label>KilaĹľa kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
+      <label>Kilaza kg<input type="number" step="0.1" name="weight_kg" value="80"></label>
       <label>Cilj
         <select name="goal">
           <option value="performance">Performance</option>
@@ -350,7 +435,7 @@ INLINE_REGISTER_TEMPLATE = """
       <label>Paket
         <select name="subscription_tier">
           {% for plan in subscription_plans %}
-          <option value="{{ plan.key }}">{{ plan.name }} Â· {{ plan.price }}</option>
+          <option value="{{ plan.key }}">{{ plan.name }} - {{ plan.price }}</option>
           {% endfor %}
         </select>
       </label>
@@ -377,7 +462,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     .shell { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:16px 0 110px; }
     .topbar,.hero,.panel,.option,.flash { background:var(--panel); border:1px solid var(--line); border-radius:26px; box-shadow:0 28px 90px rgba(0,0,0,.42); }
     .topbar { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px; position:sticky; top:10px; z-index:4; backdrop-filter:blur(18px); margin-bottom:14px; }
-    .toplinks { display:grid; grid-auto-flow:column; gap:10px; }
+    .toplinks { display:grid; grid-auto-flow:column; gap:10px; align-items:start; }
     .toplinks a,.logout,.pill,.tag { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; }
     .pill,.logout { color:#17110a; background:linear-gradient(135deg,var(--orange),var(--gold)); }
     .toplinks a,.tag { border:1px solid var(--line); background:rgba(255,255,255,.05); }
@@ -388,8 +473,10 @@ INLINE_DASHBOARD_TEMPLATE = """
     h2 { font-size:clamp(26px, 4vw, 42px); }
     .hero-head,.hero-user,.split,.section-head,.head-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
     .hero p,.option p,.metric-note,.log p,.admin-note { color:#eadbc8; line-height:1.65; }
-    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid,.meal-grid,.mission-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid { display:grid; gap:14px; }
+    .hero-kpis,.grid3,.grid4,.option-grid,.calendar-grid,.users-grid,.quickbar,.suggestion-grid,.meal-grid,.mission-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.today-kpis,.session-grid { display:grid; gap:14px; }
     .hero-kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:18px; }
+    .today-kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
+    .session-grid { grid-template-columns:.95fr 1.05fr; margin-top:16px; }
     .grid3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
     .grid4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .quickbar { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
@@ -437,11 +524,33 @@ INLINE_DASHBOARD_TEMPLATE = """
     .bubble.user { background:rgba(255,255,255,.06); }
     .bubble.coach { background:rgba(241,90,36,.08); }
     .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
+    .top-nav-links { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
+    .top-nav-links a { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+    .folder-menu { display:flex; gap:10px; overflow:auto; padding:10px 2px 2px; margin-top:14px; scrollbar-width:none; }
+    .folder-menu::-webkit-scrollbar { display:none; }
+    .folder-menu a { white-space:nowrap; text-decoration:none; color:var(--text); padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; letter-spacing:.05em; }
+    .summary-strip { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; margin-top:18px; }
+    .summary-card { padding:18px; border-radius:22px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .task-meter { height:10px; width:100%; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; margin-top:12px; }
+    .task-meter span { display:block; height:100%; background:linear-gradient(135deg,var(--orange),var(--gold)); }
+    .today-badge { display:inline-flex; padding:8px 12px; border-radius:999px; background:rgba(78,186,114,.14); border:1px solid rgba(78,186,114,.24); font-size:12px; font-weight:800; }
+    .queue-list { display:grid; gap:10px; margin-top:14px; }
+    .queue-row { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .queue-row.done { opacity:.62; }
+    .player-card { padding:20px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(160deg, rgba(255,176,0,.1), rgba(255,255,255,.03) 45%, rgba(241,90,36,.1)); }
+    .player-top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .player-screen { margin-top:16px; padding:24px; border-radius:24px; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.06); text-align:center; }
+    .player-time { font-size:clamp(42px, 8vw, 74px); font-family:Georgia,serif; line-height:1; margin:12px 0; }
+    .player-controls { display:flex; justify-content:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+    .player-btn { min-width:64px; min-height:64px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-size:18px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; }
+    .player-btn.primary { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
+    .player-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .player-meta .log { padding:14px; text-align:center; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } }
-    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
+    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } }
   </style>
 </head>
 <body>
@@ -449,7 +558,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V15</strong>
+          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V22</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -457,11 +566,13 @@ INLINE_DASHBOARD_TEMPLATE = """
           <a class="lang-chip {% if item.code == payload.lang %}active{% endif %}" href="/set-language?lang={{ item.code }}&next=/dashboard">{{ item.flag }} {{ item.name }}</a>
           {% endfor %}
         </div>
-        <a href="#folders">đź“ {{ payload.ui.folders }}</a>
-        <a href="#plans">đźŹ‹ď¸Ź {{ payload.ui.plans }}</a>
-        <a href="#calendar">đź—“ď¸Ź {{ payload.ui.calendar }}</a>
-        <a href="#admin">đź‘Ą {{ payload.ui.users }}</a>
-        <a class="logout" href="/logout">{{ payload.ui.logout }}</a>
+        <div class="top-nav-links">
+          <a href="#folders">Hub {{ payload.ui.folders }}</a>
+          <a href="#plans">Coach {{ payload.ui.plans }}</a>
+          <a href="#calendar">Daily {{ payload.ui.calendar }}</a>
+          <a href="#admin">Admin {{ payload.ui.users }}</a>
+          <a class="logout" href="/logout">{{ payload.ui.logout }}</a>
+        </div>
       </div>
     </div>
 
@@ -482,13 +593,13 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>{{ payload.ui.hero_text }}</p>
         </div>
-        <div class="pill">Market ready + monetization V15</div>
+        <div class="pill">Market ready + dashboard V22</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
           <div class="mini">Athlete</div>
           <h3 style="margin-top:8px;">{{ payload.user.full_name }}</h3>
-          <p>@{{ payload.user.username }} Â· {{ payload.user.age }} yrs Â· {{ payload.user.height_cm }} cm Â· {{ payload.user.weight_kg }} kg</p>
+          <p>@{{ payload.user.username }} - {{ payload.user.age }} yrs - {{ payload.user.height_cm }} cm - {{ payload.user.weight_kg }} kg</p>
         </div>
         <div>
           <div class="mini">Goal</div>
@@ -508,10 +619,10 @@ INLINE_DASHBOARD_TEMPLATE = """
         <article class="kpi"><span class="mini">Consistency</span><strong>{{ payload.scores.consistency_score }}%</strong></article>
       </div>
       <div class="quickbar">
-        <a href="#folders">đź“ {{ payload.ui.folders }}</a>
-        <a href="#plans">đźŹ‹ď¸Ź {{ payload.ui.plans }}</a>
-        <a href="#assistant">đź§  {{ payload.ui.assistant_title }}</a>
-        <a href="#profile">đź‘¤ Profile</a>
+        <a href="#folders">Open {{ payload.ui.folders }}</a>
+        <a href="#plans">View {{ payload.ui.plans }}</a>
+        <a href="#assistant">Open {{ payload.ui.assistant_title }}</a>
+        <a href="#profile">Edit profile</a>
       </div>
       <div class="filter-grid">
         {% for item in payload.adaptive_filters %}
@@ -521,6 +632,11 @@ INLINE_DASHBOARD_TEMPLATE = """
         </article>
         {% endfor %}
       </div>
+      <nav class="folder-menu" aria-label="Section menu">
+        {% for item in payload.section_menu %}
+        <a href="{{ item.anchor }}">{{ item.title }}</a>
+        {% endfor %}
+      </nav>
     </section>
 
     <section class="panel span" id="folders">
@@ -558,8 +674,8 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Ime i prezime<input type="text" name="full_name" value="{{ payload.user.full_name }}" required></label>
             <label>Pol
               <select name="gender">
-                <option value="male" {% if payload.user.gender == 'male' %}selected{% endif %}>MuĹˇko</option>
-                <option value="female" {% if payload.user.gender == 'female' %}selected{% endif %}>Ĺ˝ensko</option>
+                <option value="male" {% if payload.user.gender == 'male' %}selected{% endif %}>Musko</option>
+                <option value="female" {% if payload.user.gender == 'female' %}selected{% endif %}>Zensko</option>
               </select>
             </label>
             <label>Godine<input type="number" name="age" value="{{ payload.user.age }}" min="13" max="100"></label>
@@ -601,7 +717,7 @@ INLINE_DASHBOARD_TEMPLATE = """
                 <option value="late_cycle" {% if payload.user.cycle_phase == 'late_cycle' %}selected{% endif %}>Late cycle</option>
               </select>
             </label>
-            <button class="full" type="submit">SaÄŤuvaj profil</button>
+            <button class="full" type="submit">Sacuvaj profil</button>
           </form>
           <div>
             <div class="mini">Achievements</div>
@@ -654,11 +770,187 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="section-head">
           <div><div class="mini">Today</div><h2>{{ payload.ui.today_title }}</h2></div>
         </div>
+        <div class="today-kpis">
+          <article class="kpi">
+            <span class="mini">Day status</span>
+            <strong>{{ payload.today_blueprint.status_label }}</strong>
+          </article>
+          <article class="kpi">
+            <span class="mini">Session time</span>
+            <strong>{{ payload.today_blueprint.duration }}</strong>
+          </article>
+          <article class="kpi">
+            <span class="mini">Progress today</span>
+            <strong>{{ payload.today_progress.done_items }}/{{ payload.today_progress.total_items }}</strong>
+          </article>
+          <article class="kpi">
+            <span class="mini">Meals today</span>
+            <strong>{{ payload.today_progress.meal_done }}/{{ payload.today_progress.meal_total }}</strong>
+          </article>
+        </div>
+        <div class="summary-strip">
+          <article class="summary-card">
+            <div class="mini">Completion</div>
+            <strong style="display:block;margin-top:8px;font-size:28px;">{{ payload.today_progress.completion_percent }}%</strong>
+            <div class="task-meter"><span style="width:{{ payload.today_progress.completion_percent }}%;"></span></div>
+            <p style="margin-top:12px;">Exercises finished: {{ payload.today_progress.exercise_done }}/{{ payload.today_progress.exercise_total }}. Meals completed: {{ payload.today_progress.meal_done }}/{{ payload.today_progress.meal_total }}.</p>
+          </article>
+          <article class="summary-card">
+            <div class="mini">Coach focus</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.today_blueprint.title }}</strong>
+            <p style="margin-top:12px;">{{ payload.today_blueprint.focus_line }}</p>
+            <div class="today-badge" style="margin-top:8px;">Coach {{ payload.today_blueprint.coach_name }}</div>
+          </article>
+        </div>
+        <div class="planner-grid" style="margin-top:16px;">
+          {% for item in payload.notifications %}
+          <article class="option">
+            <div class="mini">{{ item.level }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="session-grid">
+          <article class="player-card" id="workout-player" data-rest="{{ payload.live_session.rest_timer }}">
+            <div class="player-top">
+              <div>
+                <div class="mini">{{ payload.live_session.title }}</div>
+                <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.live_session.next_move }}</strong>
+              </div>
+              <div class="tag">{% if payload.live_session.mode == "training" %}Workout live{% else %}Recovery live{% endif %}</div>
+            </div>
+            <div class="player-screen">
+              <div class="mini">Rest timer</div>
+              <div class="player-time" id="player-timer">00:00</div>
+              <p id="player-status">{{ payload.live_session.coach_prompt }}</p>
+              <div class="player-controls">
+                <button type="button" class="player-btn primary" id="player-play" aria-label="Play workout">Play</button>
+                <button type="button" class="player-btn" id="player-pause" aria-label="Pause workout">Pause</button>
+                <button type="button" class="player-btn" id="player-reset" aria-label="Reset timer">Reset</button>
+              </div>
+            </div>
+            <div class="player-meta">
+              <article class="log">
+                <div class="mini">Current focus</div>
+                <strong style="font-size:20px;">{{ payload.today_blueprint.status_label }}</strong>
+              </article>
+              <article class="log">
+                <div class="mini">Session length</div>
+                <strong style="font-size:20px;">{{ payload.today_blueprint.duration }}</strong>
+              </article>
+              <article class="log">
+                <div class="mini">Coach lane</div>
+                <strong style="font-size:20px;">{{ payload.today_blueprint.coach_name }}</strong>
+              </article>
+            </div>
+            <div class="queue-list" style="margin-top:16px;">
+              <div class="queue-row">
+                <div>
+                  <div class="mini">Technique mode</div>
+                  <strong style="font-size:18px;margin-top:6px;">How to do the next movement</strong>
+                  <ul class="list" style="margin-top:10px;">
+                    {% for tip in payload.live_session.technique %}
+                    <li>{{ tip }}</li>
+                    {% endfor %}
+                  </ul>
+                  {% if payload.live_session.technique_source_url %}
+                  <p style="margin-top:12px;"><a href="{{ payload.live_session.technique_source_url }}" target="_blank" rel="noreferrer" style="color:#f7efdf;">Source: {{ payload.live_session.technique_source_label }}</a></p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="option">
+            <div class="mini">Live queue</div>
+            <strong>{% if payload.live_session.mode == "training" %}Workout order{% else %}Recovery order{% endif %}</strong>
+            {% if payload.live_session.queue %}
+            <div class="queue-list">
+              {% for item in payload.live_session.queue %}
+              <div class="queue-row {% if item.done %}done{% endif %}">
+                <div>
+                  <strong style="font-size:18px;margin-top:0;">{{ item.name }}</strong>
+                  <p style="margin-top:6px;">{{ item.detail }}</p>
+                  <div class="notice" style="margin-top:10px;">Auto-weight: {{ item.weight_suggestion }}</div>
+                  {% if item.checkpoints %}
+                  <div class="queue-list" style="margin-top:10px;">
+                    {% for checkpoint in item.checkpoints %}
+                    <form method="post" action="/today/check">
+                      <input type="hidden" name="item_type" value="set">
+                      <input type="hidden" name="item_key" value="{{ checkpoint.item_key }}">
+                      <button type="submit" style="min-height:44px;">{% if checkpoint.done %}{{ checkpoint.label }} done{% else %}Mark {{ checkpoint.label }}{% endif %}</button>
+                    </form>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="tag">{% if item.done %}Done{% else %}Next{% endif %}</div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="queue-list">
+              <div class="queue-row">
+                <div>
+                  <strong style="font-size:18px;margin-top:0;">Recovery walk</strong>
+                  <p style="margin-top:6px;">Easy movement, breathing and early sleep.</p>
+                </div>
+                <div class="tag">Recovery</div>
+              </div>
+            </div>
+            {% endif %}
+            <div class="queue-list" style="margin-top:16px;">
+              <div class="queue-row">
+                <div>
+                  <div class="mini">Rest presets</div>
+                  <strong style="font-size:18px;margin-top:6px;">Choose the right pace</strong>
+                  <ul class="list" style="margin-top:10px;">
+                    {% for preset in payload.live_session.rest_presets %}
+                    <li>{{ preset.label }} - {{ preset.seconds }} sec - {{ preset.use }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="queue-list" style="margin-top:16px;">
+              <div class="queue-row">
+                <div>
+                  <div class="mini">Smart progression</div>
+                  <strong style="font-size:18px;margin-top:6px;">What to do with the load today</strong>
+                  <ul class="list" style="margin-top:10px;">
+                    {% for item in payload.live_session.progression %}
+                    <li><strong>{{ item.name }}</strong> - {{ item.recommendation }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="summary-strip">
+          <article class="summary-card">
+            <div class="mini">Session finish</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.live_session.completion_title }}</strong>
+            <p style="margin-top:12px;">{{ payload.live_session.completion_note }}</p>
+          </article>
+          <article class="summary-card">
+            <div class="mini">Weekly coach review</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.weekly_review.score }} / 100</strong>
+            <p style="margin-top:12px;">{{ payload.weekly_review.headline }}</p>
+            <ul class="list" style="margin-top:10px;">
+              {% for point in payload.weekly_review.points %}
+              <li>{{ point }}</li>
+              {% endfor %}
+            </ul>
+            <div class="notice">{{ payload.weekly_review.adjustment }}</div>
+            <div class="next">{{ payload.weekly_review.next_week_adjustment }}</div>
+          </article>
+        </div>
         <div class="today-grid">
           <article class="option">
             <div class="head-row">
               <div>
-                <div class="mini">{{ payload.today_blueprint.coach_role }} Â· {{ payload.today_blueprint.status_label }}</div>
+                <div class="mini">{{ payload.today_blueprint.coach_role }} - {{ payload.today_blueprint.status_label }}</div>
                 <strong>{{ payload.today_blueprint.title }}</strong>
               </div>
               <div class="tag">{{ payload.today_blueprint.duration }}</div>
@@ -670,14 +962,14 @@ INLINE_DASHBOARD_TEMPLATE = """
             <div class="stack" style="margin-top:14px;">
               {% for item in payload.today_blueprint.exercises %}
               <article class="log">
-                <div class="mini">Step {{ item.order }} Â· {{ item.block }} Â· {{ item.duration }}</div>
+                <div class="mini">Step {{ item.order }} - {{ item.block }} - {{ item.duration }}</div>
                 <strong style="display:block;margin-top:6px;">{{ item.name }}</strong>
-                <p>{{ item.sets }} serija Â· {{ item.reps }} ponavljanja Â· odmor {{ item.rest }}</p>
+                <p>{{ item.sets }} sets - {{ item.reps }} reps - rest {{ item.rest }}</p>
                 <p>{{ item.note }}</p>
                 <form method="post" action="/today/check" style="margin-top:10px;">
                   <input type="hidden" name="item_type" value="exercise">
                   <input type="hidden" name="item_key" value="{{ item.item_key }}">
-                  <button type="submit">{% if item.item_key in payload.completed_today %}Zavrseno{% else %}Oznaci kao zavrseno{% endif %}</button>
+                  <button type="submit">{% if item.item_key in payload.completed_today %}Completed{% else %}Mark exercise done{% endif %}</button>
                 </form>
               </article>
               {% endfor %}
@@ -697,13 +989,13 @@ INLINE_DASHBOARD_TEMPLATE = """
             <div class="stack" style="margin-top:14px;">
               {% for item in payload.today_blueprint.nutrition %}
               <article class="log">
-                <div class="mini">{{ item.time }} Â· {{ item.title }}</div>
+                <div class="mini">{{ item.time }} - {{ item.title }}</div>
                 <strong style="display:block;margin-top:6px;">{{ item.meal }}</strong>
                 <p>{{ item.purpose }}</p>
                 <form method="post" action="/today/check" style="margin-top:10px;">
                   <input type="hidden" name="item_type" value="meal">
                   <input type="hidden" name="item_key" value="{{ item.item_key }}">
-                  <button type="submit">{% if item.item_key in payload.completed_today %}Zavrseno{% else %}Oznaci obrok{% endif %}</button>
+                  <button type="submit">{% if item.item_key in payload.completed_today %}Completed{% else %}Mark meal done{% endif %}</button>
                 </form>
               </article>
               {% endfor %}
@@ -776,6 +1068,27 @@ INLINE_DASHBOARD_TEMPLATE = """
           </article>
           {% endfor %}
         </div>
+        <form method="post" action="/log-meal" class="form2" style="margin-top:16px;">
+          <label>Meal type
+            <select name="meal_type">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="pre-workout">Pre-workout</option>
+              <option value="post-workout">Post-workout</option>
+              <option value="dinner">Dinner</option>
+            </select>
+          </label>
+          <label>Food name<input type="text" name="food_name" placeholder="Chicken and rice"></label>
+          <label>Grams<input type="number" step="0.1" name="grams" value="150"></label>
+          <label>Calories<input type="number" step="0.1" name="calories" value="450"></label>
+          <label>Protein<input type="number" step="0.1" name="protein" value="35"></label>
+          <label>Carbs<input type="number" step="0.1" name="carbs" value="40"></label>
+          <label>Fats<input type="number" step="0.1" name="fats" value="12"></label>
+          <label>Goal tag<input type="text" name="goal_tag" value="{{ payload.user.goal }}"></label>
+          <label class="full">Notes<input type="text" name="notes" placeholder="Quick meal note"></label>
+          <input type="hidden" name="logged_at" value="{{ today }}T12:00">
+          <button class="full" type="submit">Log meal from dashboard</button>
+        </form>
       </section>
 
       <section class="panel span" id="progress">
@@ -799,7 +1112,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
         <div class="log" style="margin-bottom:16px;">
           <strong>Aktivni paket: {{ payload.user.subscription_tier|title }}</strong>
-          <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} Ă‚Â· Gift access{% endif %}</p>
+          <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} - Gift access{% endif %}</p>
           <p>{% if payload.user.discount_code %}Discount code: {{ payload.user.discount_code }} ({{ payload.user.discount_percent }}%){% else %}Discount code jos nije iskoriscen.{% endif %}</p>
           <p>Trial: {{ payload.access.status_label }}</p>
           <p>Preporuceni paket: {{ payload.access.recommended_tier|title }}</p>
@@ -862,7 +1175,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="planner-grid">
           {% for item in payload.weekly_planner %}
           <article class="option">
-            <div class="mini">{{ item.day_label }} Â· {{ item.date }}</div>
+            <div class="mini">{{ item.day_label }} - {{ item.date }}</div>
             <strong>{{ item.title }}</strong>
             <div class="notice">{{ item.type }}</div>
             <p>{{ item.details }}</p>
@@ -883,7 +1196,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <div>
             {% if payload.ai_concierge.enabled %}
             <form method="post" action="/assistant/chat">
-              <label>Poruka treneru<textarea name="message" placeholder="Npr. sta da radim danas ako sam umoran?"></textarea></label>
+              <label>Poruka treneru<textarea name="message" placeholder="Na primjer: sta da radim danas ako sam umoran?"></textarea></label>
               <button type="submit">Posalji AI treneru</button>
             </form>
             {% else %}
@@ -895,13 +1208,26 @@ INLINE_DASHBOARD_TEMPLATE = """
             <div class="chat-stack">
               {% for item in payload.coach_messages %}
               <article class="bubble {% if item.sender == 'user' %}user{% else %}coach{% endif %}">
-                <div class="mini">{{ item.sender }} Â· {{ item.created_at }}</div>
+                <div class="mini">{{ item.sender }} - {{ item.created_at }}</div>
                 <p>{{ item.message }}</p>
               </article>
               {% endfor %}
             </div>
           </div>
           <div>
+            <div class="notice">Coach memory</div>
+            <form method="post" action="/coach-memory">
+              <label>Save a personal note for the AI coach<textarea name="memory_text" placeholder="Example: my shoulder gets irritated on heavy overhead work, or I prefer morning training."></textarea></label>
+              <button type="submit">Save to coach memory</button>
+            </form>
+            <div class="chat-stack">
+              {% for item in payload.coach_memory %}
+              <article class="bubble user">
+                <div class="mini">{{ item.memory_type }} - {{ item.created_at }}</div>
+                <p>{{ item.memory_text }}</p>
+              </article>
+              {% endfor %}
+            </div>
             <div class="notice">{{ payload.ui.checkin_title }}</div>
             <form method="post" action="/checkin/daily" class="form2">
               <label>Mood
@@ -915,14 +1241,14 @@ INLINE_DASHBOARD_TEMPLATE = """
               <label>Energy<input type="number" name="energy_score" value="7" min="1" max="10"></label>
               <label>Soreness<input type="number" name="soreness_score" value="4" min="1" max="10"></label>
               <label>Motivation<input type="number" name="motivation_score" value="7" min="1" max="10"></label>
-              <label class="full">Note<textarea name="note" placeholder="Kako se osjeÄ‡aĹˇ, Ĺˇta te boli, kako si spavao?"></textarea></label>
+              <label class="full">Note<textarea name="note" placeholder="Kako se osjecas, sta te boli i kako si spavao?"></textarea></label>
               <button class="full" type="submit">Sacuvaj daily check-in</button>
             </form>
             <div class="chat-stack">
               {% for item in payload.checkins %}
               <article class="bubble coach">
-                <div class="mini">{{ item.checkin_date }} Â· mood {{ item.mood }}</div>
-                <p>Energy {{ item.energy_score }}/10 Â· soreness {{ item.soreness_score }}/10 Â· motivation {{ item.motivation_score }}/10</p>
+                <div class="mini">{{ item.checkin_date }} - mood {{ item.mood }}</div>
+                <p>Energy {{ item.energy_score }}/10 - soreness {{ item.soreness_score }}/10 - motivation {{ item.motivation_score }}/10</p>
                 <p>{{ item.note }}</p>
               </article>
               {% endfor %}
@@ -940,7 +1266,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <article class="option">
             <div class="mini">{{ item.category }}</div>
             <strong>{{ item.exercise_name }}</strong>
-            <div class="notice">{{ item.weight_kg }} kg Â· {{ item.reps_text }}</div>
+            <div class="notice">{{ item.weight_kg }} kg - {{ item.reps_text }}</div>
             <p>{{ item.logged_at }}</p>
           </article>
           {% endfor %}
@@ -966,11 +1292,11 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div class="calendar-lane">
           {% for day in payload.personal_calendar %}
           <article class="option">
-            <div class="mini">{{ day.day_label }} Â· {{ day.date }}</div>
+            <div class="mini">{{ day.day_label }} - {{ day.date }}</div>
             <strong>Coach day flow</strong>
             <ul class="list">
               {% for slot in day.slots %}
-              <li><strong>{{ slot.time }}</strong> Â· {{ slot.title }} Â· {{ slot.detail }}</li>
+              <li><strong>{{ slot.time }}</strong> - {{ slot.title }} - {{ slot.detail }}</li>
               {% endfor %}
             </ul>
           </article>
@@ -992,7 +1318,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <div class="logs">
             {% for item in payload.calendar %}
             <article class="log">
-              <div class="mini">{{ item.event_date }} Â· {{ item.event_type }}</div>
+              <div class="mini">{{ item.event_date }} - {{ item.event_type }}</div>
               <strong style="display:block;margin-top:8px;font-size:22px;">{{ item.title }}</strong>
               <p>{{ item.details }}</p>
             </article>
@@ -1020,8 +1346,8 @@ INLINE_DASHBOARD_TEMPLATE = """
             <label>Password<input type="text" name="password" required></label>
             <label>Pol
               <select name="gender">
-                <option value="male">MuĹˇko</option>
-                <option value="female">Ĺ˝ensko</option>
+                <option value="male">Musko</option>
+                <option value="female">Zensko</option>
               </select>
             </label>
             <label>Cycle mode
@@ -1084,11 +1410,11 @@ INLINE_DASHBOARD_TEMPLATE = """
           <div class="users-grid">
             {% for user in payload.users %}
             <article class="user-card">
-              <div class="mini">{{ user.role }} Ă‚Â· {{ user.billing_status|title }}</div>
+              <div class="mini">{{ user.role }} - {{ user.billing_status|title }}</div>
               <strong>{{ user.full_name }}</strong>
-              <p>Gift: {{ "Yes" if user.gift_package else "No" }}{% if user.gifted_by %} Ă‚Â· by {{ user.gifted_by }}{% endif %}</p>
+              <p>Gift: {{ "Yes" if user.gift_package else "No" }}{% if user.gifted_by %} - by {{ user.gifted_by }}{% endif %}</p>
               <p>Discount: {% if user.discount_code %}{{ user.discount_code }} ({{ user.discount_percent }}%){% else %}None{% endif %}</p>
-              <p>@{{ user.username }} Â· {{ user.subscription_tier|title }} Â· {{ user.gender|title }} Â· {{ user.age }} yrs Â· {{ user.height_cm }} cm Â· {{ user.weight_kg }} kg Â· {{ user.goal }}</p>
+              <p>@{{ user.username }} - {{ user.subscription_tier|title }} - {{ user.gender|title }} - {{ user.age }} yrs - {{ user.height_cm }} cm - {{ user.weight_kg }} kg - {{ user.goal }}</p>
             </article>
             {% endfor %}
           </div>
@@ -1109,13 +1435,78 @@ INLINE_DASHBOARD_TEMPLATE = """
     </main>
 
     <nav class="bottom">
+      <a href="#today-plan">Today</a>
       <a href="#plans">Plans</a>
-      <a href="#assistant">AI</a>
-      <a href="#calendar">Plan</a>
+      <a href="#mission">Meals</a>
+      <a href="#ai-trainer">Coach</a>
       <a href="#profile">Profile</a>
-      <a href="#admin">Users</a>
     </nav>
   </div>
+  <script>
+    (function () {
+      const player = document.getElementById("workout-player");
+      if (!player) return;
+      const timerNode = document.getElementById("player-timer");
+      const statusNode = document.getElementById("player-status");
+      const playBtn = document.getElementById("player-play");
+      const pauseBtn = document.getElementById("player-pause");
+      const resetBtn = document.getElementById("player-reset");
+
+      function parseRest(value) {
+        const text = String(value || "").toLowerCase();
+        const match = text.match(/(\\d+)/);
+        return match ? Number(match[1]) : 60;
+      }
+
+      const defaultSeconds = parseRest(player.dataset.rest);
+      let secondsLeft = defaultSeconds;
+      let intervalId = null;
+
+      function renderTime() {
+        const mins = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+        const secs = String(secondsLeft % 60).padStart(2, "0");
+        timerNode.textContent = mins + ":" + secs;
+      }
+
+      function startTimer() {
+        if (intervalId) return;
+        statusNode.textContent = "Workout in progress. Follow the current block, then use the timer between sets.";
+        intervalId = window.setInterval(function () {
+          if (secondsLeft > 0) {
+            secondsLeft -= 1;
+            renderTime();
+            return;
+          }
+          window.clearInterval(intervalId);
+          intervalId = null;
+          statusNode.textContent = "Rest block finished. Move to the next set or next exercise.";
+        }, 1000);
+      }
+
+      function pauseTimer() {
+        if (intervalId) {
+          window.clearInterval(intervalId);
+          intervalId = null;
+        }
+        statusNode.textContent = "Timer paused. Resume when you are ready.";
+      }
+
+      function resetTimer() {
+        if (intervalId) {
+          window.clearInterval(intervalId);
+          intervalId = null;
+        }
+        secondsLeft = defaultSeconds;
+        renderTime();
+        statusNode.textContent = "Timer reset. Press play to begin the next rest block.";
+      }
+
+      renderTime();
+      playBtn.addEventListener("click", startTimer);
+      pauseBtn.addEventListener("click", pauseTimer);
+      resetBtn.addEventListener("click", resetTimer);
+    })();
+  </script>
 </body>
 </html>
 """
@@ -1156,16 +1547,16 @@ INLINE_ONBOARDING_TEMPLATE = """
     <h1>Popuni svoj profil</h1>
     <p>Unesi ime, godine, visinu, kilazu i cilj. Na osnovu toga Forge ti daje predloge treninga, ishrane i kalendar plana.</p>
     <div class="grid">
-      <article class="tile"><div class="mini">Goal</div><strong>Personalized training</strong><p>DobijaĹˇ viĹˇe planova za performance, muscle ili cut cilj.</p></article>
-      <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se raÄŤunaju po tvom profilu.</p></article>
+      <article class="tile"><div class="mini">Goal</div><strong>Personalized training</strong><p>Dobijas vise planova za performance, muscle ili cut cilj.</p></article>
+      <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se racunaju po tvom profilu.</p></article>
       <article class="tile"><div class="mini">Calendar</div><strong>Planned routine</strong><p>Izabrani plan i preporuke ulaze u tvoj kalendar.</p></article>
     </div>
     <form method="post">
       <label>Ime i prezime<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
       <label>Pol
         <select name="gender">
-          <option value="male" {% if user.gender == 'male' %}selected{% endif %}>MuĹˇko</option>
-          <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Ĺ˝ensko</option>
+          <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Musko</option>
+          <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Zensko</option>
         </select>
       </label>
       <label>Oprema
@@ -1227,7 +1618,7 @@ def get_db() -> sqlite3.Connection:
 
 
 def init_db() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    DB_FILE.parent.mkdir(parents=True, exist_ok=True)
     with get_db() as db:
         db.executescript(
             """
@@ -1372,6 +1763,14 @@ def init_db() -> None:
                 completed INTEGER NOT NULL DEFAULT 1,
                 created_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS coach_memory (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL DEFAULT 1,
+                memory_type TEXT NOT NULL DEFAULT 'preference',
+                memory_text TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            );
             """
         )
         ensure_column(db, "workout_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
@@ -1394,6 +1793,7 @@ def init_db() -> None:
         ensure_column(db, "exercise_logs", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "progress_photos", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "calendar_events", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
+        ensure_column(db, "coach_memory", "user_id", "user_id INTEGER NOT NULL DEFAULT 1")
         ensure_column(db, "body_metrics", "form_score", "form_score INTEGER NOT NULL DEFAULT 7")
         ensure_column(db, "body_metrics", "checkin_note", "checkin_note TEXT NOT NULL DEFAULT ''")
 
@@ -1803,6 +2203,21 @@ def today_plan_checks(user_id: int, check_date: str | None = None) -> set[str]:
     return {str(row["item_key"]) for row in rows}
 
 
+def coach_memory_items(user_id: int, limit: int = 6) -> list[dict[str, Any]]:
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT id, memory_type, memory_text, created_at
+            FROM coach_memory
+            WHERE user_id = ?
+            ORDER BY id DESC
+            LIMIT ?
+            """,
+            (user_id, limit),
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
 def calendar_items(user_id: int, limit: int = 14) -> list[dict[str, Any]]:
     with get_db() as db:
         rows = db.execute(
@@ -2062,6 +2477,22 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
         {"title": "Recovery folder", "anchor": "#assistant", "detail": "Recovery score, daily mission and readiness cues in one place."},
         {"title": "Profile folder", "anchor": "#profile", "detail": "Update gender, weight, height, age and goal anytime from the dashboard."},
     ]
+
+
+def build_section_menu(user: dict[str, Any]) -> list[dict[str, str]]:
+    items = [
+        {"title": "Today", "anchor": "#today-plan"},
+        {"title": "Plans", "anchor": "#plans"},
+        {"title": "Coach", "anchor": "#assistant"},
+        {"title": "Nutrition", "anchor": "#mission"},
+        {"title": "Progress", "anchor": "#progress"},
+        {"title": "Calendar", "anchor": "#calendar"},
+        {"title": "AI", "anchor": "#ai-trainer"},
+        {"title": "Profile", "anchor": "#profile"},
+    ]
+    if str(user.get("role")) == "admin":
+        items.append({"title": "Admin", "anchor": "#admin"})
+    return items
 
 
 def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_days: int) -> list[dict[str, Any]]:
@@ -2508,6 +2939,200 @@ def build_today_blueprint(
     }
 
 
+def build_today_progress(today_blueprint: dict[str, Any], completed_today: set[str] | list[str]) -> dict[str, Any]:
+    completed = set(completed_today)
+    exercise_total = len(today_blueprint.get("exercises") or [])
+    exercise_done = sum(1 for item in (today_blueprint.get("exercises") or []) if item["item_key"] in completed)
+    meal_total = len(today_blueprint.get("nutrition") or [])
+    meal_done = sum(1 for item in (today_blueprint.get("nutrition") or []) if item["item_key"] in completed)
+    total_items = exercise_total + meal_total
+    done_items = exercise_done + meal_done
+    completion_percent = int(round((done_items / total_items) * 100)) if total_items else 0
+    return {
+        "exercise_total": exercise_total,
+        "exercise_done": exercise_done,
+        "meal_total": meal_total,
+        "meal_done": meal_done,
+        "total_items": total_items,
+        "done_items": done_items,
+        "completion_percent": completion_percent,
+    }
+
+
+def build_live_session(
+    today_blueprint: dict[str, Any],
+    completed_today: set[str] | list[str],
+    exercise_logs: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    completed = set(completed_today)
+    exercises = today_blueprint.get("exercises") or []
+    next_exercise = next((item for item in exercises if item["item_key"] not in completed), None)
+    rest_presets = [
+        {"label": "Power", "seconds": 150, "use": "Main compound lifts"},
+        {"label": "Hypertrophy", "seconds": 90, "use": "Accessory work and clean volume"},
+        {"label": "Density", "seconds": 45, "use": "Conditioning or high-output finishers"},
+    ]
+    recent_by_name = {}
+    for logged in exercise_logs or []:
+        recent_by_name.setdefault(str(logged["exercise_name"]), logged)
+    progression = []
+    for item in exercises[:4]:
+        last = recent_by_name.get(item["name"])
+        if not last:
+            recommendation = "Start conservative today and leave 1-2 reps in reserve."
+        else:
+            last_rpe = float(last.get("rpe", 8) or 8)
+            last_weight = float(last.get("weight_kg", 0) or 0)
+            jump = 5 if any(word in item["name"].lower() for word in ["squat", "deadlift", "hip thrust"]) else 2.5
+            if last_rpe <= 7.5 and last_weight > 0:
+                recommendation = f"Increase by {jump} kg from your last logged {last_weight:.1f} kg."
+            elif last_rpe <= 9:
+                recommendation = f"Repeat last working load of {last_weight:.1f} kg and clean up execution."
+            else:
+                recommendation = f"Hold or reduce last load of {last_weight:.1f} kg by 5 percent to keep quality high."
+        progression.append({"name": item["name"], "recommendation": recommendation})
+    queue = []
+    for item in exercises[:4]:
+        set_count = clamp_int(item["sets"], 3, 1, 10)
+        checkpoints = []
+        for idx in range(1, set_count + 1):
+            set_key = f"{item['item_key']}-set-{idx}"
+            checkpoints.append(
+                {
+                    "label": f"Set {idx}",
+                    "item_key": set_key,
+                    "done": set_key in completed,
+                }
+            )
+        queue.append(
+            {
+                "name": item["name"],
+                "detail": f"{item['sets']} sets / {item['reps']} reps / rest {item['rest']}",
+                "done": item["item_key"] in completed,
+                "checkpoints": checkpoints,
+                "weight_suggestion": next((entry["recommendation"] for entry in progression if entry["name"] == item["name"]), "Use a conservative starting load."),
+            }
+        )
+    if today_blueprint.get("day_type") != "training":
+        return {
+            "mode": "recovery",
+            "title": "Recovery mode",
+            "coach_prompt": "Today is for lower stress output, mobility and recovery quality.",
+            "next_move": "20-30 min easy walk, light mobility and hydration focus.",
+            "rest_timer": "No timer needed",
+            "queue": [],
+            "technique": ["Easy breathing through the nose.", "Walk and move without fatigue.", "Finish with hydration and sleep prep."],
+            "rest_presets": rest_presets,
+            "completion_title": "Recovery complete",
+            "completion_note": "Log your check-in and keep the day low stress.",
+            "progression": [],
+            "technique_source_label": "Recovery flow",
+            "technique_source_url": "",
+        }
+    next_name = next_exercise["name"] if next_exercise else "Cooldown"
+    guide = EXERCISE_TECHNIQUE_GUIDES.get(
+        next_name,
+        {
+            "source_label": "Forge coaching standard",
+            "source_url": "",
+            "cues": ["Stay tight through setup.", "Control tempo and own each rep.", "Keep rest disciplined."],
+        },
+    )
+    return {
+        "mode": "training",
+        "title": "Live workout mode",
+        "coach_prompt": today_blueprint.get("warmup", ""),
+        "next_move": f"Next up: {next_exercise['name']}" if next_exercise else "Workout complete. Move to cooldown and nutrition.",
+        "rest_timer": next_exercise["rest"] if next_exercise else "Cooldown",
+        "queue": queue,
+        "technique": guide["cues"],
+        "technique_source_label": guide["source_label"],
+        "technique_source_url": guide["source_url"],
+        "rest_presets": rest_presets,
+        "completion_title": "Session finish",
+        "completion_note": "After the final set, hit the post-workout meal, log the session and send a quick check-in.",
+        "progression": progression,
+    }
+
+
+def build_weekly_review(user: dict[str, Any], workouts: list[dict[str, Any]], metrics: list[dict[str, Any]], checkins: list[dict[str, Any]]) -> dict[str, Any]:
+    sessions = len(workouts[:7])
+    avg_energy = round(sum(int(item["energy_score"]) for item in checkins[:7]) / len(checkins[:7]), 1) if checkins[:7] else 7.0
+    latest_metric = metrics[0] if metrics else None
+    weight_text = f"{latest_metric['body_weight']} kg" if latest_metric else "No body check-in yet"
+    score = min(100, max(52, sessions * 14 + int(avg_energy * 4)))
+    return {
+        "headline": f"{user['full_name']} weekly coach review",
+        "score": score,
+        "points": [
+            f"Completed {sessions} recent sessions in the current window.",
+            f"Average readiness is {avg_energy}/10 based on check-ins.",
+            f"Latest scale trend is {weight_text}.",
+        ],
+        "adjustment": "Keep the current plan and push quality." if score >= 78 else "Reduce junk volume, tighten food quality and focus on recovery before adding more work.",
+        "next_week_adjustment": (
+            "Next week add load to the first compound movement and keep the rest of the session structure stable."
+            if score >= 82
+            else "Next week hold top-set load steady, lower one accessory block and improve adherence before progressing."
+            if score >= 68
+            else "Next week reduce overall fatigue, shorten sessions and rebuild consistency before adding intensity."
+        ),
+    }
+
+
+def build_notifications(user: dict[str, Any], today_blueprint: dict[str, Any], today_progress: dict[str, Any], checkins: list[dict[str, Any]]) -> list[dict[str, str]]:
+    notices = []
+    notices.append(
+        {
+            "title": "Today focus",
+            "detail": today_blueprint["focus_line"],
+            "level": "primary",
+        }
+    )
+    if today_blueprint["day_type"] == "training":
+        notices.append(
+            {
+                "title": "Training reminder",
+                "detail": f"Block out {today_blueprint['duration']} and start with the first movement on time.",
+                "level": "action",
+            }
+        )
+    else:
+        notices.append(
+            {
+                "title": "Recovery reminder",
+                "detail": "Keep the day light, hit steps and protect sleep tonight.",
+                "level": "recovery",
+            }
+        )
+    if today_progress["meal_done"] < today_progress["meal_total"]:
+        notices.append(
+            {
+                "title": "Meal structure",
+                "detail": f"You still have {today_progress['meal_total'] - today_progress['meal_done']} nutrition blocks left today.",
+                "level": "nutrition",
+            }
+        )
+    latest_checkin = checkins[0] if checkins else None
+    if latest_checkin and int(latest_checkin["energy_score"]) <= 5:
+        notices.append(
+            {
+                "title": "Energy warning",
+                "detail": "Energy is low. Keep 1-2 reps in reserve and shorten the last block if needed.",
+                "level": "warning",
+            }
+        )
+    else:
+        notices.append(
+            {
+                "title": "Check-in reminder",
+                "detail": "Log mood, soreness and motivation after the session so the coach keeps adapting.",
+                "level": "coach",
+            }
+        )
+    return notices[:4]
+
+
 def build_personal_trainers(user: dict[str, Any], assistant: dict[str, Any]) -> list[dict[str, Any]]:
     goal = str(user["goal"]).lower()
     focus_map = {
@@ -2727,38 +3352,42 @@ def build_ai_trainer_reply(
     today_blueprint: dict[str, Any],
     checkins: list[dict[str, Any]],
     ai_concierge: dict[str, Any],
+    coach_memory: list[dict[str, Any]] | None = None,
 ) -> str:
     prompt = message.strip().lower()
     goal = str(user["goal"]).lower()
     latest_checkin = checkins[0] if checkins else None
     coach_name = ai_concierge["name"]
+    memory_suffix = ""
+    if coach_memory:
+        memory_suffix = " Zapamtio sam i ovo o tebi: " + "; ".join(item["memory_text"] for item in coach_memory[:3]) + "."
     if not ai_concierge.get("enabled"):
         return f"{coach_name}: otkljucaj Elite paket nakon triala da dobijes puni individualni AI coaching chat."
     if any(word in prompt for word in ["today", "danas", "workout", "trening"]):
         if today_blueprint["day_type"] != "training":
-            return f"{coach_name}: danas ti je recovery dan. Odradi laganu setnju, mobilnost i drzi obroke ciste i proteinske."
+            return f"{coach_name}: danas ti je recovery dan. Odradi laganu setnju, mobilnost i drzi obroke ciste i proteinske.{memory_suffix}"
         first = today_blueprint["exercises"][0]
         return (
             f"{coach_name}: danas radi {today_blueprint['title']}. Kreni sa {first['name']} na {first['sets']} serija x {first['reps']} "
-            f"sa odmorom {first['rest']}, pa nastavi kroz ostatak plana bez Ĺľurbe."
+            f"sa odmorom {first['rest']}, pa nastavi kroz ostatak plana bez zurbe.{memory_suffix}"
         )
     if any(word in prompt for word in ["food", "meal", "eat", "jesti", "ishrana"]):
         first_meal = today_blueprint["nutrition"][0]
         return (
-            f"{coach_name}: za cilj {goal} danas drĹľi protein na {assistant['targets']['protein']}g i fokusiraj se na {first_meal['title'].lower()} u {first_meal['time']}. "
-            f"Meal: {first_meal['meal']} Poslije treninga idi na pun obrok sa proteinom i ugljenim hidratima."
+            f"{coach_name}: za cilj {goal} danas drzi protein na {assistant['targets']['protein']}g i fokusiraj se na {first_meal['title'].lower()} u {first_meal['time']}. "
+            f"Meal: {first_meal['meal']} Poslije treninga idi na pun obrok sa proteinom i ugljenim hidratima.{memory_suffix}"
         )
     if any(word in prompt for word in ["tired", "umor", "sore", "bol"]):
         status = latest_checkin["mood"] if latest_checkin else "steady"
         return (
-            f"{coach_name}: ako si danas pod umorom ({status}), skrati zadnju vjeĹľbu, ostavi 1-2 reps in reserve i fokus prebaci na tehniku, hodanje i san."
+            f"{coach_name}: ako si danas pod umorom ({status}), skrati zadnju vjezbu, ostavi 1-2 reps in reserve i fokus prebaci na tehniku, hodanje i san.{memory_suffix}"
         )
     if any(word in prompt for word in ["mass", "muscle", "misi", "bodybuilding"]):
-        return f"{coach_name}: za miĹˇiÄ‡e i bodybuilding sad ti je kljuÄŤ kvalitetan volumen, stabilan kalorijski suficit i uredan logbook na osnovnim vjeĹľbama."
+        return f"{coach_name}: za misice i bodybuilding sad ti je kljuc kvalitetan volumen, stabilan kalorijski suficit i uredan logbook na osnovnim vjezbama.{memory_suffix}"
     if any(word in prompt for word in ["cut", "mrsa", "fat loss"]):
-        return f"{coach_name}: za mrĹˇanje zadrĹľi snagu kao prioritet, deficit neka bude ÄŤist, a cardio neka bude dodatak, ne zamjena za trening."
+        return f"{coach_name}: za mrsanje zadrzi snagu kao prioritet, deficit neka bude cist, a cardio neka bude dodatak, ne zamjena za trening.{memory_suffix}"
     return (
-        f"{coach_name}: na osnovu cilja {goal}, danaĹˇnjeg plana i check-in podataka vodiÄ‡u te kroz trening, hranu i recovery svaki dan."
+        f"{coach_name}: na osnovu cilja {goal}, danasnjeg plana i check-in podataka vodicu te kroz trening, hranu i recovery svaki dan.{memory_suffix}"
     )
 
 
@@ -2856,6 +3485,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     photos = recent_photos(int(user["id"]))
     checkins = recent_checkins(int(user["id"]))
     coach_messages = recent_coach_messages(int(user["id"]))
+    coach_memory = coach_memory_items(int(user["id"]))
     calendar = calendar_items(int(user["id"]))
     access = subscription_access_state(user)
     ai_concierge = build_ai_concierge(user, access)
@@ -2886,8 +3516,13 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     achievements = build_achievements(stats, workouts, metrics)
     adaptive_filters = build_adaptive_filters(user)
     folder_cards = build_folder_cards(user, assistant)
+    section_menu = build_section_menu(user)
     weekly_planner = build_weekly_planner(user, calendar, assistant)
     today_blueprint = build_today_blueprint(user, assistant, workouts, calendar)
+    today_progress = build_today_progress(today_blueprint, completed_today)
+    live_session = build_live_session(today_blueprint, completed_today, exercises)
+    notifications = build_notifications(user, today_blueprint, today_progress, checkins)
+    weekly_review = build_weekly_review(user, workouts, metrics, checkins)
     personal_trainers = build_personal_trainers(user, assistant)
     personal_calendar = build_personal_calendar(user, assistant, weekly_planner)
     shopping_list = build_shopping_list(str(user["goal"]).lower())
@@ -2919,8 +3554,12 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "achievements": achievements,
         "adaptive_filters": adaptive_filters,
         "folder_cards": folder_cards,
+        "section_menu": section_menu,
         "weekly_planner": weekly_planner,
         "today_blueprint": today_blueprint,
+        "today_progress": today_progress,
+        "live_session": live_session,
+        "weekly_review": weekly_review,
         "personal_trainers": personal_trainers,
         "personal_calendar": personal_calendar,
         "pr_tracker": pr_tracker,
@@ -2931,6 +3570,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "photos": photos,
         "checkins": checkins,
         "coach_messages": coach_messages,
+        "coach_memory": coach_memory,
         "completed_today": list(completed_today),
         "shopping_list": shopping_list,
         "progress_trends": progress_trends,
@@ -2939,6 +3579,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "market_flags": market_flags,
         "access": access,
         "ai_concierge": ai_concierge,
+        "notifications": notifications,
         "business": business,
         "trainers": trainer_profiles(),
         "exercise_library": exercise_library(),
@@ -3162,9 +3803,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V15",
-        "login_title": "Secure athlete login V15",
-        "dashboard_title": "Adaptive athlete dashboard V15",
+        "build": "APP.PY ONLY BUILD V22",
+        "login_title": "Secure athlete login V22",
+        "dashboard_title": "Adaptive athlete dashboard V22",
     }
 
 
@@ -3339,9 +3980,10 @@ def assistant_chat():
     meals = recent_meals(int(user["id"]))
     calendar = calendar_items(int(user["id"]))
     checkins = recent_checkins(int(user["id"]))
+    memory = coach_memory_items(int(user["id"]))
     assistant = build_assistant_plan(user, workouts, metrics, meals, calendar, training_days=goal_training_days(user))
     today_blueprint = build_today_blueprint(user, assistant, workouts, calendar)
-    reply = build_ai_trainer_reply(user, message, assistant, today_blueprint, checkins, ai_concierge)
+    reply = build_ai_trainer_reply(user, message, assistant, today_blueprint, checkins, ai_concierge, memory)
 
     now = datetime.utcnow().isoformat(timespec="seconds")
     with get_db() as db:
@@ -3364,7 +4006,7 @@ def mark_today_check():
     user = current_user()
     item_type = str(request.form.get("item_type") or "").strip().lower()[:20]
     item_key = str(request.form.get("item_key") or "").strip()[:120]
-    if item_type not in {"exercise", "meal"} or not item_key:
+    if item_type not in {"exercise", "meal", "set"} or not item_key:
         flash("Nije prosao today check.")
         return redirect(url_for("dashboard") + "#today-plan")
 
@@ -3387,6 +4029,23 @@ def mark_today_check():
 
     flash("Danasnji zadatak je oznacen kao zavrsen.")
     return redirect(url_for("dashboard") + "#today-plan")
+
+
+@app.route("/coach-memory", methods=["POST"])
+@login_required
+def save_coach_memory():
+    user = current_user()
+    memory_text = str(request.form.get("memory_text") or "").strip()[:300]
+    if not memory_text:
+        flash("Unesi biljesku za AI trenera.")
+        return redirect(url_for("dashboard") + "#ai-trainer")
+    with get_db() as db:
+        db.execute(
+            "INSERT INTO coach_memory (user_id, memory_type, memory_text, created_at) VALUES (?, ?, ?, ?)",
+            (int(user["id"]), "preference", memory_text, datetime.utcnow().isoformat(timespec="seconds")),
+        )
+    flash("Coach memory je sacuvan.")
+    return redirect(url_for("dashboard") + "#ai-trainer")
 
 
 @app.route("/checkin/daily", methods=["POST"])
