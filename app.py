@@ -302,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V30</div>
+    <div class="pill">APP.PY ONLY BUILD V34</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V30</h1>
+    <h1>Secure athlete login V34</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -634,7 +634,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V30</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V34</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -669,7 +669,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V30</div>
+<div class="pill">Market ready + dashboard V34</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -779,6 +779,29 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
+      <section class="summary-strip" style="margin-top:18px;">
+        <article class="summary-card">
+          <div class="mini">{{ payload.recomposition_home.headline }}</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.recomposition_home.cards[0].value if payload.recomposition_home.cards else "Ready" }}</strong>
+          <p style="margin-top:12px;">{{ payload.recomposition_home.checkpoint }}</p>
+          <ul class="list" style="margin-top:10px;">
+            {% for item in payload.recomposition_home.cards %}
+            <li><strong>{{ item.label }}</strong> - {{ item.value }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+        <article class="summary-card">
+          <div class="mini">{{ payload.weekly_adaptive_block.headline }}</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.weekly_adaptive_block.mode }}</strong>
+          <p style="margin-top:12px;">{{ payload.weekly_adaptive_block.week_label }} - {{ payload.weekly_adaptive_block.focus }}</p>
+          <ul class="list" style="margin-top:10px;">
+            {% for item in payload.weekly_adaptive_block.changes %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+          <div class="next">{{ payload.weekly_adaptive_block.coach_call }}</div>
+        </article>
+      </section>
       <section class="coach-day-grid">
         {% for item in payload.coach_day_flow %}
         <article class="coach-step {% if item.done %}done{% endif %}">
@@ -819,9 +842,10 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       <div class="folder-grid">
         {% for item in payload.folder_cards %}
         <a href="{{ item.anchor }}" class="option" style="text-decoration:none;">
-          <div class="mini">Folder</div>
+          <div class="mini">{{ item.kicker }}</div>
           <strong>{{ item.title }}</strong>
           <p>{{ item.detail }}</p>
+          <div class="notice" style="margin-top:10px;">{{ item.metric }}</div>
         </a>
         {% endfor %}
       </div>
@@ -921,17 +945,31 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
               </div>
               <div class="tag">{{ option.days }} days</div>
             </div>
+            <div class="notice" style="margin-top:12px;">Focus: {{ option.focus }}</div>
             <p>{{ option.summary }}</p>
             <ul class="list">
               {% for bullet in option.blocks %}
               <li>{{ bullet }}</li>
               {% endfor %}
             </ul>
+            <div class="stack" style="margin-top:14px;">
+              {% for session in option.sessions %}
+              <article class="log">
+                <div class="mini">{{ session.day }} - {{ session.prescription }}</div>
+                <strong style="display:block;margin-top:6px;">{{ session.title }}</strong>
+                <ul class="list" style="margin-top:10px;">
+                  {% for exercise in session.exercises %}
+                  <li>{{ exercise }}</li>
+                  {% endfor %}
+                </ul>
+              </article>
+              {% endfor %}
+            </div>
             <div class="notice">Nutrition: {{ option.nutrition }}</div>
             <form method="post" action="/plan/select" style="margin-top:14px;">
               <input type="hidden" name="title" value="{{ option.title }}">
               <input type="hidden" name="coach_key" value="{{ option.coach_key }}">
-              <input type="hidden" name="details" value="{{ option.summary }}">
+              <input type="hidden" name="details" value="{{ option.focus }} - {{ option.summary }}">
               <button type="submit">Izaberi ovaj plan</button>
             </form>
           </article>
@@ -1026,6 +1064,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
                 <div class="tag">Live player</div>
                 <div class="tag">Swipe steps</div>
                 <div class="tag">One tap set finish</div>
+                <div class="tag">{{ payload.voice_coach.mode_label }}</div>
               </div>
               <div class="player-live-hint">Open fullscreen mode and run the whole workout from the center player without scrolling.</div>
             </div>
@@ -1153,11 +1192,19 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
               <p id="overlay-technique-tail">{{ payload.live_session.technique[1] if payload.live_session.technique|length > 1 else payload.live_session.coach_prompt }}</p>
             </article>
           </div>
+          <div class="player-strip">
+            <div class="tag" id="overlay-voice-state">{{ payload.voice_coach.mode_label }}</div>
+            <div class="tag">{{ payload.voice_coach.session_type|title }} cues</div>
+          </div>
           <div class="player-overlay-checkpoints" id="overlay-checkpoints"></div>
           <div class="player-overlay-footer">
             <div class="player-overlay-actions">
               <button type="button" class="player-btn primary" id="overlay-complete-step">Complete current set</button>
               <button type="button" class="player-btn ghost" id="overlay-open-source">Technique source</button>
+            </div>
+            <div class="player-overlay-actions">
+              <button type="button" class="player-btn primary" id="overlay-voice-cue">Voice cue</button>
+              <button type="button" class="player-btn ghost" id="overlay-voice-toggle">Auto voice on</button>
             </div>
             <div class="player-overlay-actions">
               <button type="button" class="player-btn primary" id="overlay-play">Play</button>
@@ -1191,6 +1238,15 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             <div class="notice">{{ payload.weekly_review.adjustment }}</div>
             <div class="next">{{ payload.weekly_review.next_week_adjustment }}</div>
           </article>
+        </div>
+        <div class="trend-grid" style="margin-top:16px;">
+          {% for item in payload.session_analytics.tiles %}
+          <article class="kpi">
+            <span class="mini">{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
         </div>
         <div class="today-grid">
           <article class="option">
@@ -1248,6 +1304,20 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             </div>
           </article>
         </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          {% for item in payload.exercise_mastery %}
+          <article class="log">
+            <div class="mini">Exercise mastery</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ item.name }}</strong>
+            <ul class="list" style="margin-top:12px;">
+              <li><strong>Setup:</strong> {{ item.setup }}</li>
+              <li><strong>Execution:</strong> {{ item.execution }}</li>
+              <li><strong>Avoid:</strong> {{ item.mistake }}</li>
+              <li><strong>Swap:</strong> {{ item.swap }}</li>
+            </ul>
+          </article>
+          {% endfor %}
+        </div>
       </section>
 
       <details class="panel panel-collapsible pro-heavy" id="assistant" open>
@@ -1273,6 +1343,37 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <article class="kpi"><span class="mini">Protein</span><strong>{{ payload.assistant.targets.protein }}g</strong></article>
           <article class="kpi"><span class="mini">Carbs</span><strong>{{ payload.assistant.targets.carbs }}g</strong></article>
           <article class="kpi"><span class="mini">Fats</span><strong>{{ payload.assistant.targets.fats }}g</strong></article>
+        </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          <article class="log">
+            <div class="mini">{{ payload.periodization_engine.headline }}</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.periodization_engine.block_name }}</strong>
+            <p style="margin-top:10px;">{{ payload.periodization_engine.week_label }} - {{ payload.periodization_engine.phase_signal }}</p>
+            <div class="notice">{{ payload.periodization_engine.today_fit }}</div>
+            <p style="margin-top:10px;">{{ payload.periodization_engine.week_focus }}</p>
+            <div class="next">{{ payload.periodization_engine.coach_call }} Up next: {{ payload.periodization_engine.up_next }}</div>
+          </article>
+          <article class="log">
+            <div class="mini">{{ payload.adaptive_training_engine.headline }}</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.adaptive_training_engine.readiness }}</strong>
+            <p style="margin-top:10px;">{{ payload.adaptive_training_engine.today_rule }}</p>
+            <div class="notice">{{ payload.adaptive_training_engine.volume_anchor }}</div>
+            <ul class="list" style="margin-top:12px;">
+              {% for item in payload.adaptive_training_engine.session_order %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+            <div class="next">{{ payload.adaptive_training_engine.next_week }}</div>
+          </article>
+          <article class="log">
+            <div class="mini">Smart substitutions</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.adaptive_training_engine.recent_focus }}</strong>
+            <ul class="list" style="margin-top:12px;">
+              {% for item in payload.adaptive_training_engine.substitutions %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </article>
         </div>
         <div class="panel-grid" style="margin-top:16px;">
           <div class="log">
@@ -1308,6 +1409,35 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             <li>{{ item }}</li>
             {% endfor %}
           </ul>
+        </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          <article class="log">
+            <div class="mini">{{ payload.nutrition_intelligence.headline }}</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.nutrition_intelligence.next_meal_title }}</strong>
+            <p style="margin-top:10px;">{{ payload.nutrition_intelligence.next_meal_detail }}</p>
+            <div class="notice">{{ payload.nutrition_intelligence.next_meal_purpose }}</div>
+            <ul class="list" style="margin-top:12px;">
+              <li>Calories left: {{ payload.nutrition_intelligence.calories_left }}</li>
+              <li>Protein left: {{ payload.nutrition_intelligence.protein_left }}g</li>
+              <li>Carbs left: {{ payload.nutrition_intelligence.carbs_left }}g</li>
+              <li>Fats left: {{ payload.nutrition_intelligence.fats_left }}g</li>
+            </ul>
+          </article>
+          <article class="log">
+            <div class="mini">Smart swaps and prep</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">Keep food simple</strong>
+            <ul class="list" style="margin-top:12px;">
+              {% for item in payload.nutrition_intelligence.smart_swaps %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+            <div class="notice" style="margin-top:12px;">Prep</div>
+            <ul class="list" style="margin-top:10px;">
+              {% for item in payload.nutrition_intelligence.prep_steps %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </article>
         </div>
         <div class="meal-grid" style="margin-top:16px;">
           {% for meal in payload.meal_suggestions %}
@@ -1357,6 +1487,37 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             <p>{{ item.detail }}</p>
           </article>
           {% endfor %}
+        </div>
+        <div class="trend-grid" style="margin-top:16px;">
+          {% for item in payload.recomposition_dashboard.tiles %}
+          <article class="kpi">
+            <span class="mini">{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+            <p>{{ item.detail }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="panel-grid" style="margin-top:16px;">
+          <article class="log">
+            <div class="mini">{{ payload.progress_system.headline }}</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.progress_system.recomposition_score }}/100</strong>
+            <p style="margin-top:10px;">Adherence score: {{ payload.progress_system.adherence_score }}/100</p>
+            <ul class="list" style="margin-top:12px;">
+              {% for item in payload.progress_system.wins %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          <article class="log">
+            <div class="mini">Watchouts</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">Next checkpoint</strong>
+            <ul class="list" style="margin-top:12px;">
+              {% for item in payload.progress_system.watchouts %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+            <div class="next">{{ payload.progress_system.next_checkpoint }}</div>
+          </article>
         </div>
         </div>
       </details>
@@ -1704,6 +1865,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     </nav>
   </div>
   <script id="live-session-json" type="application/json">{{ payload.live_session|tojson }}</script>
+  <script id="voice-coach-json" type="application/json">{{ payload.voice_coach|tojson }}</script>
   <script>
     (function () {
       const player = document.getElementById("workout-player");
@@ -1730,6 +1892,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       const overlayProgressBar = document.getElementById("overlay-progress-bar");
       const overlayCompleteBtn = document.getElementById("overlay-complete-step");
       const overlaySourceBtn = document.getElementById("overlay-open-source");
+      const overlayVoiceBtn = document.getElementById("overlay-voice-cue");
+      const overlayVoiceToggleBtn = document.getElementById("overlay-voice-toggle");
+      const overlayVoiceState = document.getElementById("overlay-voice-state");
       const overlayPlayBtn = document.getElementById("overlay-play");
       const overlayPauseBtn = document.getElementById("overlay-pause");
       const overlayResetBtn = document.getElementById("overlay-reset");
@@ -1737,7 +1902,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       const overlayPrevBtn = document.getElementById("overlay-prev");
       const overlayNextBtn = document.getElementById("overlay-next");
       const sessionScript = document.getElementById("live-session-json");
+      const voiceScript = document.getElementById("voice-coach-json");
       const sessionData = sessionScript ? JSON.parse(sessionScript.textContent || "{}") : {};
+      const voiceCoach = voiceScript ? JSON.parse(voiceScript.textContent || "{}") : {};
 
       function parseRest(value) {
         const text = String(value || "").toLowerCase();
@@ -1754,6 +1921,49 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       if (activeIndex < 0) activeIndex = 0;
       let touchStartX = 0;
       let touchEndX = 0;
+      let autoVoiceEnabled = !!voiceCoach.auto_enabled;
+      let lastSpokenKey = "";
+
+      function updateVoiceStateLabel(message) {
+        if (overlayVoiceState) overlayVoiceState.textContent = message;
+        if (overlayVoiceToggleBtn) overlayVoiceToggleBtn.textContent = autoVoiceEnabled ? "Auto voice on" : "Auto voice off";
+      }
+
+      function buildVoiceCue(item) {
+        if (!item) {
+          return "Workout complete. Great job. Hydrate, cool down and log your recovery.";
+        }
+        const technique = Array.isArray(sessionData.technique) ? sessionData.technique : [];
+        const checkpointSummary = Array.isArray(item.checkpoints) && item.checkpoints.length
+          ? item.checkpoints.filter(function (checkpoint) { return !checkpoint.done; }).map(function (checkpoint) { return checkpoint.label; }).join(", ")
+          : "Complete the movement cleanly.";
+        return [
+          voiceCoach.opening || "Coach cue ready.",
+          "Current move: " + item.name + ".",
+          item.detail || "",
+          "Weight suggestion: " + (item.weight_suggestion || "Use a clean working load.") + ".",
+          technique[0] || "Stay braced and move with control.",
+          "Next checkpoints: " + checkpointSummary + ".",
+        ].filter(Boolean).join(" ");
+      }
+
+      function speakVoiceCue(force) {
+        if (!("speechSynthesis" in window)) {
+          updateVoiceStateLabel("Voice not supported");
+          return;
+        }
+        const item = queue[activeIndex] || null;
+        const voiceKey = item && item.item_key ? item.item_key : "session-finish";
+        if (!force && (!autoVoiceEnabled || voiceKey === lastSpokenKey)) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(buildVoiceCue(item));
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.lang = "en-US";
+        window.speechSynthesis.speak(utterance);
+        lastSpokenKey = voiceKey;
+        updateVoiceStateLabel(autoVoiceEnabled ? "Voice cue live" : "Voice cue played");
+      }
 
       function renderTime() {
         const mins = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
@@ -1861,6 +2071,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         overlayTechniqueTail.textContent = (sessionData.technique || [])[1] || statusNode.textContent;
         overlayProgressBar.style.width = String(Math.round((completedCount / total) * 100)) + "%";
         renderCheckpoints(item);
+        if (overlay.classList.contains("open")) {
+          speakVoiceCue(false);
+        }
       }
 
       function updateQueueRowUI(itemKey) {
@@ -1972,6 +2185,15 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         }
       }
 
+      function toggleAutoVoice() {
+        autoVoiceEnabled = !autoVoiceEnabled;
+        lastSpokenKey = "";
+        updateVoiceStateLabel(autoVoiceEnabled ? "Voice cue live" : "Voice manual");
+        if (autoVoiceEnabled && overlay.classList.contains("open")) {
+          speakVoiceCue(true);
+        }
+      }
+
       function handleTouchStart(event) {
         touchStartX = event.changedTouches[0].screenX;
       }
@@ -1993,6 +2215,8 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       if (overlayResetBtn) overlayResetBtn.addEventListener("click", resetTimer);
       if (overlayPresetBtn) overlayPresetBtn.addEventListener("click", cyclePreset);
       if (overlaySourceBtn) overlaySourceBtn.addEventListener("click", openTechniqueSource);
+      if (overlayVoiceBtn) overlayVoiceBtn.addEventListener("click", function () { speakVoiceCue(true); });
+      if (overlayVoiceToggleBtn) overlayVoiceToggleBtn.addEventListener("click", toggleAutoVoice);
       if (overlayCompleteBtn) overlayCompleteBtn.addEventListener("click", completeCurrentStep);
       if (overlayPrevBtn) overlayPrevBtn.addEventListener("click", prevItem);
       if (overlayNextBtn) overlayNextBtn.addEventListener("click", nextItem);
@@ -2003,6 +2227,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           statusNode.textContent = "Workout started. Follow the next movement and use the player between sets.";
           openOverlay();
           renderOverlay();
+          speakVoiceCue(true);
           startTimer();
         });
       }
@@ -2026,6 +2251,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           openOverlay();
         });
       });
+      updateVoiceStateLabel(autoVoiceEnabled ? "Voice cue ready" : "Voice manual");
       renderOverlay();
     })();
   </script>
@@ -3378,11 +3604,50 @@ def build_adaptive_filters(user: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[dict[str, Any]]:
+    first_plan = assistant["suggestions"][0] if assistant.get("suggestions") else None
     return [
-        {"title": "Training folder", "anchor": "#plans", "detail": f"Adaptive plans for {user['goal']} with {len(assistant['suggestions'])} plan options."},
-        {"title": "Nutrition folder", "anchor": "#mission", "detail": f"Macro targets set to {assistant['targets']['calories']} kcal and {assistant['targets']['protein']}g protein."},
-        {"title": "Recovery folder", "anchor": "#assistant", "detail": "Recovery score, daily mission and readiness cues in one place."},
-        {"title": "Profile folder", "anchor": "#profile", "detail": "Update gender, weight, height, age and goal anytime from the dashboard."},
+        {
+            "title": "Today workout",
+            "anchor": "#today-plan",
+            "detail": "Open today's exact order of exercises, sets, reps, rest and live player.",
+            "kicker": "Start",
+            "metric": "Live session",
+        },
+        {
+            "title": "Coach packages",
+            "anchor": "#plans",
+            "detail": f"{len(assistant['suggestions'])} ready-made training packages. Lead focus: {first_plan['focus'] if first_plan else 'Coach flow'}.",
+            "kicker": "Plans",
+            "metric": "Ready to run",
+        },
+        {
+            "title": "Nutrition widget",
+            "anchor": "#mission",
+            "detail": f"Meals, macro autopilot and food timing around {assistant['targets']['calories']} kcal.",
+            "kicker": "Fuel",
+            "metric": f"{assistant['targets']['protein']}g protein",
+        },
+        {
+            "title": "Progress widget",
+            "anchor": "#progress",
+            "detail": "Recomposition score, PRs and body-change signals in one clean place.",
+            "kicker": "Track",
+            "metric": "Body + strength",
+        },
+        {
+            "title": "Coach widget",
+            "anchor": "#assistant",
+            "detail": "Adaptive coaching rules, weekly adjustment and recovery guidance.",
+            "kicker": "Coach",
+            "metric": "Adaptive engine",
+        },
+        {
+            "title": "Profile widget",
+            "anchor": "#profile",
+            "detail": "Update your body data, goal and training context any time.",
+            "kicker": "Setup",
+            "metric": "Personalized",
+        },
     ]
 
 
@@ -3411,96 +3676,181 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
         frame = "power"
     elif weight < 70:
         frame = "lightweight"
-    options = {
-        "performance": [
+    if goal == "performance":
+        options = [
             {
-                "title": "Strength performance split",
+                "title": "Full body performance",
                 "coach_key": "strength",
                 "coach_role": COACHES["strength"]["role"],
                 "days": training_days,
-                "summary": f"Heavy compounds, speed work and structured accessory balance for {frame} {gender} athletes chasing output.",
-                "blocks": ["Day 1 upper strength", "Day 2 lower power", "Day 3 hypertrophy support", "Day 4 engine and mobility"],
-                "nutrition": "Higher carbs around lifts, stable protein and hydration.",
+                "focus": "Whole body output",
+                "summary": f"Best for {frame} {gender} athletes who want stronger full-body output with simple weekly structure.",
+                "blocks": ["Day 1 squat + press", "Day 2 hinge + pull", "Day 3 athletic full body", "Day 4 engine + carries"],
+                "nutrition": "Higher carbs around the two heaviest days and simple repeatable recovery meals.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Full body strength", "prescription": "4 lifts / 60-75 min", "exercises": ["Back squat 5x5", "Bench press 4x6", "Chest supported row 4x8", "Farmer carry 4 x 20 m"]},
+                    {"day": "Day 2", "title": "Posterior chain + pull", "prescription": "4 lifts / 55-70 min", "exercises": ["Romanian deadlift 4x6", "Weighted pull-up 4x6-8", "DB incline press 3x10", "Split squat 3x10 / leg"]},
+                    {"day": "Day 3", "title": "Athletic total body", "prescription": "5 lifts / 55-65 min", "exercises": ["Front squat 4x5", "Push press 4x5", "Cable row 4x10", "Walking lunge 3x12 / leg", "Sled push 6 x 20 m"]},
+                ],
             },
             {
-                "title": "Athletic hybrid build",
+                "title": "Upper body specialization",
+                "coach_key": "strength",
+                "coach_role": COACHES["strength"]["role"],
+                "days": training_days,
+                "focus": "Upper body focus",
+                "summary": f"Push pressing strength, shoulders and back while keeping legs on maintenance volume.",
+                "blocks": ["Upper heavy", "Lower maintenance", "Upper volume", "Arms + delts"],
+                "nutrition": "Keep carbs around upper-body sessions and do not under-eat on the heavy press day.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Upper heavy", "prescription": "5 lifts / 65 min", "exercises": ["Bench press 5x5", "Weighted pull-up 4x6", "Seated DB press 4x8", "Barbell row 4x8", "Rope pressdown 3x12"]},
+                    {"day": "Day 2", "title": "Upper volume", "prescription": "5 lifts / 60 min", "exercises": ["Incline DB press 4x10", "Lat pulldown 4x10", "Cable lateral raise 4x15", "Chest supported row 3x12", "EZ curl 3x12"]},
+                    {"day": "Day 3", "title": "Arms and delts", "prescription": "5 lifts / 50 min", "exercises": ["Machine shoulder press 4x10", "Cable curl 4x12", "Overhead triceps extension 4x12", "Rear delt fly 3x15", "Push-up burnout 2 rounds"]},
+                ],
+            },
+            {
+                "title": "Conditioning performance",
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": f"Blend of force, conditioning and recovery for {gender} athletes who want recomposition with performance.",
-                "blocks": ["2 lifting days", "1 athletic conditioning day", "1 movement and trunk day"],
-                "nutrition": "Carb cycling around hardest sessions and lighter recovery day meals.",
+                "focus": "Conditioning focus",
+                "summary": f"Built for users who want speed, work capacity and conditioning without losing their main strength anchors.",
+                "blocks": ["Strength anchor", "Intervals", "Density full body", "Zone 2 + carries"],
+                "nutrition": "Keep pre-workout carbs sharp and use lower-fat meals before conditioning days.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Strength anchor", "prescription": "4 lifts / 50-60 min", "exercises": ["Back squat 4x4", "Bench press 4x5", "Row 4x8", "Bike intervals 8 x 30/60"]},
+                    {"day": "Day 2", "title": "Engine day", "prescription": "4 blocks / 40-50 min", "exercises": ["Rower intervals 10 x 45/45", "Walking lunge 3x12", "Burpee broad jump 3x8", "Farmer carry 5 x 20 m"]},
+                    {"day": "Day 3", "title": "Density full body", "prescription": "Circuit / 45-55 min", "exercises": ["Goblet squat 4x12", "Push-up 4x15", "TRX or cable row 4x12", "Sled push 6 x 20 m"]},
+                ],
             },
+        ]
+    elif goal == "muscle":
+        options = [
             {
-                "title": "Upper lower progression",
-                "coach_key": "strength",
-                "coach_role": COACHES["strength"]["role"],
-                "days": training_days,
-                "summary": f"Simple progression model tuned for {frame} body types and clear logbook progression.",
-                "blocks": ["Upper A", "Lower A", "Upper B", "Lower B"],
-                "nutrition": "Consistent calories with strong protein anchor every meal.",
-            },
-        ],
-        "muscle": [
-            {
-                "title": "Hypertrophy growth split",
+                "title": "Bodybuilding growth split",
                 "coach_key": "hypertrophy",
                 "coach_role": COACHES["hypertrophy"]["role"],
                 "days": training_days,
-                "summary": f"High-quality volume and controlled execution for {gender} users pushing muscle gain.",
-                "blocks": ["Push focus", "Pull focus", "Legs focus", "Upper density day"],
-                "nutrition": "Small calorie surplus with high protein and pre/post workout carbs.",
+                "focus": "Bodybuilding focus",
+                "summary": f"True muscle-building package with fixed hypertrophy days, exercise order and volume progression.",
+                "blocks": ["Push", "Pull", "Legs", "Upper pump"],
+                "nutrition": "Small surplus, protein at every feeding and carbs pre/post workout.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Push", "prescription": "5 lifts / 60-70 min", "exercises": ["Incline DB press 4x8-10", "Machine chest press 4x10", "Seated DB press 3x10", "Cable lateral raise 4x15", "Overhead triceps extension 3x12"]},
+                    {"day": "Day 2", "title": "Pull", "prescription": "5 lifts / 60-70 min", "exercises": ["Lat pulldown 4x10", "Chest supported row 4x10", "Single-arm cable row 3x12", "Face pull 3x15", "EZ curl 4x12"]},
+                    {"day": "Day 3", "title": "Legs", "prescription": "5 lifts / 65-75 min", "exercises": ["Hack squat 4x8", "Romanian deadlift 4x8", "Leg press 3x12", "Leg curl 3x12", "Standing calf raise 4x15"]},
+                ],
             },
             {
-                "title": "Upper lower muscle plan",
+                "title": "Upper body growth",
                 "coach_key": "hypertrophy",
                 "coach_role": COACHES["hypertrophy"]["role"],
                 "days": training_days,
-                "summary": f"Reliable upper/lower template with more weekly frequency and bodyweight-aware volume.",
-                "blocks": ["Upper chest and back", "Lower quads and glutes", "Upper shoulders and arms", "Lower posterior chain"],
-                "nutrition": "Repeatable meal structure with protein at every feeding window.",
+                "focus": "Upper body focus",
+                "summary": f"More chest, back, delts and arms while legs stay strong on lower maintenance volume.",
+                "blocks": ["Upper press", "Upper pull", "Legs maintenance", "Arms + delts"],
+                "nutrition": "Keep calories highest on upper volume days and maintain protein every 3-4 hours.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Upper press", "prescription": "5 lifts / 60 min", "exercises": ["Incline DB press 4x10", "Machine shoulder press 4x10", "Cable fly 3x15", "Lateral raise 4x15", "Triceps pressdown 4x12"]},
+                    {"day": "Day 2", "title": "Upper pull", "prescription": "5 lifts / 60 min", "exercises": ["Pull-up or pulldown 4x8-10", "Chest supported row 4x10", "Cable row 3x12", "Rear delt fly 3x15", "Hammer curl 4x12"]},
+                    {"day": "Day 3", "title": "Arms and shoulders", "prescription": "6 lifts / 55 min", "exercises": ["DB shoulder press 4x8", "Cable lateral raise 4x15", "EZ curl 4x10", "Cable curl 3x12", "Dip machine 3x12", "Overhead rope extension 3x12"]},
+                ],
             },
             {
-                "title": "Bodybuilding recomposition",
+                "title": "Leg day specialization",
+                "coach_key": "hypertrophy",
+                "coach_role": COACHES["hypertrophy"]["role"],
+                "days": training_days,
+                "focus": "Leg focus",
+                "summary": f"Prioritize quads, glutes and hamstrings with coach-led lower-body sessions and clear weekly progression.",
+                "blocks": ["Quads", "Upper support", "Posterior chain", "Glute + calves"],
+                "nutrition": "Push carbs hardest before and after leg days to recover output and volume.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Quads dominant", "prescription": "5 lifts / 70 min", "exercises": ["Hack squat 4x8", "Leg press 4x12", "Bulgarian split squat 3x10 / leg", "Leg extension 3x15", "Calf raise 4x15"]},
+                    {"day": "Day 2", "title": "Posterior chain", "prescription": "5 lifts / 65 min", "exercises": ["Romanian deadlift 4x8", "Hip thrust 4x10", "Seated leg curl 4x12", "Walking lunge 3x12 / leg", "Back extension 3x15"]},
+                    {"day": "Day 3", "title": "Glute and calves", "prescription": "4 lifts / 50 min", "exercises": ["Hip thrust 4x8", "Cable kickback 3x15", "Leg press high stance 3x12", "Standing calf raise 5x15"]},
+                ],
+            },
+            {
+                "title": "Arms specialization",
+                "coach_key": "hypertrophy",
+                "coach_role": COACHES["hypertrophy"]["role"],
+                "days": training_days,
+                "focus": "Arms focus",
+                "summary": f"Dedicated arm growth package with enough upper-body work to support biceps and triceps size fast.",
+                "blocks": ["Push arms", "Pull arms", "Upper support", "Arm pump day"],
+                "nutrition": "Stay in a small surplus and keep the pre-workout meal consistent for arm sessions.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Triceps priority", "prescription": "5 lifts / 50-60 min", "exercises": ["Close grip press 4x6", "Cable pressdown 4x12", "Overhead rope extension 4x12", "Machine chest press 3x10", "Lateral raise 3x15"]},
+                    {"day": "Day 2", "title": "Biceps priority", "prescription": "5 lifts / 50-60 min", "exercises": ["EZ curl 4x10", "Incline DB curl 4x12", "Cable curl 3x12", "Lat pulldown 4x10", "Chest supported row 3x12"]},
+                    {"day": "Day 3", "title": "Arm pump day", "prescription": "6 lifts / 45-55 min", "exercises": ["Cable curl 3x15", "Rope pressdown 3x15", "Hammer curl 3x12", "Skull crusher 3x12", "Preacher curl 2x15", "Dip machine 2x15"]},
+                ],
+            },
+        ]
+    else:
+        options = [
+            {
+                "title": "Full body fat-loss",
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": f"Muscle-focused work with controlled conditioning so {gender} users stay tighter while growing.",
-                "blocks": ["3 hypertrophy days", "1 low-impact conditioning day", "1 optional mobility session"],
-                "nutrition": "Moderate surplus on training days, cleaner intake on lighter days.",
+                "focus": "Whole body output",
+                "summary": f"Simple fat-loss package with full-body lifting and enough conditioning to keep calorie burn high.",
+                "blocks": ["Full body A", "Conditioning", "Full body B", "Zone 2 + mobility"],
+                "nutrition": "Protein high, carbs around training, tighter food quality on rest days.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Full body A", "prescription": "5 lifts / 55-65 min", "exercises": ["Goblet squat 4x10", "Bench press or DB press 4x8", "Lat pulldown 4x10", "Romanian deadlift 3x10", "Bike finisher 8 min"]},
+                    {"day": "Day 2", "title": "Conditioning focus", "prescription": "4 blocks / 35-45 min", "exercises": ["Rower intervals 10 x 30/45", "Sled push 6 x 20 m", "Walking lunge 3x12 / leg", "Carry complex 4 rounds"]},
+                    {"day": "Day 3", "title": "Full body B", "prescription": "5 lifts / 55-65 min", "exercises": ["Front squat 4x8", "Machine press 4x10", "Chest supported row 4x10", "Leg curl 3x12", "Incline treadmill walk 10 min"]},
+                ],
             },
-        ],
-        "cut": [
             {
-                "title": "Fat loss performance plan",
+                "title": "Legs and conditioning",
                 "coach_key": "conditioning",
                 "coach_role": COACHES["conditioning"]["role"],
                 "days": training_days,
-                "summary": f"Protect strength while increasing output and energy expenditure for {frame} athletes cutting down.",
-                "blocks": ["2 full body strength days", "2 conditioning finish days", "Daily steps target"],
-                "nutrition": "Calorie deficit with high protein and carbs focused around training.",
+                "focus": "Leg focus",
+                "summary": f"Bias lower body, steps and work capacity for users who want leaner legs and stronger conditioning.",
+                "blocks": ["Lower density", "Intervals", "Posterior chain", "Zone 2"],
+                "nutrition": "Keep carbs around the hardest lower sessions and keep dinner cleaner on recovery days.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Lower density", "prescription": "5 lifts / 60 min", "exercises": ["Hack squat 4x10", "Walking lunge 4x12 / leg", "Leg curl 3x12", "Step-up 3x12 / leg", "Sled push 5 x 20 m"]},
+                    {"day": "Day 2", "title": "Posterior chain", "prescription": "4 lifts / 50-60 min", "exercises": ["Romanian deadlift 4x8", "Hip thrust 4x10", "Back extension 3x15", "Bike intervals 10 x 30/30"]},
+                    {"day": "Day 3", "title": "Conditioning reset", "prescription": "3 blocks / 35 min", "exercises": ["Incline walk 20 min", "Farmer carry 4 x 20 m", "Mobility flow 10 min"]},
+                ],
             },
             {
-                "title": "Lean athlete split",
+                "title": "Conditioning block",
+                "coach_key": "conditioning",
+                "coach_role": COACHES["conditioning"]["role"],
+                "days": training_days,
+                "focus": "Conditioning focus",
+                "summary": f"Mainly for users who want physique change through better work capacity, sweat and session density.",
+                "blocks": ["Intervals", "Machine circuit", "Carries", "Recovery walk"],
+                "nutrition": "Use lighter fats pre-workout and keep protein high every day of the week.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Intervals", "prescription": "30-40 min", "exercises": ["Bike intervals 12 x 20/40", "Push-up 3x15", "Bodyweight squat 3x20", "Plank 3x40 sec"]},
+                    {"day": "Day 2", "title": "Machine circuit", "prescription": "5 stations / 35-45 min", "exercises": ["Leg press 15 reps", "Machine chest press 12 reps", "Seated row 12 reps", "Walking lunge 12 / leg", "Rower 250 m"]},
+                    {"day": "Day 3", "title": "Carry and core", "prescription": "4 blocks / 35 min", "exercises": ["Farmer carry 6 x 20 m", "Sled push 6 x 20 m", "Cable chop 3x12 / side", "Incline walk 15 min"]},
+                ],
+            },
+            {
+                "title": "Upper body cut support",
                 "coach_key": "strength",
                 "coach_role": COACHES["strength"]["role"],
                 "days": training_days,
-                "summary": f"Keep muscle signal high with lower junk volume and sharper recovery control for {gender} users.",
-                "blocks": ["Upper strength", "Lower strength", "Density accessories", "Zone 2 + mobility"],
-                "nutrition": "Protein first, moderate carbs, tighter food quality control.",
+                "focus": "Upper body focus",
+                "summary": f"Keep upper-body muscle and strength signal high while bodyweight trends downward.",
+                "blocks": ["Upper strength", "Conditioning", "Upper density", "Zone 2"],
+                "nutrition": "Hold protein high, cluster carbs near the upper-body sessions and keep the deficit controlled.",
+                "sessions": [
+                    {"day": "Day 1", "title": "Upper strength", "prescription": "5 lifts / 55 min", "exercises": ["Bench press 4x5", "Pull-up or pulldown 4x8", "DB shoulder press 3x10", "Chest supported row 3x10", "EZ curl 3x12"]},
+                    {"day": "Day 2", "title": "Upper density", "prescription": "5 lifts / 50 min", "exercises": ["Incline DB press 4x10", "Cable row 4x12", "Lateral raise 4x15", "Rope pressdown 3x12", "Hammer curl 3x12"]},
+                    {"day": "Day 3", "title": "Conditioning support", "prescription": "3 blocks / 35-40 min", "exercises": ["Bike intervals 10 x 30/30", "Farmer carry 4 x 20 m", "Incline treadmill walk 15 min"]},
+                ],
             },
-            {
-                "title": "Conditioning driven cut",
-                "coach_key": "conditioning",
-                "coach_role": COACHES["conditioning"]["role"],
-                "days": training_days,
-                "summary": f"Best for {gender} users who want aggressive output, sweat and precise weekly structure.",
-                "blocks": ["Intervals", "Carries and sleds", "Machine circuits", "Recovery mobility"],
-                "nutrition": "Low-fat peri-workout structure with precise calorie logging.",
-            },
-        ],
-    }
-    return options.get(goal, options["performance"])
+        ]
+    return options
 
 
 def build_meal_suggestions(goal: str, calories_target: int, protein_target: int) -> list[dict[str, Any]]:
@@ -3526,6 +3876,415 @@ def build_meal_suggestions(goal: str, calories_target: int, protein_target: int)
     items[1]["macro"] = f"{calories_target} kcal structure"
     items[2]["macro"] = "Hydration + digestion friendly finish"
     return items
+
+
+def build_nutrition_intelligence(
+    user: dict[str, Any],
+    assistant: dict[str, Any],
+    meals: list[dict[str, Any]],
+    today_blueprint: dict[str, Any],
+) -> dict[str, Any]:
+    today_key = date.today().isoformat()
+    calories_eaten = sum(float(item["calories"]) for item in meals if str(item["logged_at"]).startswith(today_key))
+    protein_eaten = sum(float(item["protein"]) for item in meals if str(item["logged_at"]).startswith(today_key))
+    carbs_eaten = sum(float(item["carbs"]) for item in meals if str(item["logged_at"]).startswith(today_key))
+    fats_eaten = sum(float(item["fats"]) for item in meals if str(item["logged_at"]).startswith(today_key))
+    targets = assistant["targets"]
+    next_meal = (today_blueprint.get("nutrition") or [{}])[0]
+    for item in today_blueprint.get("nutrition") or []:
+        if item.get("item_key"):
+            next_meal = item
+            break
+    goal = str(user["goal"]).lower()
+    swaps = {
+        "performance": [
+            "Rice -> potatoes when digestion is heavy.",
+            "Chicken -> lean beef when you need more iron and fullness.",
+            "Greek yogurt -> whey + fruit when you need faster digestion.",
+        ],
+        "muscle": [
+            "Rice -> pasta when calories need to go up easier.",
+            "Chicken -> salmon when fats are too low.",
+            "Oats -> granola + yogurt when appetite is poor.",
+        ],
+        "cut": [
+            "Rice -> potatoes for more fullness per calorie.",
+            "Whole eggs -> egg whites when fats are too high.",
+            "Beef -> white fish when you need a leaner dinner.",
+        ],
+    }
+    prep = {
+        "performance": ["Cook 2 carb sources", "Prep 2 lean proteins", "Keep electrolytes ready"],
+        "muscle": ["Prep surplus lunch boxes", "Keep protein snacks visible", "Pre-log dinner calories"],
+        "cut": ["Prep low-calorie proteins", "Wash vegetables ahead", "Lock dinner portions early"],
+    }
+    return {
+        "headline": "Nutrition autopilot",
+        "day_type": today_blueprint.get("day_type", "training"),
+        "calories_left": max(int(targets["calories"] - calories_eaten), 0),
+        "protein_left": max(int(targets["protein"] - protein_eaten), 0),
+        "carbs_left": max(int(targets["carbs"] - carbs_eaten), 0),
+        "fats_left": max(int(targets["fats"] - fats_eaten), 0),
+        "next_meal_title": next_meal.get("title", "Next meal"),
+        "next_meal_detail": next_meal.get("meal", "Open nutrition mode for the next block."),
+        "next_meal_purpose": next_meal.get("purpose", "Stay aligned with today's goal."),
+        "smart_swaps": swaps.get(goal, swaps["performance"]),
+        "prep_steps": prep.get(goal, prep["performance"]),
+    }
+
+
+def build_adaptive_training_engine(
+    user: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    workouts: list[dict[str, Any]],
+    exercises: list[dict[str, Any]],
+    checkins: list[dict[str, Any]],
+) -> dict[str, Any]:
+    latest_checkin = checkins[0] if checkins else None
+    energy = int(latest_checkin["energy_score"]) if latest_checkin else 7
+    soreness = int(latest_checkin["soreness_score"]) if latest_checkin else 4
+    fatigue = str(user.get("fatigue_state", "steady")).lower()
+    readiness_label = "Push"
+    if energy <= 5 or soreness >= 7 or fatigue in {"high", "drained"}:
+        readiness_label = "Pull back"
+    elif energy >= 8 and soreness <= 4:
+        readiness_label = "Push progression"
+
+    recent_focus = workouts[0]["focus"] if workouts else "No prior log"
+    substitutions = []
+    equipment = str(user.get("equipment_access", "full gym")).lower()
+    if equipment == "home":
+        substitutions.extend(["Barbell work -> dumbbell equivalent", "Cable work -> band equivalent"])
+    if fatigue in {"high", "drained"}:
+        substitutions.append("Drop the final accessory if form quality falls.")
+    if soreness >= 7:
+        substitutions.append("Use the first warm-up block to decide if the main lift should stay or switch.")
+    if not substitutions:
+        substitutions.append("Keep the written order and only progress if execution stays clean.")
+
+    next_week = (
+        "Add load to the first main lift and keep the rest of the structure stable."
+        if readiness_label == "Push progression"
+        else "Hold top-set load steady and improve execution quality before adding more."
+        if readiness_label == "Push"
+        else "Reduce one accessory block and bias recovery until readiness improves."
+    )
+    volume_anchor = sum(float(item.get("weight_kg", 0) or 0) * int(item.get("sets_count", 0) or 0) for item in exercises[:8])
+    return {
+        "headline": "Adaptive training engine",
+        "readiness": readiness_label,
+        "today_rule": (
+            "Run the day exactly as written."
+            if readiness_label == "Push progression"
+            else "Keep 1-2 reps in reserve and prioritize clean reps."
+            if readiness_label == "Push"
+            else "Shorten the session, reduce load or stop one block early."
+        ),
+        "recent_focus": recent_focus,
+        "volume_anchor": f"{int(volume_anchor)} logged load" if volume_anchor else "No volume anchor yet",
+        "substitutions": substitutions,
+        "next_week": next_week,
+        "session_order": [
+            f"{item['order']}. {item['name']} - {item['sets']}x{item['reps']} - rest {item['rest']}"
+            for item in (today_blueprint.get("exercises") or [])[:5]
+        ] if today_blueprint.get("day_type") == "training" else today_blueprint.get("rest_day_actions", []),
+    }
+
+
+def build_progress_system(
+    user: dict[str, Any],
+    metrics: list[dict[str, Any]],
+    workouts: list[dict[str, Any]],
+    photos: list[dict[str, Any]],
+    checkins: list[dict[str, Any]],
+    stats: dict[str, Any],
+) -> dict[str, Any]:
+    latest = metrics[0] if metrics else None
+    previous = metrics[1] if len(metrics) > 1 else None
+    body_weight_delta = round(float(latest["body_weight"]) - float(previous["body_weight"]), 1) if latest and previous else 0.0
+    waist_delta = round(float(latest["waist"]) - float(previous["waist"]), 1) if latest and previous else 0.0
+    adherence = min(100, max(35, len(workouts[:7]) * 16 + len(checkins[:7]) * 6))
+    photo_score = int(photos[0]["visual_score"]) if photos else 7
+    recomposition_score = min(100, max(40, int(stats["pr_count"] * 9 + adherence * 0.45 + photo_score * 2)))
+    wins = []
+    if body_weight_delta:
+        wins.append(f"Scale trend: {body_weight_delta:+.1f} kg")
+    if waist_delta:
+        wins.append(f"Waist trend: {waist_delta:+.1f} cm")
+    wins.append(f"Weekly sessions: {stats['weekly_sessions']}")
+    wins.append(f"PR-quality sessions: {stats['pr_count']}")
+    watchouts = []
+    if adherence < 70:
+        watchouts.append("Adherence is the first fix before changing the whole plan.")
+    if latest and float(latest["sleep_hours"]) < 7:
+        watchouts.append("Sleep is dragging recovery and probably performance too.")
+    if checkins and sum(int(item["energy_score"]) for item in checkins[:3]) / min(len(checkins[:3]), 3) < 6:
+        watchouts.append("Energy trend is soft - reduce junk fatigue and tighten meals.")
+    if not watchouts:
+        watchouts.append("Current trend is stable - keep execution high and log everything.")
+    return {
+        "headline": "Progress operating system",
+        "recomposition_score": recomposition_score,
+        "adherence_score": adherence,
+        "body_weight_delta": f"{body_weight_delta:+.1f} kg",
+        "waist_delta": f"{waist_delta:+.1f} cm",
+        "wins": wins,
+        "watchouts": watchouts,
+        "next_checkpoint": "Add a body metric and a progress photo this week so the trend engine gets sharper.",
+    }
+
+
+def build_periodization_engine(
+    user: dict[str, Any],
+    workouts: list[dict[str, Any]],
+    checkins: list[dict[str, Any]],
+    today_blueprint: dict[str, Any],
+) -> dict[str, Any]:
+    goal = str(user["goal"]).lower()
+    sessions = len(workouts[:12])
+    avg_energy = round(sum(int(item["energy_score"]) for item in checkins[:5]) / len(checkins[:5]), 1) if checkins[:5] else 7.0
+    mesocycle_week = (sessions % 4) + 1 if sessions else 1
+    phase_map = {
+        "performance": ["Base output", "Strength build", "Intensification", "Deload / speed reset"],
+        "muscle": ["Volume base", "Hypertrophy push", "Overreach pump", "Deload / resensitize"],
+        "cut": ["Deficit base", "Density push", "Conditioning bias", "Deload / fatigue clean-up"],
+    }
+    phase_name = phase_map.get(goal, phase_map["performance"])[mesocycle_week - 1]
+    if avg_energy <= 5.5:
+        phase_signal = "Recovery bias"
+        coach_call = "Keep the phase objective but lower junk volume and reduce one accessory block."
+    elif avg_energy >= 8:
+        phase_signal = "Push progression"
+        coach_call = "You can push load or density this week without changing the main structure."
+    else:
+        phase_signal = "Hold structure"
+        coach_call = "Stay on plan and earn progression through execution quality."
+    week_focus = (
+        "Own top sets and bar speed."
+        if goal == "performance"
+        else "Drive quality volume and recover well."
+        if goal == "muscle"
+        else "Keep output high while preserving muscle."
+    )
+    return {
+        "headline": "Periodization engine",
+        "block_name": phase_name,
+        "week_label": f"Week {mesocycle_week} / 4",
+        "phase_signal": phase_signal,
+        "coach_call": coach_call,
+        "week_focus": week_focus,
+        "today_fit": f"Today's session fits the {phase_name.lower()} block: {today_blueprint.get('title', 'Training day')}.",
+        "up_next": phase_map.get(goal, phase_map["performance"])[mesocycle_week % 4],
+    }
+
+
+def build_recomposition_dashboard(
+    metrics: list[dict[str, Any]],
+    photos: list[dict[str, Any]],
+    pr_tracker: list[dict[str, Any]],
+    progress_system: dict[str, Any],
+) -> dict[str, Any]:
+    latest = metrics[0] if metrics else None
+    body_fat = f"{float(latest['body_fat']):.1f}%" if latest and latest.get("body_fat") is not None else "No body-fat trend"
+    form_score = f"{int(latest['form_score'])}/10" if latest else "No form check"
+    photo_score = f"{int(photos[0]['visual_score'])}/10" if photos else "No photo score"
+    top_pr = pr_tracker[0]["exercise_name"] if pr_tracker else "No PR yet"
+    return {
+        "headline": "Recomposition dashboard",
+        "tiles": [
+            {"label": "Recomp score", "value": f"{progress_system['recomposition_score']}/100", "detail": "Single body-change score from training, adherence and physique inputs."},
+            {"label": "Body-fat trend", "value": body_fat, "detail": "Keep this moving in the right direction, not fast direction."},
+            {"label": "Visual score", "value": photo_score, "detail": "Latest physique check quality and visual consistency."},
+            {"label": "Top lift", "value": top_pr, "detail": "Best current PR anchor in your recent logbook."},
+            {"label": "Form score", "value": form_score, "detail": "How sharp the physique and recovery checks look."},
+            {"label": "Waist delta", "value": progress_system["waist_delta"], "detail": "One of the cleanest signals for recomposition."},
+        ]
+    }
+
+
+def build_session_analytics(
+    today_blueprint: dict[str, Any],
+    exercise_logs: list[dict[str, Any]],
+    completed_today: set[str] | list[str],
+) -> dict[str, Any]:
+    completed = set(completed_today)
+    exercises = today_blueprint.get("exercises") or []
+    total_sets = sum(clamp_int(item.get("sets"), 3, 1, 12) for item in exercises)
+    total_reps = sum(clamp_int(str(item.get("reps", "8")).split("-")[0].split("/")[0], 8, 1, 30) * clamp_int(item.get("sets"), 3, 1, 12) for item in exercises)
+    completed_exercises = sum(1 for item in exercises if item["item_key"] in completed)
+    completion_score = int(round((completed_exercises / len(exercises)) * 100)) if exercises else 0
+    avg_rpe = 0.0
+    if exercise_logs[:5]:
+        avg_rpe = round(sum(float(item.get("rpe", 8) or 8) for item in exercise_logs[:5]) / len(exercise_logs[:5]), 1)
+    estimated_calories = max(120, len(exercises) * 70 + total_sets * 6)
+    tonnage = int(sum(float(item.get("weight_kg", 0) or 0) * clamp_int(item.get("sets"), 3, 1, 12) for item in exercises))
+    return {
+        "headline": "Session analytics",
+        "tiles": [
+            {"label": "Session score", "value": f"{completion_score}%", "detail": "How much of today's written plan is already closed."},
+            {"label": "Total sets", "value": str(total_sets), "detail": "Useful for managing weekly volume and fatigue."},
+            {"label": "Estimated reps", "value": str(total_reps), "detail": "Approximate work count from today's prescription."},
+            {"label": "Estimated kcal", "value": str(estimated_calories), "detail": "Session energy cost estimate, not a lab number."},
+            {"label": "Logged RPE", "value": f"{avg_rpe}/10" if avg_rpe else "No log yet", "detail": "Average recent effort on your logged working sets."},
+            {"label": "Tonnage", "value": f"{tonnage} kg" if tonnage else "Bodyweight / no load", "detail": "Approximate session load from prescribed working sets."},
+        ],
+        "coach_note": "Use this after the session to decide whether next time should progress, hold or deload slightly.",
+    }
+
+
+def exercise_mastery_profile(exercise_name: str) -> dict[str, Any]:
+    name = exercise_name.lower()
+    library = {
+        "bench": {
+            "setup": "Feet planted, upper back tight, eyes under the bar before every rep.",
+            "execution": "Lower with control to the same touch point, press back and up, keep wrists stacked.",
+            "mistake": "Do not let elbows flare early or lose leg drive off the chest.",
+            "swap": "If shoulder stress rises, switch to dumbbell press or machine press for this block.",
+        },
+        "squat": {
+            "setup": "Brace before you unlock the bar, feet stable and ribs stacked over pelvis.",
+            "execution": "Sit between the hips, keep pressure through mid-foot, drive up with chest and hips together.",
+            "mistake": "Avoid losing brace at the bottom or shifting hard onto the toes.",
+            "swap": "Use front squat or hack squat if mobility or back fatigue limits quality depth.",
+        },
+        "deadlift": {
+            "setup": "Bar over mid-foot, lats on, pull slack out before the floor leaves.",
+            "execution": "Push the floor away, keep bar close, lock out with glutes instead of leaning back.",
+            "mistake": "Do not yank from a loose start or let the bar drift from the body.",
+            "swap": "Use Romanian deadlift or trap-bar deadlift when recovery or setup quality is lower.",
+        },
+        "row": {
+            "setup": "Chest proud, brace trunk, set shoulder blades before the pull starts.",
+            "execution": "Drive elbows toward hips, pause briefly, lower under control.",
+            "mistake": "Avoid turning every row into body English or shrugging through the pull.",
+            "swap": "Use chest-supported row when lower-back fatigue is high.",
+        },
+        "pull": {
+            "setup": "Start from a dead hang or clean stretch with ribs down and glutes tight.",
+            "execution": "Lead with elbows, bring chest toward handle or bar, control the negative fully.",
+            "mistake": "Do not crank the neck forward or shorten the range to chase reps.",
+            "swap": "Use assisted pull-ups or pulldown variations to keep full range.",
+        },
+        "press": {
+            "setup": "Squeeze glutes, brace abs, stack wrist-elbow under the load.",
+            "execution": "Press in a straight path, finish with biceps by ears, lower smoothly.",
+            "mistake": "Do not overarch the low back or lose a stable rib position.",
+            "swap": "Use seated dumbbell press or machine shoulder press if stability is the limiter.",
+        },
+        "curl": {
+            "setup": "Keep elbows quiet and torso still before the first rep.",
+            "execution": "Curl through full range, squeeze the top, lower slowly.",
+            "mistake": "Avoid swinging hips or cutting the eccentric short.",
+            "swap": "Cable curls work well when you want constant tension without cheating.",
+        },
+        "triceps": {
+            "setup": "Set shoulders down and lock elbows close to the body.",
+            "execution": "Extend fully, pause, return without shoulders rolling forward.",
+            "mistake": "Do not turn the movement into a shoulder swing.",
+            "swap": "Cable pressdowns are the cleanest option when elbows are sensitive.",
+        },
+        "lunge": {
+            "setup": "Stay tall, brace lightly and own balance before every step.",
+            "execution": "Drop straight down, front foot rooted, push back through full foot.",
+            "mistake": "Avoid crashing the knee forward or losing pelvic control.",
+            "swap": "Split squats are easier to load consistently if balance is limiting output.",
+        },
+    }
+    profile = next((data for key, data in library.items() if key in name), None)
+    if profile:
+        return profile
+    return {
+        "setup": "Set posture first, brace the trunk and make the start position identical every set.",
+        "execution": "Control the eccentric, own the target range, then finish the rep cleanly.",
+        "mistake": "Do not chase speed or load if joint position breaks down.",
+        "swap": "Swap to a more stable machine or dumbbell pattern if quality drops.",
+    }
+
+
+def build_exercise_mastery(today_blueprint: dict[str, Any]) -> list[dict[str, Any]]:
+    if today_blueprint.get("day_type") != "training":
+        return [
+            {
+                "name": "Recovery technique",
+                "setup": "Use today to rehearse movement quality, mobility and breathing.",
+                "execution": "Walk, mobilize and keep intensity low enough to finish fresher than you started.",
+                "mistake": "Do not turn a recovery day into a hidden training day.",
+                "swap": "Use incline walk, bike or mobility flow if joints feel loaded.",
+            }
+        ]
+    cards: list[dict[str, Any]] = []
+    for item in today_blueprint.get("exercises", [])[:4]:
+        profile = exercise_mastery_profile(str(item.get("name", "")))
+        cards.append(
+            {
+                "name": item.get("name", "Exercise"),
+                "setup": profile["setup"],
+                "execution": profile["execution"],
+                "mistake": profile["mistake"],
+                "swap": profile["swap"],
+            }
+        )
+    return cards
+
+
+def build_recomp_home(progress_system: dict[str, Any], recomposition_dashboard: dict[str, Any]) -> dict[str, Any]:
+    top_tiles = recomposition_dashboard.get("tiles", [])[:3]
+    checkpoint = progress_system.get("next_checkpoint", "Add one more quality week before making big changes.")
+    return {
+        "headline": "Body recomposition home",
+        "cards": top_tiles,
+        "checkpoint": checkpoint,
+    }
+
+
+def build_weekly_adaptive_block_plan(
+    periodization_engine: dict[str, Any],
+    adaptive_training_engine: dict[str, Any],
+    weekly_review: dict[str, Any],
+    progress_system: dict[str, Any],
+) -> dict[str, Any]:
+    score = weekly_review.get("score", 70)
+    if score >= 85 and progress_system.get("adherence_score", 70) >= 80:
+        mode = "Push next week"
+        changes = [
+            "Add one top-set load jump on the main lift.",
+            "Keep accessories the same but tighten execution quality.",
+            "Keep recovery habits stable so progression sticks.",
+        ]
+    elif score <= 60:
+        mode = "Recovery bias"
+        changes = [
+            "Trim one accessory block from lower-value work.",
+            "Keep compounds but stop 1 rep earlier on hard sets.",
+            "Prioritize sleep, steps and meal consistency before adding load.",
+        ]
+    else:
+        mode = "Hold and earn"
+        changes = [
+            "Repeat the current split and beat execution, not chaos.",
+            "Progress one or two lifts only if bar speed and form stay clean.",
+            "Use the same meal structure and push adherence above 85%.",
+        ]
+    return {
+        "headline": "Weekly adaptive block",
+        "mode": mode,
+        "week_label": periodization_engine.get("week_label", "Week plan"),
+        "focus": periodization_engine.get("week_focus", adaptive_training_engine.get("today_rule", "Stay on structure.")),
+        "changes": changes,
+        "coach_call": weekly_review.get("next_week_adjustment", periodization_engine.get("coach_call", "Stay on plan.")),
+    }
+
+
+def build_voice_coach_payload(today_blueprint: dict[str, Any], live_session: dict[str, Any]) -> dict[str, Any]:
+    session_type = "training" if today_blueprint.get("day_type") == "training" else "recovery"
+    return {
+        "headline": "Voice coach",
+        "mode_label": "Voice cues ready",
+        "auto_enabled": True,
+        "session_type": session_type,
+        "opening": f"{today_blueprint.get('coach_name', 'Coach')} will call the next move, rest cue and execution focus.",
+        "fallback": "Voice cues are optional. If your device blocks audio, keep using the visual player.",
+    }
 
 
 def goal_training_days(user: dict[str, Any]) -> int:
@@ -4796,6 +5555,11 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     personal_calendar = build_personal_calendar(user, assistant, weekly_planner)
     shopping_list = build_shopping_list(str(user["goal"]).lower())
     progress_trends = build_progress_trends(metrics, workouts, checkins)
+    nutrition_intelligence = build_nutrition_intelligence(user, assistant, meals, today_blueprint)
+    adaptive_training_engine = build_adaptive_training_engine(user, today_blueprint, workouts, exercises, checkins)
+    progress_system = build_progress_system(user, metrics, workouts, photos, checkins, stats)
+    periodization_engine = build_periodization_engine(user, workouts, checkins, today_blueprint)
+    session_analytics = build_session_analytics(today_blueprint, exercises, completed_today)
     easy_mode = build_easy_mode(user, today_blueprint, today_progress, access, ai_concierge)
     coach_briefing = build_coach_briefing(user, today_blueprint, today_progress, ai_concierge)
     reminder_center = build_reminder_center(today_blueprint, today_progress, access)
@@ -4804,6 +5568,11 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     coach_day_flow = build_coach_day_flow(today_blueprint, completed_today)
     focus_cards = build_focus_cards(today_blueprint, today_progress, live_session, coach_briefing, completed_today)
     pr_tracker = build_pr_tracker(exercises)
+    recomposition_dashboard = build_recomposition_dashboard(metrics, photos, pr_tracker, progress_system)
+    recomposition_home = build_recomp_home(progress_system, recomposition_dashboard)
+    weekly_adaptive_block = build_weekly_adaptive_block_plan(periodization_engine, adaptive_training_engine, weekly_review, progress_system)
+    exercise_mastery = build_exercise_mastery(today_blueprint)
+    voice_coach = build_voice_coach_payload(today_blueprint, live_session)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
@@ -4851,6 +5620,16 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "completed_today": list(completed_today),
         "shopping_list": shopping_list,
         "progress_trends": progress_trends,
+        "nutrition_intelligence": nutrition_intelligence,
+        "adaptive_training_engine": adaptive_training_engine,
+        "progress_system": progress_system,
+        "periodization_engine": periodization_engine,
+        "session_analytics": session_analytics,
+        "recomposition_dashboard": recomposition_dashboard,
+        "recomposition_home": recomposition_home,
+        "weekly_adaptive_block": weekly_adaptive_block,
+        "exercise_mastery": exercise_mastery,
+        "voice_coach": voice_coach,
         "easy_mode": easy_mode,
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
@@ -5140,9 +5919,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V30",
-        "login_title": "Secure athlete login V30",
-        "dashboard_title": "Adaptive athlete dashboard V30",
+        "build": "APP.PY ONLY BUILD V34",
+        "login_title": "Secure athlete login V34",
+        "dashboard_title": "Adaptive athlete dashboard V34",
     }
 
 
