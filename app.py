@@ -302,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V29</div>
+    <div class="pill">APP.PY ONLY BUILD V30</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V29</h1>
+    <h1>Secure athlete login V30</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -569,6 +569,11 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
 .focus-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
 .focus-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.035); }
 .focus-card strong { display:block; margin-top:8px; font-size:20px; }
+.coach-day-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px; }
+.coach-step { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.coach-step strong { display:block; margin-top:8px; font-size:20px; }
+.coach-step.done { opacity:.65; }
+.coach-step .notice { margin-top:10px; }
     .summary-strip { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; margin-top:18px; }
     .summary-card { padding:18px; border-radius:22px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .task-meter { height:10px; width:100%; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; margin-top:12px; }
@@ -620,8 +625,8 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
   </style>
 </head>
 <body data-view-mode="{{ payload.view_mode }}">
@@ -629,7 +634,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V29</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V30</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -664,7 +669,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V29</div>
+<div class="pill">Market ready + dashboard V30</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -773,6 +778,18 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           </article>
           {% endfor %}
         </div>
+      </section>
+      <section class="coach-day-grid">
+        {% for item in payload.coach_day_flow %}
+        <article class="coach-step {% if item.done %}done{% endif %}">
+          <div class="mini">{{ item.kicker }}</div>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.detail }}</p>
+          <div class="notice">{{ item.prescription }}</div>
+          <p style="margin-top:10px;">{{ item.cue }}</p>
+          <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">{{ item.cta }}</a></div>
+        </article>
+        {% endfor %}
       </section>
       <div class="summary-strip" style="margin-top:18px;">
         <article class="summary-card">
@@ -3813,6 +3830,20 @@ def build_today_blueprint(
     else:
         title = "Recovery / rest day"
 
+    focus_line = (
+        today_event.get("details")
+        if today_event
+        else (
+            "Heavy compound execution and speed quality."
+            if is_training_day and goal == "performance"
+            else "High-quality hypertrophy with stretch and control."
+            if is_training_day and goal == "muscle"
+            else "Dense work, calorie burn and muscle retention."
+            if is_training_day
+            else "Recovery day: lower stress, hit food structure and come back fresher tomorrow."
+        )
+    )
+
     return {
         "day_type": "training" if is_training_day else "recovery",
         "status_label": "Training day" if is_training_day else "Recovery day",
@@ -3824,7 +3855,7 @@ def build_today_blueprint(
         "latest_note": latest_note,
         "exercises": exercises if is_training_day else [],
         "nutrition": nutrition,
-        "focus_line": today_event.get("details") if today_event else ("Heavy compound execution and speed quality." if goal == "performance" else "High-quality hypertrophy with stretch and control." if goal == "muscle" else "Dense work, calorie burn and muscle retention."),
+        "focus_line": focus_line,
         "rest_day_actions": rest_day_actions,
     }
 
@@ -4119,11 +4150,17 @@ def current_view_mode() -> str:
     return mode if mode in {"minimal", "pro"} else "minimal"
 
 
+def exercise_prescription_text(item: dict[str, Any]) -> str:
+    return f"{item.get('sets', '?')} sets · {item.get('reps', '?')} reps · rest {item.get('rest', '?')}"
+
+
 def build_single_next_action(
     today_blueprint: dict[str, Any],
     today_progress: dict[str, Any],
     checkins: list[dict[str, Any]],
+    completed_today: set[str] | list[str],
 ) -> dict[str, str]:
+    completed = set(completed_today)
     today_key = date.today().isoformat()
     has_checkin_today = any(str(item.get("checkin_date") or "").startswith(today_key) for item in checkins)
     day_type = str(today_blueprint.get("day_type") or "training")
@@ -4139,9 +4176,14 @@ def build_single_next_action(
             "tag": "Daily reset",
         }
     if day_type == "training" and exercise_left:
+        next_exercise = next(
+            (item for item in (today_blueprint.get("exercises") or []) if item.get("item_key") not in completed),
+            (today_blueprint.get("exercises") or [None])[0],
+        )
+        prescription = exercise_prescription_text(next_exercise) if next_exercise else today_blueprint.get("duration", "Live session")
         return {
             "title": f"Run today's session: {today_blueprint.get('title', 'Training day')}",
-            "detail": f"{exercise_left} exercise blocks are still open. The live player already knows your next move, rest and load suggestion.",
+            "detail": f"Start with {next_exercise.get('name') if next_exercise else 'the first movement'} - {prescription}. The player already knows the order, rest and load suggestion.",
             "anchor": "/workout-mode",
             "cta": "Start workout",
             "tag": today_blueprint.get("duration", "Live session"),
@@ -4184,7 +4226,14 @@ def build_day_flow(
         },
         {
             "title": "Move",
-            "detail": today_blueprint.get("title", "Session"),
+            "detail": (
+                " -> ".join(
+                    f"{item['order']}. {item['name']}"
+                    for item in (today_blueprint.get("exercises") or [])[:3]
+                )
+                if day_type == "training"
+                else today_blueprint.get("title", "Session")
+            ),
             "anchor": "/workout-mode" if day_type == "training" else "#today-plan",
             "cta": "Open session" if day_type == "training" else "Open recovery",
             "state": "done" if exercise_left == 0 else ("now" if has_checkin_today else "ready"),
@@ -4209,17 +4258,56 @@ def build_day_flow(
     ]
 
 
+def build_coach_day_flow(today_blueprint: dict[str, Any], completed_today: set[str] | list[str]) -> list[dict[str, str]]:
+    completed = set(completed_today)
+    if today_blueprint.get("day_type") != "training":
+        return [
+            {
+                "kicker": "Recovery",
+                "title": "Walk and reset",
+                "detail": "Keep the day simple and protect recovery instead of forcing training.",
+                "prescription": "20-30 min walk · light mobility · low stress",
+                "cue": "Finish the basics, hydrate and sleep earlier.",
+                "anchor": "#today-plan",
+                "cta": "Open recovery",
+                "done": False,
+            }
+        ]
+
+    steps = []
+    for item in today_blueprint.get("exercises", []):
+        steps.append(
+            {
+                "kicker": f"Step {item['order']}",
+                "title": item["name"],
+                "detail": item["block"],
+                "prescription": exercise_prescription_text(item),
+                "cue": item["note"],
+                "anchor": "/workout-mode",
+                "cta": "Open player",
+                "done": item["item_key"] in completed,
+            }
+        )
+    return steps[:6]
+
+
 def build_focus_cards(
     today_blueprint: dict[str, Any],
     today_progress: dict[str, Any],
     live_session: dict[str, Any],
     coach_briefing: dict[str, str],
+    completed_today: set[str] | list[str],
 ) -> list[dict[str, str]]:
+    completed = set(completed_today)
+    next_exercise = next(
+        (item for item in (today_blueprint.get("exercises") or []) if item.get("item_key") not in completed),
+        (today_blueprint.get("exercises") or [None])[0],
+    )
     return [
         {
             "kicker": "Next move",
-            "title": live_session.get("next_move") or today_blueprint.get("title", "Open today"),
-            "detail": coach_briefing.get("next_step") or "Open the main player and follow the next step.",
+            "title": next_exercise.get("name") if next_exercise else (live_session.get("next_move") or today_blueprint.get("title", "Open today")),
+            "detail": exercise_prescription_text(next_exercise) if next_exercise else (coach_briefing.get("next_step") or "Open the main player and follow the next step."),
         },
         {
             "kicker": "Today score",
@@ -4229,7 +4317,7 @@ def build_focus_cards(
         {
             "kicker": "Session time",
             "title": today_blueprint.get("duration", "60 min lane"),
-            "detail": today_blueprint.get("focus", "Stay simple: train, eat, recover."),
+            "detail": today_blueprint.get("focus_line", "Stay simple: train, eat, recover."),
         },
     ]
 
@@ -4337,12 +4425,16 @@ def build_coach_briefing(
 ) -> dict[str, str]:
     day_type = str(today_blueprint.get("day_type") or "training")
     if day_type == "training":
+        opening_moves = "; ".join(
+            f"{item['order']}. {item['name']} ({item['sets']}x{item['reps']})"
+            for item in (today_blueprint.get("exercises") or [])[:3]
+        )
         opening = f"Today is {today_blueprint['title']}. Open the player and run the first movement before you overthink it."
-        summary = f"{today_progress.get('exercise_total', 0)} exercises and {today_progress.get('meal_total', 0)} nutrition blocks are already organized for you."
+        summary = f"{today_progress.get('exercise_total', 0)} exercises and {today_progress.get('meal_total', 0)} nutrition blocks are already organized for you. Order: {opening_moves}."
         next_step = "Tap Start workout, finish the first set, then let the live player carry the session."
     else:
         opening = "Today is a recovery day. Keep stress lower and stay consistent instead of forcing volume."
-        summary = f"You still have {today_progress.get('meal_total', 0)} nutrition blocks and recovery work to close out the day."
+        summary = f"You still have {today_progress.get('meal_total', 0)} nutrition blocks and recovery work to close out the day. Walk, mobility and sleep prep are enough today."
         next_step = "Open Today, finish food structure, mobility and steps, then log the day."
     return {
         "coach": ai_concierge.get("name") or "Forge coach",
@@ -4707,9 +4799,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     easy_mode = build_easy_mode(user, today_blueprint, today_progress, access, ai_concierge)
     coach_briefing = build_coach_briefing(user, today_blueprint, today_progress, ai_concierge)
     reminder_center = build_reminder_center(today_blueprint, today_progress, access)
-    single_next_action = build_single_next_action(today_blueprint, today_progress, checkins)
+    single_next_action = build_single_next_action(today_blueprint, today_progress, checkins, completed_today)
     day_flow = build_day_flow(today_blueprint, today_progress, checkins)
-    focus_cards = build_focus_cards(today_blueprint, today_progress, live_session, coach_briefing)
+    coach_day_flow = build_coach_day_flow(today_blueprint, completed_today)
+    focus_cards = build_focus_cards(today_blueprint, today_progress, live_session, coach_briefing, completed_today)
     pr_tracker = build_pr_tracker(exercises)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
@@ -4764,6 +4857,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "reminder_center": reminder_center,
         "single_next_action": single_next_action,
         "day_flow": day_flow,
+        "coach_day_flow": coach_day_flow,
         "focus_cards": focus_cards,
         "subscription_plans": SUBSCRIPTION_PLANS,
         "commercial_offers": COMMERCIAL_OFFERS,
@@ -5046,9 +5140,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V29",
-        "login_title": "Secure athlete login V29",
-        "dashboard_title": "Adaptive athlete dashboard V29",
+        "build": "APP.PY ONLY BUILD V30",
+        "login_title": "Secure athlete login V30",
+        "dashboard_title": "Adaptive athlete dashboard V30",
     }
 
 
