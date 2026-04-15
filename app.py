@@ -302,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V34</div>
+    <div class="pill">APP.PY ONLY BUILD V36</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V34</h1>
+    <h1>Secure athlete login V36</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -634,7 +634,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V34</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V36</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -669,7 +669,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V34</div>
+<div class="pill">Market ready + dashboard V36</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -746,6 +746,32 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             <strong>{{ item.title }}</strong>
             <p style="margin-top:6px;">{{ item.detail }}</p>
           </a>
+          {% endfor %}
+        </div>
+      </section>
+      <section class="summary-strip" style="margin-top:18px;">
+        {% for item in payload.workspace_hub %}
+        <article class="summary-card">
+          <div class="mini">Workspace</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">{{ item.title }}</strong>
+          <p style="margin-top:12px;">{{ item.detail }}</p>
+          <div class="notice">{{ item.metric }}</div>
+          <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">Open {{ item.title|lower }}</a></div>
+        </article>
+        {% endfor %}
+      </section>
+      <section class="panel span">
+        <div class="section-head">
+          <div><div class="mini">Operating board</div><h2>Run the app without thinking</h2></div>
+        </div>
+        <div class="planner-grid">
+          {% for item in payload.operating_board %}
+          <article class="option">
+            <div class="mini">Now</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div class="notice" style="margin-top:10px;">{{ item.note }}</div>
+          </article>
           {% endfor %}
         </div>
       </section>
@@ -934,6 +960,40 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       <section class="panel span" id="plans">
         <div class="section-head">
           <div><div class="mini">Suggested training</div><h2>{{ payload.ui.plans_title }}</h2></div>
+        </div>
+        <div class="summary-strip" style="margin-bottom:16px;">
+          <article class="summary-card">
+            <div class="mini">Active package</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.active_package.title }}</strong>
+            <p style="margin-top:12px;">{{ payload.active_package.summary }}</p>
+            <div class="notice">{{ payload.active_package.focus }} - {{ payload.active_package.days }} days</div>
+            <p style="margin-top:10px;">Latest work: {{ payload.active_package.latest_work }}</p>
+            <div class="next">Next calendar block: {{ payload.active_package.next_calendar }}</div>
+          </article>
+          <article class="summary-card">
+            <div class="mini">Package filters</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">Coach package library</strong>
+            <div class="quickbar" style="margin-top:14px;">
+              {% for item in payload.package_filters %}
+              <span class="tag">{{ item.label }}</span>
+              {% endfor %}
+            </div>
+            <p style="margin-top:12px;">Each package already has fixed workout days and pre-written exercise lists. User chooses, coach leads.</p>
+          </article>
+        </div>
+        <div class="planner-grid" style="margin-bottom:16px;">
+          {% for item in payload.program_board %}
+          <article class="option">
+            <div class="mini">{{ item.day }} - {{ item.focus }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.prescription }}</p>
+            <ul class="list" style="margin-top:10px;">
+              {% for exercise in item.top_exercises %}
+              <li>{{ exercise }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endfor %}
         </div>
         <div class="option-grid">
           {% for option in payload.assistant.suggestions %}
@@ -3853,6 +3913,125 @@ def build_goal_suggestions(user: dict[str, Any], assistant_coach: str, training_
     return options
 
 
+def build_package_filters(suggestions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for item in suggestions:
+        focus = str(item.get("focus") or "Coach flow")
+        counts[focus] = counts.get(focus, 0) + 1
+    filters = []
+    for focus, count in counts.items():
+        filters.append({"focus": focus, "count": count, "label": f"{focus} ({count})"})
+    return filters
+
+
+def build_active_package(assistant: dict[str, Any], workouts: list[dict[str, Any]], calendar: list[dict[str, Any]]) -> dict[str, Any]:
+    suggestion = (assistant.get("suggestions") or [{}])[0]
+    latest_work = workouts[0]["focus"] if workouts else "No logged session yet"
+    next_calendar = calendar[0]["title"] if calendar else "Next block will be built from the selected package"
+    return {
+        "title": suggestion.get("title", "Coach package"),
+        "focus": suggestion.get("focus", "Daily coaching"),
+        "coach_role": suggestion.get("coach_role", assistant.get("coach_role", "Coach")),
+        "summary": suggestion.get("summary", assistant.get("headline", "Coach-led package")),
+        "days": suggestion.get("days", 4),
+        "latest_work": latest_work,
+        "next_calendar": next_calendar,
+        "sessions": suggestion.get("sessions", []),
+    }
+
+
+def build_program_board(active_package: dict[str, Any]) -> list[dict[str, Any]]:
+    board: list[dict[str, Any]] = []
+    sessions = active_package.get("sessions", [])
+    for idx, session in enumerate(sessions, start=1):
+        board.append(
+            {
+                "day": session.get("day", f"Day {idx}"),
+                "title": session.get("title", "Session"),
+                "prescription": session.get("prescription", "Coach block"),
+                "focus": active_package.get("focus", "Training focus"),
+                "top_exercises": (session.get("exercises") or [])[:3],
+            }
+        )
+    while len(board) < 5:
+        extra_idx = len(board) + 1
+        board.append(
+            {
+                "day": f"Day {extra_idx}",
+                "title": "Recovery / prep",
+                "prescription": "Steps, mobility, food prep, sleep target",
+                "focus": "Recovery support",
+                "top_exercises": ["Walk 20-30 min", "Mobility 10 min", "Prep next training day"],
+            }
+        )
+    return board[:5]
+
+
+def build_workspace_hub(
+    user: dict[str, Any],
+    active_package: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    access: dict[str, Any],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "title": "Train",
+            "anchor": "#today-plan",
+            "detail": today_blueprint.get("title", "Today's training"),
+            "metric": today_blueprint.get("duration", "Ready"),
+        },
+        {
+            "title": "Program",
+            "anchor": "#plans",
+            "detail": active_package.get("title", "Coach package"),
+            "metric": f"{active_package.get('days', 4)} days",
+        },
+        {
+            "title": "Fuel",
+            "anchor": "#mission",
+            "detail": "Meals, macros and timing for today.",
+            "metric": access.get("status_label", "Active"),
+        },
+        {
+            "title": "Coach",
+            "anchor": "#assistant",
+            "detail": f"{user.get('full_name', 'Athlete')} guidance and weekly adjustment.",
+            "metric": active_package.get("focus", "Coach flow"),
+        },
+        {
+            "title": "Track",
+            "anchor": "#progress",
+            "detail": "Recomposition, PRs and adherence.",
+            "metric": user.get("goal", "Goal").title(),
+        },
+    ]
+
+
+def build_operating_board(
+    today_blueprint: dict[str, Any],
+    active_package: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    coach_briefing: dict[str, Any],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "title": "Current mission",
+            "detail": today_blueprint.get("focus_line", "Follow today's plan."),
+            "note": coach_briefing.get("next_step", "Stay on the next useful action."),
+        },
+        {
+            "title": "Active package",
+            "detail": active_package.get("title", "Coach package"),
+            "note": active_package.get("focus", "Coach focus"),
+        },
+        {
+            "title": "Nutrition next",
+            "detail": nutrition_intelligence.get("next_meal_title", "Next meal block"),
+            "note": nutrition_intelligence.get("next_meal_detail", "Keep fuel aligned."),
+        },
+    ]
+
+
 def build_meal_suggestions(goal: str, calories_target: int, protein_target: int) -> list[dict[str, Any]]:
     library = {
         "performance": [
@@ -5573,6 +5752,11 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     weekly_adaptive_block = build_weekly_adaptive_block_plan(periodization_engine, adaptive_training_engine, weekly_review, progress_system)
     exercise_mastery = build_exercise_mastery(today_blueprint)
     voice_coach = build_voice_coach_payload(today_blueprint, live_session)
+    package_filters = build_package_filters(assistant["suggestions"])
+    active_package = build_active_package(assistant, workouts, calendar)
+    program_board = build_program_board(active_package)
+    workspace_hub = build_workspace_hub(user, active_package, today_blueprint, access)
+    operating_board = build_operating_board(today_blueprint, active_package, nutrition_intelligence, coach_briefing)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
@@ -5630,6 +5814,11 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "weekly_adaptive_block": weekly_adaptive_block,
         "exercise_mastery": exercise_mastery,
         "voice_coach": voice_coach,
+        "package_filters": package_filters,
+        "active_package": active_package,
+        "program_board": program_board,
+        "workspace_hub": workspace_hub,
+        "operating_board": operating_board,
         "easy_mode": easy_mode,
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
@@ -5919,9 +6108,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V34",
-        "login_title": "Secure athlete login V34",
-        "dashboard_title": "Adaptive athlete dashboard V34",
+        "build": "APP.PY ONLY BUILD V36",
+        "login_title": "Secure athlete login V36",
+        "dashboard_title": "Adaptive athlete dashboard V36",
     }
 
 
