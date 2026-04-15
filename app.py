@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta
 from functools import wraps
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 from flask import Flask, flash, jsonify, redirect, render_template, render_template_string, request, send_from_directory, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -302,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V36</div>
+    <div class="pill">APP.PY ONLY BUILD V37</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V36</h1>
+    <h1>Secure athlete login V37</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -634,7 +635,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V36</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V37</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -669,7 +670,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V36</div>
+<div class="pill">Market ready + dashboard V37</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -1082,6 +1083,16 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           </article>
           {% endfor %}
         </div>
+        <div class="planner-grid" style="margin-top:16px;">
+          {% for item in payload.daily_tasks %}
+          <article class="option">
+            <div class="mini">Daily task</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div class="notice" style="margin-top:10px;">{{ item.state }}</div>
+          </article>
+          {% endfor %}
+        </div>
         <div class="minimal-only">
           <div class="summary-card" style="margin-top:16px;">
             <div class="mini">Minimal mode</div>
@@ -1106,9 +1117,15 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
             <div class="player-screen">
               <div class="mini">Rest timer</div>
               <div class="player-time" id="player-timer">00:00</div>
+              <div class="mini" style="margin-top:10px;">Session timer</div>
+              <div class="player-time" id="session-timer" style="font-size:34px;">00:00</div>
               <p id="player-status">{{ payload.live_session.coach_prompt }}</p>
               <div class="player-start">
                 <button type="button" class="player-btn primary" id="player-start-main" aria-label="Start workout">Start workout</button>
+              </div>
+              <div class="player-controls">
+                <button type="button" class="player-btn primary" id="player-start-session" aria-label="Start session timer">Start session</button>
+                <button type="button" class="player-btn" id="player-stop-session" aria-label="Stop session timer">Stop session</button>
               </div>
               <div class="player-controls">
                 <button type="button" class="player-btn primary" id="player-play" aria-label="Play workout">Play</button>
@@ -1167,6 +1184,10 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
               {% for item in payload.live_session.queue %}
               <div class="queue-row {% if item.done %}done{% endif %}" data-queue-index="{{ loop.index0 }}" data-item-key="{{ item.item_key }}">
                 <div>
+                  {% if item.machine_image %}
+                  <img src="{{ item.machine_image }}" alt="{{ item.machine_label }}" style="width:100%;max-width:220px;border-radius:18px;border:1px solid rgba(255,255,255,.08);display:block;margin-bottom:12px;background:#111;">
+                  {% endif %}
+                  <div class="mini">{{ item.machine_label }} - {{ item.machine_focus }}</div>
                   <strong style="font-size:18px;margin-top:0;">{{ item.name }}</strong>
                   <p style="margin-top:6px;">{{ item.detail }}</p>
                   <div class="notice" style="margin-top:10px;">Auto-weight: {{ item.weight_suggestion }}</div>
@@ -1252,6 +1273,15 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
               <p id="overlay-technique-tail">{{ payload.live_session.technique[1] if payload.live_session.technique|length > 1 else payload.live_session.coach_prompt }}</p>
             </article>
           </div>
+          <div id="overlay-machine-card" class="player-overlay-card" style="margin-top:12px;">
+            {% if payload.live_session.queue and payload.live_session.queue[0].machine_image %}
+            <img id="overlay-machine-image" src="{{ payload.live_session.queue[0].machine_image }}" alt="{{ payload.live_session.queue[0].machine_label }}" style="width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.08);display:block;background:#111;">
+            {% else %}
+            <div id="overlay-machine-image" style="display:none;"></div>
+            {% endif %}
+            <strong id="overlay-machine-label" style="display:block;margin-top:12px;">{{ payload.live_session.queue[0].machine_label if payload.live_session.queue else "Training station" }}</strong>
+            <p id="overlay-machine-focus">{{ payload.live_session.queue[0].machine_focus if payload.live_session.queue else "Follow the live coaching lane." }}</p>
+          </div>
           <div class="player-strip">
             <div class="tag" id="overlay-voice-state">{{ payload.voice_coach.mode_label }}</div>
             <div class="tag">{{ payload.voice_coach.session_type|title }} cues</div>
@@ -1325,7 +1355,11 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
               {% for item in payload.today_blueprint.exercises %}
               <article class="log">
                 <div class="mini">Step {{ item.order }} - {{ item.block }} - {{ item.duration }}</div>
+                {% if item.machine_image %}
+                <img src="{{ item.machine_image }}" alt="{{ item.machine_label }}" style="width:100%;max-width:240px;border-radius:18px;border:1px solid rgba(255,255,255,.08);display:block;margin:10px 0;background:#111;">
+                {% endif %}
                 <strong style="display:block;margin-top:6px;">{{ item.name }}</strong>
+                <div class="notice" style="margin-top:10px;">{{ item.machine_label }} - {{ item.machine_focus }}</div>
                 <p>{{ item.sets }} sets - {{ item.reps }} reps - rest {{ item.rest }}</p>
                 <p>{{ item.note }}</p>
                 <form method="post" action="/today/check" style="margin-top:10px;">
@@ -1931,11 +1965,14 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       const player = document.getElementById("workout-player");
       if (!player) return;
       const timerNode = document.getElementById("player-timer");
+      const sessionTimerNode = document.getElementById("session-timer");
       const statusNode = document.getElementById("player-status");
       const playBtn = document.getElementById("player-play");
       const pauseBtn = document.getElementById("player-pause");
       const resetBtn = document.getElementById("player-reset");
       const mainStartBtn = document.getElementById("player-start-main");
+      const startSessionBtn = document.getElementById("player-start-session");
+      const stopSessionBtn = document.getElementById("player-stop-session");
       const presetButtons = document.querySelectorAll(".preset-btn");
       const overlay = document.getElementById("player-overlay");
       const overlayCloseBtn = document.getElementById("player-close");
@@ -1946,6 +1983,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       const overlayStepDetail = document.getElementById("overlay-step-detail");
       const overlayWeight = document.getElementById("overlay-weight");
       const overlayRest = document.getElementById("overlay-rest");
+      const overlayMachineImage = document.getElementById("overlay-machine-image");
+      const overlayMachineLabel = document.getElementById("overlay-machine-label");
+      const overlayMachineFocus = document.getElementById("overlay-machine-focus");
       const overlayTechniqueHead = document.getElementById("overlay-technique-head");
       const overlayTechniqueTail = document.getElementById("overlay-technique-tail");
       const overlayCheckpoints = document.getElementById("overlay-checkpoints");
@@ -1976,6 +2016,8 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       let currentPreset = defaultSeconds;
       let secondsLeft = defaultSeconds;
       let intervalId = null;
+      let sessionSeconds = 0;
+      let sessionIntervalId = null;
       let queue = Array.isArray(sessionData.queue) ? sessionData.queue : [];
       let activeIndex = Math.max(0, queue.findIndex(function (item) { return !item.done; }));
       if (activeIndex < 0) activeIndex = 0;
@@ -2030,6 +2072,27 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         const secs = String(secondsLeft % 60).padStart(2, "0");
         timerNode.textContent = mins + ":" + secs;
         if (overlayTimer) overlayTimer.textContent = mins + ":" + secs;
+      }
+
+      function renderSessionTime() {
+        if (!sessionTimerNode) return;
+        const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, "0");
+        const secs = String(sessionSeconds % 60).padStart(2, "0");
+        sessionTimerNode.textContent = mins + ":" + secs;
+      }
+
+      function startSessionTimer() {
+        if (sessionIntervalId) return;
+        sessionIntervalId = window.setInterval(function () {
+          sessionSeconds += 1;
+          renderSessionTime();
+        }, 1000);
+      }
+
+      function stopSessionTimer() {
+        if (!sessionIntervalId) return;
+        window.clearInterval(sessionIntervalId);
+        sessionIntervalId = null;
       }
 
       function startTimer() {
@@ -2116,6 +2179,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           overlayStepDetail.textContent = sessionData.completion_note || "Session is complete.";
           overlayWeight.textContent = "No next load";
           overlayRest.textContent = "Cooldown";
+          if (overlayMachineImage) overlayMachineImage.style.display = "none";
+          if (overlayMachineLabel) overlayMachineLabel.textContent = "Session complete";
+          if (overlayMachineFocus) overlayMachineFocus.textContent = "Recovery and food are next.";
           overlayTechniqueHead.textContent = (sessionData.technique || [])[0] || "Great work.";
           overlayTechniqueTail.textContent = (sessionData.technique || [])[1] || "Hydrate and log the session.";
           overlayProgressBar.style.width = "100%";
@@ -2127,6 +2193,16 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         overlayStepDetail.textContent = item.detail;
         overlayWeight.textContent = item.weight_suggestion || "Use stable working weight.";
         overlayRest.textContent = "Rest preset: " + currentPreset + " sec";
+        if (overlayMachineImage) {
+          if (item.machine_image) {
+            overlayMachineImage.src = item.machine_image;
+            overlayMachineImage.style.display = "block";
+          } else {
+            overlayMachineImage.style.display = "none";
+          }
+        }
+        if (overlayMachineLabel) overlayMachineLabel.textContent = item.machine_label || "Training station";
+        if (overlayMachineFocus) overlayMachineFocus.textContent = item.machine_focus || "Main station";
         overlayTechniqueHead.textContent = (sessionData.technique || [])[0] || "Keep setup tight and move with control.";
         overlayTechniqueTail.textContent = (sessionData.technique || [])[1] || statusNode.textContent;
         overlayProgressBar.style.width = String(Math.round((completedCount / total) * 100)) + "%";
@@ -2267,9 +2343,12 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       }
 
       renderTime();
+      renderSessionTime();
       playBtn.addEventListener("click", startTimer);
       pauseBtn.addEventListener("click", pauseTimer);
       resetBtn.addEventListener("click", resetTimer);
+      if (startSessionBtn) startSessionBtn.addEventListener("click", startSessionTimer);
+      if (stopSessionBtn) stopSessionBtn.addEventListener("click", stopSessionTimer);
       if (overlayPlayBtn) overlayPlayBtn.addEventListener("click", startTimer);
       if (overlayPauseBtn) overlayPauseBtn.addEventListener("click", pauseTimer);
       if (overlayResetBtn) overlayResetBtn.addEventListener("click", resetTimer);
@@ -2287,6 +2366,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           statusNode.textContent = "Workout started. Follow the next movement and use the player between sets.";
           openOverlay();
           renderOverlay();
+          startSessionTimer();
           speakVoiceCue(true);
           startTimer();
         });
@@ -4380,6 +4460,130 @@ def exercise_mastery_profile(exercise_name: str) -> dict[str, Any]:
     }
 
 
+def machine_profile(exercise_name: str) -> dict[str, str]:
+    name = exercise_name.lower()
+    if any(key in name for key in ["squat", "leg press", "split squat", "lunge", "hack squat"]):
+        return {"label": "Rack / leg station", "icon": "rack", "focus": "Lower body station"}
+    if any(key in name for key in ["bench", "press", "chest", "push-up", "floor press"]):
+        return {"label": "Bench / chest press", "icon": "bench", "focus": "Pressing station"}
+    if any(key in name for key in ["row", "pulldown", "pull-up", "pull", "lat"]):
+        return {"label": "Cable / pull station", "icon": "cable", "focus": "Back station"}
+    if any(key in name for key in ["deadlift", "hinge", "romanian"]):
+        return {"label": "Barbell platform", "icon": "barbell", "focus": "Hinge station"}
+    if any(key in name for key in ["carry", "bike", "rower", "interval", "sled"]):
+        return {"label": "Conditioning lane", "icon": "conditioning", "focus": "Engine station"}
+    if any(key in name for key in ["curl", "triceps", "lateral", "shoulder", "raise"]):
+        return {"label": "Cable / dumbbell bay", "icon": "dumbbell", "focus": "Arms and delts"}
+    return {"label": "Free-weight station", "icon": "dumbbell", "focus": "General training station"}
+
+
+def machine_image_uri(icon: str, label: str) -> str:
+    templates = {
+        "rack": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='38' y='28' width='16' height='150' rx='8' fill='#ff8b39'/>
+              <rect x='266' y='28' width='16' height='150' rx='8' fill='#ff8b39'/>
+              <rect x='54' y='42' width='212' height='10' rx='5' fill='#f4e9d7'/>
+              <rect x='90' y='96' width='140' height='12' rx='6' fill='#ffc14d'/>
+              <circle cx='75' cy='102' r='18' fill='#2b2b2b'/><circle cx='245' cy='102' r='18' fill='#2b2b2b'/>
+              <rect x='120' y='150' width='80' height='14' rx='7' fill='#f4e9d7'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+        "bench": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='74' y='114' width='140' height='18' rx='9' fill='#ffc14d'/>
+              <rect x='98' y='84' width='92' height='18' rx='9' fill='#f4e9d7'/>
+              <rect x='92' y='132' width='10' height='42' rx='5' fill='#ff8b39'/>
+              <rect x='190' y='132' width='10' height='42' rx='5' fill='#ff8b39'/>
+              <rect x='228' y='48' width='12' height='126' rx='6' fill='#f4e9d7'/>
+              <rect x='70' y='58' width='180' height='10' rx='5' fill='#f4e9d7'/>
+              <circle cx='70' cy='63' r='18' fill='#2b2b2b'/><circle cx='250' cy='63' r='18' fill='#2b2b2b'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+        "cable": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='66' y='32' width='16' height='148' rx='8' fill='#f4e9d7'/>
+              <rect x='238' y='32' width='16' height='148' rx='8' fill='#f4e9d7'/>
+              <rect x='82' y='44' width='156' height='12' rx='6' fill='#ff8b39'/>
+              <rect x='148' y='62' width='24' height='92' rx='12' fill='#2b2b2b'/>
+              <line x1='160' y1='56' x2='118' y2='110' stroke='#ffc14d' stroke-width='6'/>
+              <line x1='160' y1='56' x2='202' y2='110' stroke='#ffc14d' stroke-width='6'/>
+              <circle cx='116' cy='112' r='8' fill='#ffc14d'/><circle cx='204' cy='112' r='8' fill='#ffc14d'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+        "barbell": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='40' y='102' width='240' height='12' rx='6' fill='#f4e9d7'/>
+              <rect x='46' y='86' width='10' height='44' rx='5' fill='#ff8b39'/>
+              <rect x='264' y='86' width='10' height='44' rx='5' fill='#ff8b39'/>
+              <circle cx='64' cy='108' r='22' fill='#2b2b2b'/><circle cx='96' cy='108' r='16' fill='#2b2b2b'/>
+              <circle cx='256' cy='108' r='22' fill='#2b2b2b'/><circle cx='224' cy='108' r='16' fill='#2b2b2b'/>
+              <rect x='136' y='136' width='48' height='14' rx='7' fill='#ffc14d'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+        "conditioning": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='62' y='126' width='132' height='22' rx='11' fill='#ff8b39'/>
+              <rect x='174' y='86' width='24' height='40' rx='12' fill='#ffc14d'/>
+              <rect x='204' y='68' width='18' height='58' rx='9' fill='#f4e9d7'/>
+              <rect x='232' y='54' width='14' height='72' rx='7' fill='#f4e9d7'/>
+              <circle cx='88' cy='154' r='18' fill='#2b2b2b'/><circle cx='168' cy='154' r='18' fill='#2b2b2b'/>
+              <path d='M56 92 C100 46, 160 46, 206 92' stroke='#f4e9d7' stroke-width='8' fill='none'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+        "dumbbell": """
+            <svg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'>
+              <rect width='320' height='220' rx='28' fill='#161616'/>
+              <rect x='96' y='100' width='128' height='20' rx='10' fill='#f4e9d7'/>
+              <rect x='74' y='86' width='20' height='48' rx='10' fill='#ff8b39'/>
+              <rect x='52' y='80' width='18' height='60' rx='9' fill='#ffc14d'/>
+              <rect x='226' y='86' width='20' height='48' rx='10' fill='#ff8b39'/>
+              <rect x='250' y='80' width='18' height='60' rx='9' fill='#ffc14d'/>
+              <text x='24' y='204' font-size='20' fill='#f7efdf' font-family='Arial'>__LABEL__</text>
+            </svg>
+        """,
+    }
+    svg = templates.get(icon, templates["dumbbell"]).replace("__LABEL__", label[:22])
+    return "data:image/svg+xml;utf8," + quote(" ".join(svg.split()))
+
+
+def build_daily_tasks(today_blueprint: dict[str, Any], today_progress: dict[str, Any], access: dict[str, Any]) -> list[dict[str, str]]:
+    tasks = [
+        {
+            "title": "Open workout player",
+            "detail": today_blueprint.get("title", "Today's workout"),
+            "state": "Ready" if today_blueprint.get("day_type") == "training" else "Recovery",
+        },
+        {
+            "title": "Close nutrition blocks",
+            "detail": f"{max(int(today_progress.get('meal_total', 0)) - int(today_progress.get('meal_done', 0)), 0)} meals still open today.",
+            "state": "Nutrition",
+        },
+        {
+            "title": "Log the day",
+            "detail": "Finish the check-in and keep the coach data clean for tomorrow.",
+            "state": access.get("status_label", "Active"),
+        },
+    ]
+    if today_blueprint.get("day_type") != "training":
+        tasks[0] = {
+            "title": "Run recovery flow",
+            "detail": "Walk, mobility and low-stress output are enough today.",
+            "state": "Recovery",
+        }
+    return tasks
+
+
 def build_exercise_mastery(today_blueprint: dict[str, Any]) -> list[dict[str, Any]]:
     if today_blueprint.get("day_type") != "training":
         return [
@@ -4732,6 +4936,10 @@ def build_today_blueprint(
     for idx, item in enumerate(exercises, start=1):
         item["order"] = idx
         item["item_key"] = f"exercise-{idx}-{item['name'].lower().replace(' ', '-').replace('/', '-')}"
+        machine = machine_profile(str(item["name"]))
+        item["machine_label"] = machine["label"]
+        item["machine_focus"] = machine["focus"]
+        item["machine_image"] = machine_image_uri(machine["icon"], machine["label"])
 
     latest_note = workouts[0]["focus"] if workouts else "No previous session logged yet."
     total_minutes = sum(clamp_int(item["duration"].split()[0], 10, 1, 60) for item in exercises)
@@ -4781,6 +4989,17 @@ def build_today_blueprint(
             else "Recovery day: lower stress, hit food structure and come back fresher tomorrow."
         )
     )
+    daily_tasks = [
+        {"title": "Open the player", "detail": "Start the workout timer and follow the exercise queue."},
+        {"title": "Finish every written set", "detail": "Use one-tap completion so the coach can adapt tomorrow."},
+        {"title": "Close the food plan", "detail": "Hit the written meals and protein target before the day ends."},
+    ]
+    if not is_training_day:
+        daily_tasks = [
+            {"title": "Run recovery flow", "detail": "Walk, mobility and breathing are the full goal today."},
+            {"title": "Close food structure", "detail": "Keep meals clean and recovery-focused."},
+            {"title": "Prepare tomorrow", "detail": "Sleep, hydration and light prep make the next session better."},
+        ]
 
     return {
         "day_type": "training" if is_training_day else "recovery",
@@ -4795,6 +5014,7 @@ def build_today_blueprint(
         "nutrition": nutrition,
         "focus_line": focus_line,
         "rest_day_actions": rest_day_actions,
+        "daily_tasks": daily_tasks,
     }
 
 
@@ -4871,6 +5091,9 @@ def build_live_session(
                 "done": item["item_key"] in completed,
                 "checkpoints": checkpoints,
                 "weight_suggestion": next((entry["recommendation"] for entry in progression if entry["name"] == item["name"]), "Use a conservative starting load."),
+                "machine_label": item.get("machine_label", "Training station"),
+                "machine_focus": item.get("machine_focus", "Main station"),
+                "machine_image": item.get("machine_image", ""),
             }
         )
     if today_blueprint.get("day_type") != "training":
@@ -4904,6 +5127,7 @@ def build_live_session(
         "coach_prompt": today_blueprint.get("warmup", ""),
         "next_move": f"Next up: {next_exercise['name']}" if next_exercise else "Workout complete. Move to cooldown and nutrition.",
         "rest_timer": next_exercise["rest"] if next_exercise else "Cooldown",
+        "session_target_seconds": max(clamp_int(str(today_blueprint.get("duration", "60")).split()[0], 60, 15, 180) * 60, 900),
         "queue": queue,
         "technique": guide["cues"],
         "technique_source_label": guide["source_label"],
@@ -5742,6 +5966,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     easy_mode = build_easy_mode(user, today_blueprint, today_progress, access, ai_concierge)
     coach_briefing = build_coach_briefing(user, today_blueprint, today_progress, ai_concierge)
     reminder_center = build_reminder_center(today_blueprint, today_progress, access)
+    daily_tasks = build_daily_tasks(today_blueprint, today_progress, access)
     single_next_action = build_single_next_action(today_blueprint, today_progress, checkins, completed_today)
     day_flow = build_day_flow(today_blueprint, today_progress, checkins)
     coach_day_flow = build_coach_day_flow(today_blueprint, completed_today)
@@ -5823,6 +6048,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
         "reminder_center": reminder_center,
+        "daily_tasks": daily_tasks,
         "single_next_action": single_next_action,
         "day_flow": day_flow,
         "coach_day_flow": coach_day_flow,
@@ -6108,9 +6334,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V36",
-        "login_title": "Secure athlete login V36",
-        "dashboard_title": "Adaptive athlete dashboard V36",
+        "build": "APP.PY ONLY BUILD V37",
+        "login_title": "Secure athlete login V37",
+        "dashboard_title": "Adaptive athlete dashboard V37",
     }
 
 
