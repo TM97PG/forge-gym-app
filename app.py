@@ -30,9 +30,9 @@ app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FORGE_COOKIE_SECURE", "0")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
 DEFAULT_ADMIN_USERNAME = os.environ.get("FORGE_ADMIN_USERNAME", "admin")
-DEFAULT_ADMIN_PASSWORD = os.environ.get("FORGE_ADMIN_PASSWORD", "daljamtelemont1")
+DEFAULT_ADMIN_PASSWORD = os.environ.get("FORGE_ADMIN_PASSWORD", "telemontdaljam1")
 DEFAULT_MITAR_USERNAME = os.environ.get("FORGE_MITAR_USERNAME", "mitar")
-DEFAULT_MITAR_PASSWORD = os.environ.get("FORGE_MITAR_PASSWORD", "mitar12345")
+DEFAULT_MITAR_PASSWORD = os.environ.get("FORGE_MITAR_PASSWORD", "telemont97daljam")
 MIN_PASSWORD_LENGTH = 8
 TRIAL_DAYS = 15
 
@@ -302,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V22</div>
+    <div class="pill">APP.PY ONLY BUILD V26</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V22</h1>
+    <h1>Secure athlete login V26</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -526,9 +526,27 @@ INLINE_DASHBOARD_TEMPLATE = """
     .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
     .top-nav-links { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
     .top-nav-links a { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.05); }
-    .folder-menu { display:flex; gap:10px; overflow:auto; padding:10px 2px 2px; margin-top:14px; scrollbar-width:none; }
-    .folder-menu::-webkit-scrollbar { display:none; }
-    .folder-menu a { white-space:nowrap; text-decoration:none; color:var(--text); padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; letter-spacing:.05em; }
+.folder-menu { display:flex; gap:10px; overflow:auto; padding:10px 2px 2px; margin-top:14px; scrollbar-width:none; }
+.folder-menu::-webkit-scrollbar { display:none; }
+.folder-menu a { white-space:nowrap; text-decoration:none; color:var(--text); padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; letter-spacing:.05em; }
+.command-center { margin-top:18px; display:grid; gap:16px; }
+.command-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+.command-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.command-card { text-decoration:none; color:var(--text); padding:18px; border-radius:22px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); display:grid; gap:8px; }
+.command-card strong { font-size:18px; }
+.command-card .tag { width:max-content; }
+.dock-row { display:flex; gap:10px; overflow:auto; padding-bottom:4px; scrollbar-width:none; }
+.dock-row::-webkit-scrollbar { display:none; }
+.dock-row a { text-decoration:none; color:var(--text); min-width:148px; padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.dock-row strong { display:block; margin-top:8px; font-size:16px; }
+.panel-collapsible { padding:0; overflow:hidden; }
+.panel-collapsible[open] { padding:0; }
+.panel-summary { list-style:none; cursor:pointer; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.panel-summary::-webkit-details-marker { display:none; }
+.panel-summary strong { font-size:20px; }
+.panel-summary .mini { margin-bottom:6px; }
+.panel-summary .tag { flex-shrink:0; }
+.panel-body { padding:0 20px 20px; }
     .summary-strip { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; margin-top:18px; }
     .summary-card { padding:18px; border-radius:22px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .task-meter { height:10px; width:100%; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; margin-top:12px; }
@@ -537,20 +555,51 @@ INLINE_DASHBOARD_TEMPLATE = """
     .queue-list { display:grid; gap:10px; margin-top:14px; }
     .queue-row { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .queue-row.done { opacity:.62; }
-    .player-card { padding:20px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(160deg, rgba(255,176,0,.1), rgba(255,255,255,.03) 45%, rgba(241,90,36,.1)); }
-    .player-top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    .player-screen { margin-top:16px; padding:24px; border-radius:24px; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.06); text-align:center; }
-    .player-time { font-size:clamp(42px, 8vw, 74px); font-family:Georgia,serif; line-height:1; margin:12px 0; }
-    .player-controls { display:flex; justify-content:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
-    .player-btn { min-width:64px; min-height:64px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-size:18px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; }
-    .player-btn.primary { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    .player-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
-    .player-meta .log { padding:14px; text-align:center; }
+.player-card { padding:20px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(160deg, rgba(255,176,0,.1), rgba(255,255,255,.03) 45%, rgba(241,90,36,.1)); position:relative; overflow:hidden; }
+.player-top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.player-screen { margin-top:16px; padding:24px; border-radius:24px; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.06); text-align:center; }
+.player-time { font-size:clamp(42px, 8vw, 74px); font-family:Georgia,serif; line-height:1; margin:12px 0; letter-spacing:.04em; }
+.player-controls { display:flex; justify-content:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+.player-btn { min-width:64px; min-height:64px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-size:18px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; }
+.player-btn.primary { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
+.player-btn.ghost { background:rgba(255,255,255,.04); }
+.player-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.player-meta .log { padding:14px; text-align:center; }
+.player-start { display:flex; justify-content:center; margin-top:18px; }
+.player-start button { min-height:76px; min-width:min(100%, 320px); border-radius:999px; font-size:20px; letter-spacing:.08em; text-transform:uppercase; }
+.player-live-hint { margin-top:14px; font-size:13px; color:var(--muted); }
+.player-strip { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:14px; }
+.player-strip .tag { background:rgba(255,255,255,.08); }
+.player-overlay { position:fixed; inset:0; z-index:120; background:radial-gradient(circle at top, rgba(241,90,36,.22), transparent 26%), linear-gradient(180deg, rgba(8,8,8,.98), rgba(12,12,14,.98)); padding:max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)); display:none; flex-direction:column; gap:14px; }
+.player-overlay.open { display:flex; }
+.player-overlay-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.player-overlay-top .mini { margin-bottom:4px; }
+.player-close { min-width:52px; min-height:52px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-size:24px; font-weight:900; }
+.player-overlay-screen { border-radius:28px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); padding:22px; text-align:center; }
+.player-overlay-timer { font-size:clamp(62px, 15vw, 108px); font-family:Georgia,serif; line-height:1; margin:10px 0 6px; }
+.player-overlay-title { font-size:clamp(30px, 7vw, 54px); line-height:.95; margin:8px 0; }
+.player-overlay-subtitle { color:var(--muted); margin:8px 0 0; }
+.player-overlay-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+.player-overlay-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.player-overlay-card strong { display:block; margin-top:8px; font-size:20px; }
+.player-overlay-actions { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+.player-overlay-actions .player-btn { width:100%; min-height:60px; border-radius:20px; }
+.player-overlay-nav { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.player-overlay-nav .player-btn { width:100%; min-height:56px; border-radius:18px; }
+.player-overlay-checkpoints { display:grid; gap:10px; }
+.player-overlay-checkpoint { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.player-overlay-checkpoint.done { opacity:.6; }
+.player-overlay-footer { margin-top:auto; display:grid; gap:12px; }
+.swipe-note { text-align:center; color:var(--muted); font-size:13px; }
+.overlay-progress { height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; }
+.overlay-progress span { display:block; height:100%; background:linear-gradient(135deg,var(--orange),var(--gold)); }
+    .preset-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:14px; }
+    .preset-row button { min-height:42px; min-width:110px; border-radius:999px; background:rgba(255,255,255,.05); color:var(--text); }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
     @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-    @media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
   </style>
 </head>
 <body>
@@ -558,7 +607,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-          <strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V22</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V26</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -593,7 +642,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           <h1>Forge</h1>
           <p>{{ payload.ui.hero_text }}</p>
         </div>
-        <div class="pill">Market ready + dashboard V22</div>
+<div class="pill">Market ready + dashboard V26</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -637,6 +686,53 @@ INLINE_DASHBOARD_TEMPLATE = """
         <a href="{{ item.anchor }}">{{ item.title }}</a>
         {% endfor %}
       </nav>
+      <section class="command-center">
+        <div class="command-head">
+          <div>
+            <div class="mini">Easy mode</div>
+            <strong style="font-size:26px;">{{ payload.easy_mode.headline }}</strong>
+            <p style="margin-top:8px;">{{ payload.easy_mode.detail }}</p>
+          </div>
+          <div class="tag">{{ payload.easy_mode.primary_tag }}</div>
+        </div>
+        <div class="command-grid">
+          {% for item in payload.easy_mode.primary_actions %}
+          <a href="{{ item.anchor }}" class="command-card">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div class="tag">{{ item.tag }}</div>
+          </a>
+          {% endfor %}
+        </div>
+        <div class="dock-row">
+          {% for item in payload.quick_dock %}
+          <a href="{{ item.anchor }}">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p style="margin-top:6px;">{{ item.detail }}</p>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      <div class="summary-strip" style="margin-top:18px;">
+        <article class="summary-card">
+          <div class="mini">Coach briefing</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.coach_briefing.coach }}</strong>
+          <p style="margin-top:12px;">{{ payload.coach_briefing.opening }}</p>
+          <p>{{ payload.coach_briefing.summary }}</p>
+          <div class="next">{{ payload.coach_briefing.next_step }}</div>
+        </article>
+        <article class="summary-card">
+          <div class="mini">Reminder center</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Simple day flow</strong>
+          <ul class="list" style="margin-top:12px;">
+            {% for item in payload.reminder_center %}
+            <li><strong>{{ item.time }}</strong> - {{ item.title }} - {{ item.detail }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+      </div>
     </section>
 
     <section class="panel span" id="folders">
@@ -824,11 +920,25 @@ INLINE_DASHBOARD_TEMPLATE = """
               <div class="mini">Rest timer</div>
               <div class="player-time" id="player-timer">00:00</div>
               <p id="player-status">{{ payload.live_session.coach_prompt }}</p>
+              <div class="player-start">
+                <button type="button" class="player-btn primary" id="player-start-main" aria-label="Start workout">Start workout</button>
+              </div>
               <div class="player-controls">
                 <button type="button" class="player-btn primary" id="player-play" aria-label="Play workout">Play</button>
                 <button type="button" class="player-btn" id="player-pause" aria-label="Pause workout">Pause</button>
                 <button type="button" class="player-btn" id="player-reset" aria-label="Reset timer">Reset</button>
               </div>
+              <div class="preset-row">
+                {% for preset in payload.live_session.rest_presets %}
+                <button type="button" class="preset-btn" data-seconds="{{ preset.seconds }}">{{ preset.label }} {{ preset.seconds }}s</button>
+                {% endfor %}
+              </div>
+              <div class="player-strip">
+                <div class="tag">Live player</div>
+                <div class="tag">Swipe steps</div>
+                <div class="tag">One tap set finish</div>
+              </div>
+              <div class="player-live-hint">Open fullscreen mode and run the whole workout from the center player without scrolling.</div>
             </div>
             <div class="player-meta">
               <article class="log">
@@ -867,7 +977,7 @@ INLINE_DASHBOARD_TEMPLATE = """
             {% if payload.live_session.queue %}
             <div class="queue-list">
               {% for item in payload.live_session.queue %}
-              <div class="queue-row {% if item.done %}done{% endif %}">
+              <div class="queue-row {% if item.done %}done{% endif %}" data-queue-index="{{ loop.index0 }}" data-item-key="{{ item.item_key }}">
                 <div>
                   <strong style="font-size:18px;margin-top:0;">{{ item.name }}</strong>
                   <p style="margin-top:6px;">{{ item.detail }}</p>
@@ -926,6 +1036,53 @@ INLINE_DASHBOARD_TEMPLATE = """
               </div>
             </div>
           </article>
+        </div>
+        <div class="player-overlay" id="player-overlay" aria-hidden="true">
+          <div class="player-overlay-top">
+            <div>
+              <div class="mini">Gym pro mode</div>
+              <strong style="font-size:24px;">{{ payload.live_session.title }}</strong>
+            </div>
+            <button type="button" class="player-close" id="player-close" aria-label="Close workout mode">×</button>
+          </div>
+          <div class="player-overlay-screen">
+            <div class="mini" id="overlay-step-label">Current block</div>
+            <div class="player-overlay-title" id="overlay-step-title">{{ payload.live_session.next_move }}</div>
+            <p class="player-overlay-subtitle" id="overlay-step-detail">{{ payload.live_session.coach_prompt }}</p>
+            <div class="player-overlay-timer" id="overlay-timer">00:00</div>
+            <div class="overlay-progress"><span id="overlay-progress-bar" style="width:0%;"></span></div>
+          </div>
+          <div class="player-overlay-grid">
+            <article class="player-overlay-card">
+              <div class="mini">Auto-weight</div>
+              <strong id="overlay-weight">{{ payload.live_session.queue[0].weight_suggestion if payload.live_session.queue else "Use control and quality." }}</strong>
+              <p id="overlay-rest">{{ payload.live_session.rest_timer }}</p>
+            </article>
+            <article class="player-overlay-card">
+              <div class="mini">Technique</div>
+              <strong id="overlay-technique-head">{{ payload.live_session.technique[0] if payload.live_session.technique else "Stay clean under load." }}</strong>
+              <p id="overlay-technique-tail">{{ payload.live_session.technique[1] if payload.live_session.technique|length > 1 else payload.live_session.coach_prompt }}</p>
+            </article>
+          </div>
+          <div class="player-overlay-checkpoints" id="overlay-checkpoints"></div>
+          <div class="player-overlay-footer">
+            <div class="player-overlay-actions">
+              <button type="button" class="player-btn primary" id="overlay-complete-step">Complete current set</button>
+              <button type="button" class="player-btn ghost" id="overlay-open-source">Technique source</button>
+            </div>
+            <div class="player-overlay-actions">
+              <button type="button" class="player-btn primary" id="overlay-play">Play</button>
+              <button type="button" class="player-btn" id="overlay-pause">Pause</button>
+              <button type="button" class="player-btn" id="overlay-reset">Reset</button>
+              <button type="button" class="player-btn ghost" id="overlay-preset-cycle">Next preset</button>
+            </div>
+            <div class="player-overlay-nav">
+              <button type="button" class="player-btn" id="overlay-prev">Prev</button>
+              <button type="button" class="player-btn ghost" id="overlay-exit">Exit</button>
+              <button type="button" class="player-btn" id="overlay-next">Next</button>
+            </div>
+            <div class="swipe-note">Swipe left or right on the workout screen to move between exercises while the timer stays live.</div>
+          </div>
         </div>
         <div class="summary-strip">
           <article class="summary-card">
@@ -1004,10 +1161,12 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </section>
 
-      <section class="panel" id="assistant">
-        <div class="section-head">
-          <div><div class="mini">Assistant</div><h2>{{ payload.ui.assistant_title }}</h2></div>
-        </div>
+      <details class="panel panel-collapsible" id="assistant" open>
+        <summary class="panel-summary">
+          <div><div class="mini">Assistant</div><strong>{{ payload.ui.assistant_title }}</strong></div>
+          <div class="tag">Coach</div>
+        </summary>
+        <div class="panel-body">
         <div class="notice">{{ payload.ui.coaches_title }}</div>
         <div class="coach-grid">
           {% for coach in payload.personal_trainers %}
@@ -1045,12 +1204,15 @@ INLINE_DASHBOARD_TEMPLATE = """
           </div>
         </div>
         <div class="next">{{ payload.assistant.next_action }}</div>
-      </section>
-
-      <section class="panel" id="mission">
-        <div class="section-head">
-          <div><div class="mini">Daily mission</div><h2>{{ payload.ui.mission_title }}</h2></div>
         </div>
+      </details>
+
+      <details class="panel panel-collapsible" id="mission">
+        <summary class="panel-summary">
+          <div><div class="mini">Daily mission</div><strong>{{ payload.ui.mission_title }}</strong></div>
+          <div class="tag">Meals</div>
+        </summary>
+        <div class="panel-body">
         <div class="log">
           <ul class="list">
             {% for item in payload.daily_mission %}
@@ -1089,12 +1251,15 @@ INLINE_DASHBOARD_TEMPLATE = """
           <input type="hidden" name="logged_at" value="{{ today }}T12:00">
           <button class="full" type="submit">Log meal from dashboard</button>
         </form>
-      </section>
-
-      <section class="panel span" id="progress">
-        <div class="section-head">
-          <div><div class="mini">Progress</div><h2>{{ payload.ui.progress_title }}</h2></div>
         </div>
+      </details>
+
+      <details class="panel span panel-collapsible" id="progress">
+        <summary class="panel-summary">
+          <div><div class="mini">Progress</div><strong>{{ payload.ui.progress_title }}</strong></div>
+          <div class="tag">Trends</div>
+        </summary>
+        <div class="panel-body">
         <div class="trend-grid">
           {% for item in payload.progress_trends %}
           <article class="kpi">
@@ -1104,12 +1269,15 @@ INLINE_DASHBOARD_TEMPLATE = """
           </article>
           {% endfor %}
         </div>
-      </section>
-
-      <section class="panel span" id="market">
-        <div class="section-head">
-          <div><div class="mini">Launch</div><h2>{{ payload.ui.pricing_title }}</h2></div>
         </div>
+      </details>
+
+      <details class="panel span panel-collapsible" id="market">
+        <summary class="panel-summary">
+          <div><div class="mini">Launch</div><strong>{{ payload.ui.pricing_title }}</strong></div>
+          <div class="tag">{{ payload.user.subscription_tier|title }}</div>
+        </summary>
+        <div class="panel-body">
         <div class="log" style="margin-bottom:16px;">
           <strong>Aktivni paket: {{ payload.user.subscription_tier|title }}</strong>
           <p>Status: {{ payload.user.billing_status|title }}{% if payload.user.gift_package %} - Gift access{% endif %}</p>
@@ -1152,12 +1320,15 @@ INLINE_DASHBOARD_TEMPLATE = """
           </article>
           {% endfor %}
         </div>
-      </section>
-
-      <section class="panel" id="wellness">
-        <div class="section-head">
-          <div><div class="mini">{{ payload.ui.wellness_title }}</div><h2>{{ payload.wellness_panel.title }}</h2></div>
         </div>
+      </details>
+
+      <details class="panel panel-collapsible" id="wellness">
+        <summary class="panel-summary">
+          <div><div class="mini">{{ payload.ui.wellness_title }}</div><strong>{{ payload.wellness_panel.title }}</strong></div>
+          <div class="tag">Recovery</div>
+        </summary>
+        <div class="panel-body">
         <div class="log">
           <p>{{ payload.wellness_panel.tone }}</p>
           <ul class="list">
@@ -1182,7 +1353,8 @@ INLINE_DASHBOARD_TEMPLATE = """
           </article>
           {% endfor %}
         </div>
-      </section>
+        </div>
+      </details>
 
       <section class="panel span" id="ai-trainer">
         <div class="section-head">
@@ -1442,6 +1614,7 @@ INLINE_DASHBOARD_TEMPLATE = """
       <a href="#profile">Profile</a>
     </nav>
   </div>
+  <script id="live-session-json" type="application/json">{{ payload.live_session|tojson }}</script>
   <script>
     (function () {
       const player = document.getElementById("workout-player");
@@ -1451,6 +1624,31 @@ INLINE_DASHBOARD_TEMPLATE = """
       const playBtn = document.getElementById("player-play");
       const pauseBtn = document.getElementById("player-pause");
       const resetBtn = document.getElementById("player-reset");
+      const mainStartBtn = document.getElementById("player-start-main");
+      const presetButtons = document.querySelectorAll(".preset-btn");
+      const overlay = document.getElementById("player-overlay");
+      const overlayCloseBtn = document.getElementById("player-close");
+      const overlayExitBtn = document.getElementById("overlay-exit");
+      const overlayTimer = document.getElementById("overlay-timer");
+      const overlayStepLabel = document.getElementById("overlay-step-label");
+      const overlayStepTitle = document.getElementById("overlay-step-title");
+      const overlayStepDetail = document.getElementById("overlay-step-detail");
+      const overlayWeight = document.getElementById("overlay-weight");
+      const overlayRest = document.getElementById("overlay-rest");
+      const overlayTechniqueHead = document.getElementById("overlay-technique-head");
+      const overlayTechniqueTail = document.getElementById("overlay-technique-tail");
+      const overlayCheckpoints = document.getElementById("overlay-checkpoints");
+      const overlayProgressBar = document.getElementById("overlay-progress-bar");
+      const overlayCompleteBtn = document.getElementById("overlay-complete-step");
+      const overlaySourceBtn = document.getElementById("overlay-open-source");
+      const overlayPlayBtn = document.getElementById("overlay-play");
+      const overlayPauseBtn = document.getElementById("overlay-pause");
+      const overlayResetBtn = document.getElementById("overlay-reset");
+      const overlayPresetBtn = document.getElementById("overlay-preset-cycle");
+      const overlayPrevBtn = document.getElementById("overlay-prev");
+      const overlayNextBtn = document.getElementById("overlay-next");
+      const sessionScript = document.getElementById("live-session-json");
+      const sessionData = sessionScript ? JSON.parse(sessionScript.textContent || "{}") : {};
 
       function parseRest(value) {
         const text = String(value || "").toLowerCase();
@@ -1459,18 +1657,26 @@ INLINE_DASHBOARD_TEMPLATE = """
       }
 
       const defaultSeconds = parseRest(player.dataset.rest);
+      let currentPreset = defaultSeconds;
       let secondsLeft = defaultSeconds;
       let intervalId = null;
+      let queue = Array.isArray(sessionData.queue) ? sessionData.queue : [];
+      let activeIndex = Math.max(0, queue.findIndex(function (item) { return !item.done; }));
+      if (activeIndex < 0) activeIndex = 0;
+      let touchStartX = 0;
+      let touchEndX = 0;
 
       function renderTime() {
         const mins = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
         const secs = String(secondsLeft % 60).padStart(2, "0");
         timerNode.textContent = mins + ":" + secs;
+        if (overlayTimer) overlayTimer.textContent = mins + ":" + secs;
       }
 
       function startTimer() {
         if (intervalId) return;
         statusNode.textContent = "Workout in progress. Follow the current block, then use the timer between sets.";
+        if (overlayStepDetail) overlayStepDetail.textContent = "Workout is live. Stay on the current movement, then use the rest timer before the next set.";
         intervalId = window.setInterval(function () {
           if (secondsLeft > 0) {
             secondsLeft -= 1;
@@ -1480,6 +1686,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           window.clearInterval(intervalId);
           intervalId = null;
           statusNode.textContent = "Rest block finished. Move to the next set or next exercise.";
+          if (overlayStepDetail) overlayStepDetail.textContent = "Rest finished. Hit complete for the next set or swipe to the next movement.";
         }, 1000);
       }
 
@@ -1489,6 +1696,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           intervalId = null;
         }
         statusNode.textContent = "Timer paused. Resume when you are ready.";
+        if (overlayStepDetail) overlayStepDetail.textContent = "Timer paused. Reset or resume when you are ready to continue.";
       }
 
       function resetTimer() {
@@ -1496,15 +1704,231 @@ INLINE_DASHBOARD_TEMPLATE = """
           window.clearInterval(intervalId);
           intervalId = null;
         }
-        secondsLeft = defaultSeconds;
+        secondsLeft = currentPreset;
         renderTime();
         statusNode.textContent = "Timer reset. Press play to begin the next rest block.";
+        if (overlayStepDetail) overlayStepDetail.textContent = "Timer reset. Start the next rest block when the current set is finished.";
+      }
+
+      function openOverlay() {
+        if (!overlay) return;
+        overlay.classList.add("open");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeOverlay() {
+        if (!overlay) return;
+        overlay.classList.remove("open");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function renderCheckpoints(item) {
+        if (!overlayCheckpoints) return;
+        overlayCheckpoints.innerHTML = "";
+        if (!item) {
+          overlayCheckpoints.innerHTML = '<div class="player-overlay-checkpoint"><div><strong>Workout complete</strong><p>No pending steps left in this queue.</p></div></div>';
+          return;
+        }
+        if (Array.isArray(item.checkpoints) && item.checkpoints.length) {
+          item.checkpoints.forEach(function (checkpoint) {
+            const row = document.createElement("div");
+            row.className = "player-overlay-checkpoint" + (checkpoint.done ? " done" : "");
+            row.innerHTML = "<div><strong>" + checkpoint.label + "</strong><p>" + (checkpoint.done ? "Completed" : "Pending") + "</p></div><div class=\"tag\">" + (checkpoint.done ? "Done" : "Next") + "</div>";
+            overlayCheckpoints.appendChild(row);
+          });
+          return;
+        }
+        const row = document.createElement("div");
+        row.className = "player-overlay-checkpoint" + (item.done ? " done" : "");
+        row.innerHTML = "<div><strong>" + item.name + "</strong><p>" + (item.done ? "Marked complete" : "Use one tap to finish this movement.") + "</p></div><div class=\"tag\">" + (item.done ? "Done" : "Live") + "</div>";
+        overlayCheckpoints.appendChild(row);
+      }
+
+      function renderOverlay() {
+        if (!overlay) return;
+        const total = queue.length || 1;
+        const item = queue[activeIndex] || null;
+        const completedCount = queue.filter(function (entry) { return entry.done; }).length;
+        if (!item) {
+          overlayStepLabel.textContent = "Session finish";
+          overlayStepTitle.textContent = sessionData.completion_title || "Workout complete";
+          overlayStepDetail.textContent = sessionData.completion_note || "Session is complete.";
+          overlayWeight.textContent = "No next load";
+          overlayRest.textContent = "Cooldown";
+          overlayTechniqueHead.textContent = (sessionData.technique || [])[0] || "Great work.";
+          overlayTechniqueTail.textContent = (sessionData.technique || [])[1] || "Hydrate and log the session.";
+          overlayProgressBar.style.width = "100%";
+          renderCheckpoints(null);
+          return;
+        }
+        overlayStepLabel.textContent = "Exercise " + (activeIndex + 1) + " / " + total;
+        overlayStepTitle.textContent = item.name;
+        overlayStepDetail.textContent = item.detail;
+        overlayWeight.textContent = item.weight_suggestion || "Use stable working weight.";
+        overlayRest.textContent = "Rest preset: " + currentPreset + " sec";
+        overlayTechniqueHead.textContent = (sessionData.technique || [])[0] || "Keep setup tight and move with control.";
+        overlayTechniqueTail.textContent = (sessionData.technique || [])[1] || statusNode.textContent;
+        overlayProgressBar.style.width = String(Math.round((completedCount / total) * 100)) + "%";
+        renderCheckpoints(item);
+      }
+
+      function updateQueueRowUI(itemKey) {
+        if (!itemKey) return;
+        const row = document.querySelector('[data-item-key="' + itemKey + '"]');
+        if (row) {
+          row.classList.add("done");
+          const tag = row.querySelector(".tag");
+          if (tag) tag.textContent = "Done";
+        }
+      }
+
+      function syncQueueCompletion(item) {
+        if (!item) return;
+        const allCheckpointsDone = Array.isArray(item.checkpoints) && item.checkpoints.length
+          ? item.checkpoints.every(function (checkpoint) { return checkpoint.done; })
+          : true;
+        if (allCheckpointsDone) {
+          item.done = true;
+          updateQueueRowUI(item.item_key);
+        }
+      }
+
+      function nextPendingIndex() {
+        const idx = queue.findIndex(function (entry) { return !entry.done; });
+        return idx === -1 ? queue.length : idx;
+      }
+
+      function moveToIndex(index) {
+        if (!queue.length) {
+          activeIndex = 0;
+          renderOverlay();
+          return;
+        }
+        activeIndex = Math.max(0, Math.min(index, queue.length - 1));
+        renderOverlay();
+      }
+
+      function nextItem() {
+        if (!queue.length) return;
+        moveToIndex(Math.min(activeIndex + 1, queue.length - 1));
+      }
+
+      function prevItem() {
+        if (!queue.length) return;
+        moveToIndex(Math.max(activeIndex - 1, 0));
+      }
+
+      function completeCurrentStep() {
+        const item = queue[activeIndex];
+        if (!item) return;
+        let payload = null;
+        if (Array.isArray(item.checkpoints) && item.checkpoints.length) {
+          const nextCheckpoint = item.checkpoints.find(function (checkpoint) { return !checkpoint.done; });
+          if (nextCheckpoint) {
+            payload = { item_type: "set", item_key: nextCheckpoint.item_key };
+            nextCheckpoint.done = true;
+          }
+        }
+        if (!payload && !item.done && item.item_key) {
+          payload = { item_type: "exercise", item_key: item.item_key };
+          item.done = true;
+        }
+        if (!payload) {
+          nextItem();
+          return;
+        }
+        syncQueueCompletion(item);
+        renderOverlay();
+        fetch("/today/check", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          body: new URLSearchParams(payload)
+        }).then(function () {
+          syncQueueCompletion(item);
+          const pending = nextPendingIndex();
+          if (pending < queue.length && pending !== activeIndex) activeIndex = pending;
+          renderOverlay();
+        }).catch(function () {
+          statusNode.textContent = "Step saved locally. Refresh if the network drops.";
+        });
+      }
+
+      function cyclePreset() {
+        if (!sessionData.rest_presets || !sessionData.rest_presets.length) return;
+        const currentIdx = sessionData.rest_presets.findIndex(function (preset) { return Number(preset.seconds) === currentPreset; });
+        const nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % sessionData.rest_presets.length;
+        currentPreset = Number(sessionData.rest_presets[nextIdx].seconds || defaultSeconds);
+        secondsLeft = currentPreset;
+        renderTime();
+        renderOverlay();
+      }
+
+      function openTechniqueSource() {
+        if (sessionData.technique_source_url) {
+          window.open(sessionData.technique_source_url, "_blank", "noopener");
+        }
+      }
+
+      function handleTouchStart(event) {
+        touchStartX = event.changedTouches[0].screenX;
+      }
+
+      function handleTouchEnd(event) {
+        touchEndX = event.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) < 40) return;
+        if (diff < 0) nextItem();
+        if (diff > 0) prevItem();
       }
 
       renderTime();
       playBtn.addEventListener("click", startTimer);
       pauseBtn.addEventListener("click", pauseTimer);
       resetBtn.addEventListener("click", resetTimer);
+      if (overlayPlayBtn) overlayPlayBtn.addEventListener("click", startTimer);
+      if (overlayPauseBtn) overlayPauseBtn.addEventListener("click", pauseTimer);
+      if (overlayResetBtn) overlayResetBtn.addEventListener("click", resetTimer);
+      if (overlayPresetBtn) overlayPresetBtn.addEventListener("click", cyclePreset);
+      if (overlaySourceBtn) overlaySourceBtn.addEventListener("click", openTechniqueSource);
+      if (overlayCompleteBtn) overlayCompleteBtn.addEventListener("click", completeCurrentStep);
+      if (overlayPrevBtn) overlayPrevBtn.addEventListener("click", prevItem);
+      if (overlayNextBtn) overlayNextBtn.addEventListener("click", nextItem);
+      if (overlayCloseBtn) overlayCloseBtn.addEventListener("click", closeOverlay);
+      if (overlayExitBtn) overlayExitBtn.addEventListener("click", closeOverlay);
+      if (mainStartBtn) {
+        mainStartBtn.addEventListener("click", function () {
+          statusNode.textContent = "Workout started. Follow the next movement and use the player between sets.";
+          openOverlay();
+          renderOverlay();
+          startTimer();
+        });
+      }
+      presetButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          currentPreset = Number(button.dataset.seconds || defaultSeconds);
+          secondsLeft = currentPreset;
+          renderTime();
+          statusNode.textContent = "Preset selected. Press play to run that rest block.";
+          renderOverlay();
+        });
+      });
+      if (overlay) {
+        overlay.addEventListener("touchstart", handleTouchStart, { passive: true });
+        overlay.addEventListener("touchend", handleTouchEnd, { passive: true });
+      }
+      document.querySelectorAll(".queue-row[data-queue-index]").forEach(function (row) {
+        row.addEventListener("click", function () {
+          const index = Number(row.dataset.queueIndex || "0");
+          moveToIndex(index);
+          openOverlay();
+        });
+      });
+      renderOverlay();
     })();
   </script>
 </body>
@@ -1537,7 +1961,12 @@ INLINE_ONBOARDING_TEMPLATE = """
     .grid { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:18px; }
     .tile { padding:14px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid var(--line); }
     .tile strong { display:block; margin-top:8px; font-size:18px; }
-    @media (max-width: 760px) { form,.grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
+    .section-kicker { margin-top:18px; padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.05); border:1px solid var(--line); }
+    details { grid-column:1 / -1; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.04); }
+    summary { list-style:none; cursor:pointer; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    summary::-webkit-details-marker { display:none; }
+    .advanced-grid { padding:0 16px 16px; display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    @media (max-width: 760px) { form,.grid,.advanced-grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
   </style>
 </head>
 <body>
@@ -1551,14 +1980,45 @@ INLINE_ONBOARDING_TEMPLATE = """
       <article class="tile"><div class="mini">Nutrition</div><strong>Macro targets</strong><p>Kalorije i makroi se racunaju po tvom profilu.</p></article>
       <article class="tile"><div class="mini">Calendar</div><strong>Planned routine</strong><p>Izabrani plan i preporuke ulaze u tvoj kalendar.</p></article>
     </div>
+    <div class="section-kicker">
+      <div class="mini">Essentials first</div>
+      <strong style="display:block;margin-top:8px;font-size:20px;">Prvo unesi samo ono sto je potrebno za start.</strong>
+      <p style="margin-top:8px;">Ime, cilj, body podaci i iskustvo su dovoljni da aplikacija odmah slozi prvi kvalitetan plan. Napredne filtere mozes otvoriti ispod.</p>
+    </div>
     <form method="post">
       <label>Ime i prezime<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
+      <label class="full">Cilj
+        <select name="goal">
+          <option value="performance" {% if user.goal == 'performance' %}selected{% endif %}>Performance</option>
+          <option value="muscle" {% if user.goal == 'muscle' %}selected{% endif %}>Muscle</option>
+          <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>Cut</option>
+        </select>
+      </label>
+      <label>Godine<input type="number" name="age" value="{{ user.age }}" min="13" max="100" required></label>
+      <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ user.height_cm }}" required></label>
+      <label>Kilaza kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
       <label>Pol
         <select name="gender">
           <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Musko</option>
           <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Zensko</option>
         </select>
       </label>
+      <label class="full">Iskustvo
+        <select name="experience_level">
+          <option value="beginner" {% if user.experience_level == 'beginner' %}selected{% endif %}>Beginner</option>
+          <option value="intermediate" {% if user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+          <option value="advanced" {% if user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
+        </select>
+      </label>
+      <details>
+        <summary>
+          <div>
+            <div class="mini">Advanced setup</div>
+            <strong>Oprema, umor i cycle mode</strong>
+          </div>
+          <div class="pill" style="padding:8px 10px;">Optional</div>
+        </summary>
+        <div class="advanced-grid">
       <label>Oprema
         <select name="equipment_access">
           <option value="full gym" {% if user.equipment_access == 'full gym' %}selected{% endif %}>Full gym</option>
@@ -1581,26 +2041,181 @@ INLINE_ONBOARDING_TEMPLATE = """
           <option value="late_cycle" {% if user.cycle_phase == 'late_cycle' %}selected{% endif %}>Late cycle</option>
         </select>
       </label>
-      <label>Godine<input type="number" name="age" value="{{ user.age }}" min="13" max="100" required></label>
-      <label>Visina cm<input type="number" step="0.1" name="height_cm" value="{{ user.height_cm }}" required></label>
-      <label>KilaĹľa kg<input type="number" step="0.1" name="weight_kg" value="{{ user.weight_kg }}" required></label>
-      <label class="full">Cilj
-        <select name="goal">
-          <option value="performance" {% if user.goal == 'performance' %}selected{% endif %}>Performance</option>
-          <option value="muscle" {% if user.goal == 'muscle' %}selected{% endif %}>Muscle</option>
-          <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>Cut</option>
-        </select>
-      </label>
-      <label class="full">Iskustvo
-        <select name="experience_level">
-          <option value="beginner" {% if user.experience_level == 'beginner' %}selected{% endif %}>Beginner</option>
-          <option value="intermediate" {% if user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
-          <option value="advanced" {% if user.experience_level == 'advanced' %}selected{% endif %}>Advanced</option>
-        </select>
-      </label>
-      <button class="full" type="submit">SaÄŤuvaj profil i nastavi</button>
+        </div>
+      </details>
+      <button class="full" type="submit">Sacuvaj profil i nastavi</button>
     </form>
   </main>
+</body>
+</html>
+"""
+
+
+INLINE_WORKOUT_ONLY_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Workout Mode</title>
+  <style>
+    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,139,57,.16), transparent 24%), linear-gradient(180deg,#050505,#111214); }
+    .shell { width:min(760px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
+    .card { padding:20px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .player-time { font-size:clamp(64px, 18vw, 118px); font-family:Georgia,serif; line-height:1; margin:12px 0; text-align:center; }
+    .screen { text-align:center; padding:22px; border-radius:24px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .actions,.navs { display:grid; gap:12px; }
+    .actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .navs { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    button,a.btn { min-height:58px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font:inherit; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+    button.primary,a.btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; }
+    .list { display:grid; gap:10px; }
+    .row { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .row.done { opacity:.6; }
+    @media (max-width: 760px) { .actions,.navs { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="top">
+        <div>
+          <div class="pill">Workout only mode</div>
+          <div class="mini" style="margin-top:12px;">{{ payload.user.full_name }}</div>
+        </div>
+        <a href="/dashboard#today-plan" class="btn">Back to dashboard</a>
+      </div>
+      <div class="screen">
+        <div class="mini">{{ payload.live_session.title }}</div>
+        <h1 style="font-family:Georgia,serif;font-size:42px;line-height:.96;">{{ payload.live_session.next_move }}</h1>
+        <div class="player-time" id="wo-timer">00:00</div>
+        <p id="wo-status">{{ payload.live_session.coach_prompt }}</p>
+      </div>
+      <div class="actions">
+        <button class="primary" type="button" id="wo-start">Start</button>
+        <button type="button" id="wo-complete">Complete current set</button>
+        <button type="button" id="wo-pause">Pause</button>
+        <button type="button" id="wo-reset">Reset</button>
+      </div>
+      <div class="navs">
+        <button type="button" id="wo-prev">Prev</button>
+        <button type="button" id="wo-preset">Next preset</button>
+        <button type="button" id="wo-next">Next</button>
+      </div>
+    </section>
+    <section class="card">
+      <div class="mini">Live queue</div>
+      <div class="list">
+        {% for item in payload.live_session.queue %}
+        <div class="row {% if item.done %}done{% endif %}" data-wo-index="{{ loop.index0 }}">
+          <strong>{{ item.name }}</strong>
+          <p>{{ item.detail }}</p>
+          <div>Auto-weight: {{ item.weight_suggestion }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+  <script id="wo-data" type="application/json">{{ payload.live_session|tojson }}</script>
+  <script>
+    (function () {
+      const data = JSON.parse(document.getElementById("wo-data").textContent || "{}");
+      const timerNode = document.getElementById("wo-timer");
+      const statusNode = document.getElementById("wo-status");
+      const rows = Array.from(document.querySelectorAll("[data-wo-index]"));
+      const presets = data.rest_presets || [];
+      let currentPreset = presets.length ? Number(presets[0].seconds || 60) : 60;
+      let secondsLeft = currentPreset;
+      let intervalId = null;
+      let queue = Array.isArray(data.queue) ? data.queue : [];
+      let activeIndex = Math.max(0, queue.findIndex(item => !item.done));
+      if (activeIndex < 0) activeIndex = 0;
+      function renderTime() {
+        const mins = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+        const secs = String(secondsLeft % 60).padStart(2, "0");
+        timerNode.textContent = mins + ":" + secs;
+      }
+      function renderState() {
+        rows.forEach((row, idx) => {
+          row.style.outline = idx === activeIndex ? "2px solid rgba(255,193,77,.7)" : "none";
+        });
+        const item = queue[activeIndex];
+        if (!item) {
+          statusNode.textContent = data.completion_note || "Session complete.";
+          return;
+        }
+        statusNode.textContent = item.name + " | " + item.detail;
+      }
+      function start() {
+        if (intervalId) return;
+        intervalId = setInterval(function () {
+          if (secondsLeft > 0) {
+            secondsLeft -= 1;
+            renderTime();
+            return;
+          }
+          clearInterval(intervalId);
+          intervalId = null;
+          statusNode.textContent = "Rest finished. Move to the next set.";
+        }, 1000);
+      }
+      function pause() { if (intervalId) { clearInterval(intervalId); intervalId = null; } }
+      function reset() { pause(); secondsLeft = currentPreset; renderTime(); renderState(); }
+      function move(delta) {
+        if (!queue.length) return;
+        activeIndex = Math.max(0, Math.min(activeIndex + delta, queue.length - 1));
+        renderState();
+      }
+      function cyclePreset() {
+        if (!presets.length) return;
+        const currentIndex = presets.findIndex(item => Number(item.seconds) === currentPreset);
+        const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % presets.length;
+        currentPreset = Number(presets[nextIndex].seconds || 60);
+        secondsLeft = currentPreset;
+        renderTime();
+      }
+      function complete() {
+        const item = queue[activeIndex];
+        if (!item) return;
+        let payload = null;
+        if (item.checkpoints && item.checkpoints.length) {
+          const nextCheckpoint = item.checkpoints.find(point => !point.done);
+          if (nextCheckpoint) {
+            nextCheckpoint.done = true;
+            payload = { item_type: "set", item_key: nextCheckpoint.item_key };
+          }
+          if (item.checkpoints.every(point => point.done)) item.done = true;
+        } else if (!item.done) {
+          item.done = true;
+          payload = { item_type: "exercise", item_key: item.item_key };
+        }
+        rows[activeIndex]?.classList.add("done");
+        const nextPending = queue.findIndex(entry => !entry.done);
+        if (nextPending !== -1) activeIndex = nextPending;
+        renderState();
+        if (!payload) return;
+        fetch("/today/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "X-Requested-With": "XMLHttpRequest" },
+          body: new URLSearchParams(payload)
+        });
+      }
+      document.getElementById("wo-start").addEventListener("click", start);
+      document.getElementById("wo-pause").addEventListener("click", pause);
+      document.getElementById("wo-reset").addEventListener("click", reset);
+      document.getElementById("wo-prev").addEventListener("click", () => move(-1));
+      document.getElementById("wo-next").addEventListener("click", () => move(1));
+      document.getElementById("wo-preset").addEventListener("click", cyclePreset);
+      document.getElementById("wo-complete").addEventListener("click", complete);
+      renderTime();
+      renderState();
+    })();
+  </script>
 </body>
 </html>
 """
@@ -3006,6 +3621,7 @@ def build_live_session(
             )
         queue.append(
             {
+                "item_key": item["item_key"],
                 "name": item["name"],
                 "detail": f"{item['sets']} sets / {item['reps']} reps / rest {item['rest']}",
                 "done": item["item_key"] in completed,
@@ -3221,6 +3837,166 @@ def build_progress_trends(metrics: list[dict[str, Any]], workouts: list[dict[str
         {"label": "Session rhythm", "value": str(len(workouts[:7])) + " sessions", "detail": "Recent training frequency window."},
         {"label": "Energy average", "value": energy_avg + "/10", "detail": "Daily readiness from your latest check-ins."},
     ]
+
+
+def build_easy_mode(
+    user: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    access: dict[str, Any],
+    ai_concierge: dict[str, Any],
+) -> dict[str, Any]:
+    day_type = str(today_blueprint.get("day_type") or "training")
+    training_live = day_type == "training"
+    meals_left = max(int(today_progress.get("meal_total", 0)) - int(today_progress.get("meal_done", 0)), 0)
+    exercise_left = max(int(today_progress.get("exercise_total", 0)) - int(today_progress.get("exercise_done", 0)), 0)
+    headline = "Your day is already organized"
+    detail = (
+        "Open the player and follow the next exercise step by step."
+        if training_live
+        else "Today is simplified for recovery, food structure and low-stress consistency."
+    )
+    primary_tag = "Training live" if training_live else "Recovery day"
+    primary_actions = [
+        {
+            "kicker": "Start now",
+            "title": "Open workout player" if training_live else "Open recovery plan",
+            "detail": today_blueprint.get("duration", "Training flow"),
+            "anchor": "/workout-mode" if training_live else "#today-plan",
+            "tag": "Live",
+        },
+        {
+            "kicker": "Food today",
+            "title": f"{meals_left} meal blocks left" if meals_left else "Meals complete",
+            "detail": "Log food and keep macros aligned with the goal.",
+            "anchor": "#mission",
+            "tag": "Nutrition",
+        },
+        {
+            "kicker": "Coach lane",
+            "title": ai_concierge.get("name") or "Forge coach",
+            "detail": "Ask the coach what to do next or how to adjust today.",
+            "anchor": "#ai-trainer",
+            "tag": "AI",
+        },
+        {
+            "kicker": "Progress",
+            "title": f"{exercise_left} exercise blocks left" if training_live else f"{today_progress.get('completion_percent', 0)}% day complete",
+            "detail": "See how the day is tracking and what is still open.",
+            "anchor": "#progress",
+            "tag": access.get("status_label", "Access"),
+        },
+    ]
+    quick_dock = [
+        {
+            "kicker": "Main",
+            "title": "Today",
+            "detail": "Fast jump to the session and meal flow.",
+            "anchor": "#today-plan",
+        },
+        {
+            "kicker": "Mode",
+            "title": "Workout only",
+            "detail": "Open the distraction-free session screen.",
+            "anchor": "/workout-mode",
+        },
+        {
+            "kicker": "Coach",
+            "title": "AI trainer",
+            "detail": "Open chat and coaching summaries.",
+            "anchor": "#ai-trainer",
+        },
+        {
+            "kicker": "Meals",
+            "title": "Nutrition",
+            "detail": "Log food without digging through the page.",
+            "anchor": "#mission",
+        },
+        {
+            "kicker": "User",
+            "title": "Profile",
+            "detail": "Change body data, goal and equipment.",
+            "anchor": "#profile",
+        },
+    ]
+    return {
+        "headline": headline,
+        "detail": detail,
+        "primary_tag": primary_tag,
+        "primary_actions": primary_actions,
+        "quick_dock": quick_dock,
+    }
+
+
+def build_coach_briefing(
+    user: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    ai_concierge: dict[str, Any],
+) -> dict[str, str]:
+    day_type = str(today_blueprint.get("day_type") or "training")
+    if day_type == "training":
+        opening = f"Today is {today_blueprint['title']}. Open the player and run the first movement before you overthink it."
+        summary = f"{today_progress.get('exercise_total', 0)} exercises and {today_progress.get('meal_total', 0)} nutrition blocks are already organized for you."
+        next_step = "Tap Start workout, finish the first set, then let the live player carry the session."
+    else:
+        opening = "Today is a recovery day. Keep stress lower and stay consistent instead of forcing volume."
+        summary = f"You still have {today_progress.get('meal_total', 0)} nutrition blocks and recovery work to close out the day."
+        next_step = "Open Today, finish food structure, mobility and steps, then log the day."
+    return {
+        "coach": ai_concierge.get("name") or "Forge coach",
+        "opening": opening,
+        "summary": summary,
+        "next_step": next_step,
+    }
+
+
+def build_reminder_center(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    access: dict[str, Any],
+) -> list[dict[str, str]]:
+    day_type = str(today_blueprint.get("day_type") or "training")
+    reminders = [
+        {
+            "time": "Now",
+            "title": "Open today's plan",
+            "detail": "Use the player or recovery block instead of guessing what to do next.",
+            "level": "primary",
+        },
+        {
+            "time": "Midday",
+            "title": "Hit your food structure",
+            "detail": f"{max(today_progress.get('meal_total', 0) - today_progress.get('meal_done', 0), 0)} meal blocks are still open today.",
+            "level": "nutrition",
+        },
+        {
+            "time": "Evening",
+            "title": "Close the day clean",
+            "detail": "Finish check-in, hydration and recovery before sleep.",
+            "level": "recovery",
+        },
+    ]
+    if day_type == "training":
+        reminders.insert(
+            1,
+            {
+                "time": "Training window",
+                "title": "Run the session live",
+                "detail": f"Session length is {today_blueprint.get('duration', 'planned')} and the live player handles timing for you.",
+                "level": "training",
+            },
+        )
+    if not access.get("trial_active") and str(access.get("recommended_tier") or ""):
+        reminders.append(
+            {
+                "time": "Access",
+                "title": "Upgrade lane",
+                "detail": f"Recommended package is {str(access['recommended_tier']).title()} when you want full coaching after trial.",
+                "level": "billing",
+            }
+        )
+    return reminders
 
 
 def business_overview() -> dict[str, Any]:
@@ -3527,6 +4303,9 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     personal_calendar = build_personal_calendar(user, assistant, weekly_planner)
     shopping_list = build_shopping_list(str(user["goal"]).lower())
     progress_trends = build_progress_trends(metrics, workouts, checkins)
+    easy_mode = build_easy_mode(user, today_blueprint, today_progress, access, ai_concierge)
+    coach_briefing = build_coach_briefing(user, today_blueprint, today_progress, ai_concierge)
+    reminder_center = build_reminder_center(today_blueprint, today_progress, access)
     pr_tracker = build_pr_tracker(exercises)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
@@ -3574,6 +4353,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "completed_today": list(completed_today),
         "shopping_list": shopping_list,
         "progress_trends": progress_trends,
+        "easy_mode": easy_mode,
+        "quick_dock": easy_mode["quick_dock"],
+        "coach_briefing": coach_briefing,
+        "reminder_center": reminder_center,
         "subscription_plans": SUBSCRIPTION_PLANS,
         "commercial_offers": COMMERCIAL_OFFERS,
         "market_flags": market_flags,
@@ -3719,6 +4502,16 @@ def dashboard():
     return render_template_string(INLINE_DASHBOARD_TEMPLATE, payload=payload, today=date.today().isoformat())
 
 
+@app.route("/workout-mode")
+@login_required
+def workout_mode():
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    payload = dashboard_payload(user)
+    return render_template_string(INLINE_WORKOUT_ONLY_TEMPLATE, payload=payload)
+
+
 @app.route("/onboarding", methods=["GET", "POST"])
 @login_required
 def onboarding():
@@ -3803,9 +4596,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V22",
-        "login_title": "Secure athlete login V22",
-        "dashboard_title": "Adaptive athlete dashboard V22",
+        "build": "APP.PY ONLY BUILD V26",
+        "login_title": "Secure athlete login V26",
+        "dashboard_title": "Adaptive athlete dashboard V26",
     }
 
 
@@ -4006,7 +4799,10 @@ def mark_today_check():
     user = current_user()
     item_type = str(request.form.get("item_type") or "").strip().lower()[:20]
     item_key = str(request.form.get("item_key") or "").strip()[:120]
+    is_xhr = request.headers.get("X-Requested-With") == "XMLHttpRequest"
     if item_type not in {"exercise", "meal", "set"} or not item_key:
+        if is_xhr:
+            return {"ok": False, "message": "Today check nije prosao."}, 400
         flash("Nije prosao today check.")
         return redirect(url_for("dashboard") + "#today-plan")
 
@@ -4027,6 +4823,8 @@ def mark_today_check():
                 (int(user["id"]), today_key, item_type, item_key, 1, datetime.utcnow().isoformat(timespec="seconds")),
             )
 
+    if is_xhr:
+        return {"ok": True, "item_type": item_type, "item_key": item_key}
     flash("Danasnji zadatak je oznacen kao zavrsen.")
     return redirect(url_for("dashboard") + "#today-plan")
 
