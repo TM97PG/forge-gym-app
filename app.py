@@ -291,7 +291,7 @@ INLINE_LOGIN_TEMPLATE = """
     @media (max-width: 900px) { .grid,.login-shell-grid,.hero-gallery,.pricing-login { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; border-radius:26px; } }
   </style>
 </head>
-<body>
+<body data-view-mode="{{ payload.view_mode }}">
   <main class="card">
     <div class="brand-row">
       <div style="display:flex;align-items:center;gap:14px;">
@@ -302,13 +302,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V26</div>
+    <div class="pill">APP.PY ONLY BUILD V29</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V26</h1>
+    <h1>Secure athlete login V29</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -390,7 +390,7 @@ INLINE_REGISTER_TEMPLATE = """
     @media (max-width: 760px) { .grid,.plan-grid { grid-template-columns:1fr; } .card { padding:20px; } h1 { font-size:34px; } }
   </style>
 </head>
-<body>
+<body data-view-mode="{{ payload.view_mode }}">
   <main class="card">
     <div class="pill">Forge registration</div>
     <div class="mini" style="margin-top:14px;">Create your athlete account</div>
@@ -529,6 +529,9 @@ INLINE_DASHBOARD_TEMPLATE = """
 .folder-menu { display:flex; gap:10px; overflow:auto; padding:10px 2px 2px; margin-top:14px; scrollbar-width:none; }
 .folder-menu::-webkit-scrollbar { display:none; }
 .folder-menu a { white-space:nowrap; text-decoration:none; color:var(--text); padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; letter-spacing:.05em; }
+.view-mode { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.view-mode a { text-decoration:none; color:var(--text); padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.04); font-size:12px; font-weight:800; letter-spacing:.06em; }
+.view-mode a.active { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
 .command-center { margin-top:18px; display:grid; gap:16px; }
 .command-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
 .command-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
@@ -539,6 +542,19 @@ INLINE_DASHBOARD_TEMPLATE = """
 .dock-row::-webkit-scrollbar { display:none; }
 .dock-row a { text-decoration:none; color:var(--text); min-width:148px; padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
 .dock-row strong { display:block; margin-top:8px; font-size:16px; }
+.launchpad { display:grid; grid-template-columns:1.05fr .95fr; gap:16px; margin-top:18px; }
+.action-main { padding:20px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(150deg, rgba(241,90,36,.18), rgba(255,255,255,.04) 44%, rgba(255,176,0,.12)); }
+.action-main strong { display:block; margin-top:8px; font-size:30px; line-height:1.02; }
+.action-main p { margin:12px 0 0; color:#eadbc8; line-height:1.55; }
+.action-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+.flow-grid { display:grid; gap:12px; }
+.flow-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.flow-card.done { opacity:.72; }
+.flow-card strong { display:block; margin-top:8px; font-size:20px; }
+.flow-status { display:inline-flex; padding:8px 12px; border-radius:999px; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+.flow-status.now { background:rgba(241,90,36,.16); border:1px solid rgba(241,90,36,.3); }
+.flow-status.ready { background:rgba(255,176,0,.14); border:1px solid rgba(255,176,0,.25); }
+.flow-status.done { background:rgba(78,186,114,.16); border:1px solid rgba(78,186,114,.28); }
 .panel-collapsible { padding:0; overflow:hidden; }
 .panel-collapsible[open] { padding:0; }
 .panel-summary { list-style:none; cursor:pointer; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
@@ -547,6 +563,12 @@ INLINE_DASHBOARD_TEMPLATE = """
 .panel-summary .mini { margin-bottom:6px; }
 .panel-summary .tag { flex-shrink:0; }
 .panel-body { padding:0 20px 20px; }
+.minimal-only { display:none; }
+body[data-view-mode="minimal"] .pro-heavy { display:none !important; }
+body[data-view-mode="minimal"] .minimal-only { display:block; }
+.focus-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.focus-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.035); }
+.focus-card strong { display:block; margin-top:8px; font-size:20px; }
     .summary-strip { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; margin-top:18px; }
     .summary-card { padding:18px; border-radius:22px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .task-meter { height:10px; width:100%; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; margin-top:12px; }
@@ -598,16 +620,16 @@ INLINE_DASHBOARD_TEMPLATE = """
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
   </style>
 </head>
-<body>
+<body data-view-mode="{{ payload.view_mode }}">
   <div class="shell">
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V26</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V29</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -640,9 +662,9 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div>
           <div class="mini">{{ payload.ui.hero_kicker }}</div>
           <h1>Forge</h1>
-          <p>{{ payload.ui.hero_text }}</p>
+          <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V26</div>
+<div class="pill">Market ready + dashboard V29</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -653,7 +675,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         <div>
           <div class="mini">Goal</div>
           <h3 style="margin-top:8px;">{{ payload.user.goal|title }}</h3>
-          <p>{{ payload.user.experience_level|title }} athlete with personal dashboard and assistant.</p>
+          <p>{{ payload.user.experience_level|title }} lane.</p>
         </div>
       </div>
       <div class="hero-kpis">
@@ -670,8 +692,8 @@ INLINE_DASHBOARD_TEMPLATE = """
       <div class="quickbar">
         <a href="#folders">Open {{ payload.ui.folders }}</a>
         <a href="#plans">View {{ payload.ui.plans }}</a>
-        <a href="#assistant">Open {{ payload.ui.assistant_title }}</a>
-        <a href="#profile">Edit profile</a>
+          <a href="/daily-checkin">Daily check-in</a>
+          <a href="#profile">Edit profile</a>
       </div>
       <div class="filter-grid">
         {% for item in payload.adaptive_filters %}
@@ -680,6 +702,13 @@ INLINE_DASHBOARD_TEMPLATE = """
           <strong>{{ item.value }}</strong>
         </article>
         {% endfor %}
+      </div>
+      <div class="view-mode">
+        <a href="/set-view-mode?mode=minimal" class="{% if payload.view_mode == 'minimal' %}active{% endif %}">Minimal</a>
+        <a href="/set-view-mode?mode=pro" class="{% if payload.view_mode == 'pro' %}active{% endif %}">Pro</a>
+        <a href="/workout-mode">Workout only</a>
+        <a href="/nutrition-mode">Nutrition only</a>
+        <a href="/weekly-reset">Weekly reset</a>
       </div>
       <nav class="folder-menu" aria-label="Section menu">
         {% for item in payload.section_menu %}
@@ -715,22 +744,53 @@ INLINE_DASHBOARD_TEMPLATE = """
           {% endfor %}
         </div>
       </section>
+      <section class="launchpad">
+        <article class="action-main">
+          <div class="mini">Do this now</div>
+          <strong>{{ payload.single_next_action.title }}</strong>
+          <p>{{ payload.single_next_action.detail }}</p>
+          <div class="action-row">
+            <a href="{{ payload.single_next_action.anchor }}" class="pill">{{ payload.single_next_action.cta }}</a>
+            <div class="tag">{{ payload.single_next_action.tag }}</div>
+          </div>
+          <div class="focus-grid">
+            {% for item in payload.focus_cards %}
+            <article class="focus-card">
+              <div class="mini">{{ item.kicker }}</div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.detail }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </article>
+        <div class="flow-grid">
+          {% for item in payload.day_flow %}
+          <article class="flow-card {% if item.state == 'done' %}done{% endif %}">
+            <div class="flow-status {{ item.state }}">{{ item.state_label }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">{{ item.cta }}</a></div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
       <div class="summary-strip" style="margin-top:18px;">
         <article class="summary-card">
-          <div class="mini">Coach briefing</div>
+          <div class="mini">Coach</div>
           <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.coach_briefing.coach }}</strong>
           <p style="margin-top:12px;">{{ payload.coach_briefing.opening }}</p>
           <p>{{ payload.coach_briefing.summary }}</p>
           <div class="next">{{ payload.coach_briefing.next_step }}</div>
         </article>
         <article class="summary-card">
-          <div class="mini">Reminder center</div>
-          <strong style="display:block;margin-top:8px;font-size:24px;">Simple day flow</strong>
+          <div class="mini">Today</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Simple flow</strong>
           <ul class="list" style="margin-top:12px;">
             {% for item in payload.reminder_center %}
             <li><strong>{{ item.time }}</strong> - {{ item.title }} - {{ item.detail }}</li>
             {% endfor %}
           </ul>
+          <div style="margin-top:14px;"><a href="/daily-checkin" style="color:#f7efdf;font-weight:800;text-decoration:none;">Open daily check-in</a></div>
         </article>
       </div>
     </section>
@@ -907,7 +967,19 @@ INLINE_DASHBOARD_TEMPLATE = """
           </article>
           {% endfor %}
         </div>
-        <div class="session-grid">
+        <div class="minimal-only">
+          <div class="summary-card" style="margin-top:16px;">
+            <div class="mini">Minimal mode</div>
+            <strong style="display:block;margin-top:8px;font-size:22px;">{{ payload.today_blueprint.title }}</strong>
+            <p style="margin-top:10px;">{{ payload.coach_briefing.next_step }}</p>
+            <div class="quickbar" style="margin-top:14px;">
+              <a href="/workout-mode">Open workout</a>
+              <a href="/nutrition-mode">Open nutrition</a>
+              <a href="/daily-checkin">Check-in</a>
+            </div>
+          </div>
+        </div>
+        <div class="session-grid pro-heavy">
           <article class="player-card" id="workout-player" data-rest="{{ payload.live_session.rest_timer }}">
             <div class="player-top">
               <div>
@@ -1161,7 +1233,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </section>
 
-      <details class="panel panel-collapsible" id="assistant" open>
+      <details class="panel panel-collapsible pro-heavy" id="assistant" open>
         <summary class="panel-summary">
           <div><div class="mini">Assistant</div><strong>{{ payload.ui.assistant_title }}</strong></div>
           <div class="tag">Coach</div>
@@ -1254,7 +1326,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </details>
 
-      <details class="panel span panel-collapsible" id="progress">
+      <details class="panel span panel-collapsible pro-heavy" id="progress">
         <summary class="panel-summary">
           <div><div class="mini">Progress</div><strong>{{ payload.ui.progress_title }}</strong></div>
           <div class="tag">Trends</div>
@@ -1272,7 +1344,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </details>
 
-      <details class="panel span panel-collapsible" id="market">
+      <details class="panel span panel-collapsible pro-heavy" id="market">
         <summary class="panel-summary">
           <div><div class="mini">Launch</div><strong>{{ payload.ui.pricing_title }}</strong></div>
           <div class="tag">{{ payload.user.subscription_tier|title }}</div>
@@ -1323,7 +1395,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         </div>
       </details>
 
-      <details class="panel panel-collapsible" id="wellness">
+      <details class="panel panel-collapsible pro-heavy" id="wellness">
         <summary class="panel-summary">
           <div><div class="mini">{{ payload.ui.wellness_title }}</div><strong>{{ payload.wellness_panel.title }}</strong></div>
           <div class="tag">Recovery</div>
@@ -1824,6 +1896,7 @@ INLINE_DASHBOARD_TEMPLATE = """
         const item = queue[activeIndex];
         if (!item) return;
         let payload = null;
+        let completedWholeMovement = false;
         if (Array.isArray(item.checkpoints) && item.checkpoints.length) {
           const nextCheckpoint = item.checkpoints.find(function (checkpoint) { return !checkpoint.done; });
           if (nextCheckpoint) {
@@ -1840,6 +1913,7 @@ INLINE_DASHBOARD_TEMPLATE = """
           return;
         }
         syncQueueCompletion(item);
+        completedWholeMovement = !!item.done;
         renderOverlay();
         fetch("/today/check", {
           method: "POST",
@@ -1851,7 +1925,14 @@ INLINE_DASHBOARD_TEMPLATE = """
         }).then(function () {
           syncQueueCompletion(item);
           const pending = nextPendingIndex();
-          if (pending < queue.length && pending !== activeIndex) activeIndex = pending;
+          if (completedWholeMovement && pending < queue.length && pending !== activeIndex) {
+            activeIndex = pending;
+            secondsLeft = currentPreset;
+            renderTime();
+            statusNode.textContent = "Next movement loaded automatically. Start when ready.";
+          } else if (pending < queue.length && pending !== activeIndex) {
+            activeIndex = pending;
+          }
           renderOverlay();
         }).catch(function () {
           statusNode.textContent = "Step saved locally. Refresh if the network drops.";
@@ -2216,6 +2297,200 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
       renderState();
     })();
   </script>
+</body>
+</html>
+"""
+
+
+INLINE_DAILY_CHECKIN_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Daily Check-in</title>
+  <style>
+    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top left, rgba(255,139,57,.18), transparent 24%), linear-gradient(180deg,#050505,#101112); }
+    .shell { width:min(720px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
+    .card { padding:22px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:10px 0 6px; font-size:40px; line-height:.96; font-family:Georgia,serif; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:14px; }
+    label { display:grid; gap:8px; color:var(--muted); }
+    input,select,textarea,button,a.btn { width:100%; min-height:52px; border-radius:16px; border:1px solid var(--line); font:inherit; }
+    input,select,textarea { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    button,a.btn { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+    textarea { min-height:108px; resize:vertical; }
+    .actions { display:grid; gap:12px; grid-template-columns:1fr 1fr; margin-top:16px; }
+    @media (max-width: 760px) { .grid,.actions { grid-template-columns:1fr; } h1 { font-size:34px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="pill">Daily check-in wizard</div>
+      <div class="mini" style="margin-top:14px;">{{ payload.user.full_name }}</div>
+      <h1>How are you today?</h1>
+      <p>One quick check-in makes the workout, meals and coach recommendations smarter for the rest of the day.</p>
+      <form method="post" action="/checkin/daily" class="grid">
+        <label>Mood
+          <select name="mood">
+            <option value="steady">Steady</option>
+            <option value="good">Good</option>
+            <option value="flat">Flat</option>
+            <option value="tired">Tired</option>
+          </select>
+        </label>
+        <label>Energy 1-10<input type="number" min="1" max="10" name="energy_score" value="7"></label>
+        <label>Soreness 1-10<input type="number" min="1" max="10" name="soreness_score" value="4"></label>
+        <label class="full">Motivation 1-10<input type="number" min="1" max="10" name="motivation_score" value="7"></label>
+        <label class="full">Short note<textarea name="note" placeholder="Sleep, stress, pain, schedule, anything important for today's plan."></textarea></label>
+        <div class="actions" style="grid-column:1 / -1;">
+          <button type="submit">Save check-in</button>
+          <a href="/dashboard" class="btn">Skip to dashboard</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
+"""
+
+
+INLINE_NUTRITION_ONLY_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Nutrition Mode</title>
+  <style>
+    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,139,57,.16), transparent 24%), linear-gradient(180deg,#050505,#111214); }
+    .shell { width:min(760px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
+    .card { padding:20px; border-radius:24px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .stack { display:grid; gap:12px; margin-top:16px; }
+    .meal { padding:16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .meal strong { display:block; margin-top:6px; font-size:20px; }
+    a,button { text-decoration:none; color:var(--text); }
+    form { display:grid; gap:12px; margin-top:14px; }
+    input,select,button { width:100%; min-height:50px; border-radius:16px; border:1px solid var(--line); font:inherit; }
+    input,select { padding:12px 14px; background:rgba(255,255,255,.05); color:var(--text); }
+    button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-weight:800; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="pill">Nutrition only mode</div>
+      <div class="mini" style="margin-top:12px;">{{ payload.user.full_name }}</div>
+      <h1 style="font-family:Georgia,serif;font-size:40px;line-height:.96;margin:10px 0 6px;">Meals for today</h1>
+      <p style="color:#eadbc8;">Open only the food structure, log meals fast, close the day clean.</p>
+      <div class="stack">
+        {% for item in payload.today_blueprint.nutrition %}
+        <article class="meal">
+          <div class="mini">{{ item.time }} · {{ item.title }}</div>
+          <strong>{{ item.meal }}</strong>
+          <p>{{ item.purpose }}</p>
+          <form method="post" action="/today/check">
+            <input type="hidden" name="item_type" value="meal">
+            <input type="hidden" name="item_key" value="{{ item.item_key }}">
+            <button type="submit">{% if item.item_key in payload.completed_today %}Meal completed{% else %}Mark meal done{% endif %}</button>
+          </form>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    <section class="card">
+      <div class="mini">Quick meal log</div>
+      <form method="post" action="/log-meal">
+        <select name="meal_type"><option value="breakfast">Breakfast</option><option value="lunch">Lunch</option><option value="pre-workout">Pre-workout</option><option value="post-workout">Post-workout</option><option value="dinner">Dinner</option></select>
+        <input type="text" name="food_name" placeholder="Chicken and rice">
+        <input type="number" step="0.1" name="grams" value="150" placeholder="Grams">
+        <input type="number" step="0.1" name="calories" value="450" placeholder="Calories">
+        <input type="number" step="0.1" name="protein" value="35" placeholder="Protein">
+        <input type="number" step="0.1" name="carbs" value="40" placeholder="Carbs">
+        <input type="number" step="0.1" name="fats" value="12" placeholder="Fats">
+        <input type="hidden" name="goal_tag" value="{{ payload.user.goal }}">
+        <input type="hidden" name="logged_at" value="{{ today }}T12:00">
+        <button type="submit">Log meal</button>
+      </form>
+      <div style="margin-top:14px;"><a href="/dashboard#mission" style="color:#f7efdf;font-weight:800;">Back to dashboard</a></div>
+    </section>
+  </main>
+</body>
+</html>
+"""
+
+
+INLINE_WEEKLY_RESET_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Weekly Reset</title>
+  <style>
+    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,139,57,.16), transparent 24%), linear-gradient(180deg,#050505,#111214); }
+    .shell { width:min(760px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
+    .card { padding:22px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .box { padding:16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .box strong { display:block; margin-top:8px; font-size:22px; }
+    ul { margin:10px 0 0; padding-left:18px; }
+    a { color:#f7efdf; font-weight:800; text-decoration:none; }
+    @media (max-width: 760px) { .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="pill">Weekly reset</div>
+      <div class="mini" style="margin-top:12px;">{{ payload.user.full_name }}</div>
+      <h1 style="font-family:Georgia,serif;font-size:40px;line-height:.96;margin:10px 0 6px;">Prepare next week</h1>
+      <p style="color:#eadbc8;">This screen keeps the whole app simple: review the score, follow the coach adjustment, then move on.</p>
+      <div class="grid">
+        <article class="box">
+          <div class="mini">Weekly score</div>
+          <strong>{{ payload.weekly_review.score }}/100</strong>
+          <p>{{ payload.weekly_review.headline }}</p>
+        </article>
+        <article class="box">
+          <div class="mini">Next week</div>
+          <strong>Coach adjustment</strong>
+          <p>{{ payload.weekly_review.next_week_adjustment }}</p>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:12px;">
+        <article class="box">
+          <div class="mini">Reset checklist</div>
+          <ul>
+            <li>Open workout player and confirm first training day.</li>
+            <li>Open nutrition mode and prepare food structure.</li>
+            <li>Run a daily check-in on the first day of the week.</li>
+          </ul>
+        </article>
+        <article class="box">
+          <div class="mini">Quick links</div>
+          <ul>
+            <li><a href="/workout-mode">Open workout only</a></li>
+            <li><a href="/nutrition-mode">Open nutrition only</a></li>
+            <li><a href="/daily-checkin">Open daily check-in</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
 """
@@ -3839,6 +4114,126 @@ def build_progress_trends(metrics: list[dict[str, Any]], workouts: list[dict[str
     ]
 
 
+def current_view_mode() -> str:
+    mode = str(session.get("view_mode") or "minimal").strip().lower()
+    return mode if mode in {"minimal", "pro"} else "minimal"
+
+
+def build_single_next_action(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    checkins: list[dict[str, Any]],
+) -> dict[str, str]:
+    today_key = date.today().isoformat()
+    has_checkin_today = any(str(item.get("checkin_date") or "").startswith(today_key) for item in checkins)
+    day_type = str(today_blueprint.get("day_type") or "training")
+    meal_left = max(int(today_progress.get("meal_total", 0)) - int(today_progress.get("meal_done", 0)), 0)
+    exercise_left = max(int(today_progress.get("exercise_total", 0)) - int(today_progress.get("exercise_done", 0)), 0)
+
+    if not has_checkin_today:
+        return {
+            "title": "Start the day with a 30-second check-in",
+            "detail": "Log energy, soreness and focus once, then let Forge adapt the rest of the day.",
+            "anchor": "/daily-checkin",
+            "cta": "Open check-in",
+            "tag": "Daily reset",
+        }
+    if day_type == "training" and exercise_left:
+        return {
+            "title": f"Run today's session: {today_blueprint.get('title', 'Training day')}",
+            "detail": f"{exercise_left} exercise blocks are still open. The live player already knows your next move, rest and load suggestion.",
+            "anchor": "/workout-mode",
+            "cta": "Start workout",
+            "tag": today_blueprint.get("duration", "Live session"),
+        }
+    if meal_left:
+        return {
+            "title": "Close today's nutrition blocks",
+            "detail": f"{meal_left} meal blocks are still open. Use the nutrition screen instead of scrolling through the full dashboard.",
+            "anchor": "/nutrition-mode",
+            "cta": "Open nutrition",
+            "tag": "Meals today",
+        }
+    return {
+        "title": "Close the day and prep the next one",
+        "detail": "Training and meals are mostly done. Review the week, recover and let Forge set up the next block.",
+        "anchor": "/weekly-reset",
+        "cta": "Open weekly reset",
+        "tag": "Wrap-up",
+    }
+
+
+def build_day_flow(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    checkins: list[dict[str, Any]],
+) -> list[dict[str, str]]:
+    today_key = date.today().isoformat()
+    has_checkin_today = any(str(item.get("checkin_date") or "").startswith(today_key) for item in checkins)
+    day_type = str(today_blueprint.get("day_type") or "training")
+    exercise_left = max(int(today_progress.get("exercise_total", 0)) - int(today_progress.get("exercise_done", 0)), 0)
+    meal_left = max(int(today_progress.get("meal_total", 0)) - int(today_progress.get("meal_done", 0)), 0)
+    return [
+        {
+            "title": "Check in",
+            "detail": "Log energy, soreness and focus so the day adapts correctly.",
+            "anchor": "/daily-checkin",
+            "cta": "Open check-in",
+            "state": "done" if has_checkin_today else "now",
+            "state_label": "Done" if has_checkin_today else "Now",
+        },
+        {
+            "title": "Move",
+            "detail": today_blueprint.get("title", "Session"),
+            "anchor": "/workout-mode" if day_type == "training" else "#today-plan",
+            "cta": "Open session" if day_type == "training" else "Open recovery",
+            "state": "done" if exercise_left == 0 else ("now" if has_checkin_today else "ready"),
+            "state_label": "Done" if exercise_left == 0 else ("Now" if has_checkin_today else "Ready"),
+        },
+        {
+            "title": "Eat",
+            "detail": f"{meal_left} meal blocks left" if meal_left else "Food targets are on track for today.",
+            "anchor": "/nutrition-mode",
+            "cta": "Open nutrition",
+            "state": "done" if meal_left == 0 else "ready",
+            "state_label": "Done" if meal_left == 0 else "Ready",
+        },
+        {
+            "title": "Reset",
+            "detail": "Finish with review, recovery and tomorrow prep instead of guessing what comes next.",
+            "anchor": "/weekly-reset",
+            "cta": "Open reset",
+            "state": "ready" if meal_left or exercise_left else "now",
+            "state_label": "Ready" if meal_left or exercise_left else "Now",
+        },
+    ]
+
+
+def build_focus_cards(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    live_session: dict[str, Any],
+    coach_briefing: dict[str, str],
+) -> list[dict[str, str]]:
+    return [
+        {
+            "kicker": "Next move",
+            "title": live_session.get("next_move") or today_blueprint.get("title", "Open today"),
+            "detail": coach_briefing.get("next_step") or "Open the main player and follow the next step.",
+        },
+        {
+            "kicker": "Today score",
+            "title": f"{today_progress.get('completion_percent', 0)}% complete",
+            "detail": f"{today_progress.get('exercise_done', 0)}/{today_progress.get('exercise_total', 0)} exercise blocks and {today_progress.get('meal_done', 0)}/{today_progress.get('meal_total', 0)} meals are logged.",
+        },
+        {
+            "kicker": "Session time",
+            "title": today_blueprint.get("duration", "60 min lane"),
+            "detail": today_blueprint.get("focus", "Stay simple: train, eat, recover."),
+        },
+    ]
+
+
 def build_easy_mode(
     user: dict[str, Any],
     today_blueprint: dict[str, Any],
@@ -3899,6 +4294,12 @@ def build_easy_mode(
             "title": "Workout only",
             "detail": "Open the distraction-free session screen.",
             "anchor": "/workout-mode",
+        },
+        {
+            "kicker": "Check-in",
+            "title": "Daily wizard",
+            "detail": "Log energy, soreness and note in one quick screen.",
+            "anchor": "/daily-checkin",
         },
         {
             "kicker": "Coach",
@@ -4306,12 +4707,16 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     easy_mode = build_easy_mode(user, today_blueprint, today_progress, access, ai_concierge)
     coach_briefing = build_coach_briefing(user, today_blueprint, today_progress, ai_concierge)
     reminder_center = build_reminder_center(today_blueprint, today_progress, access)
+    single_next_action = build_single_next_action(today_blueprint, today_progress, checkins)
+    day_flow = build_day_flow(today_blueprint, today_progress, checkins)
+    focus_cards = build_focus_cards(today_blueprint, today_progress, live_session, coach_briefing)
     pr_tracker = build_pr_tracker(exercises)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
     market_flags = market_readiness_flags()
     business = business_overview() if user.get("role") == "admin" else None
+    view_mode = current_view_mode()
 
     return {
         "seed": seed,
@@ -4357,6 +4762,9 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
         "reminder_center": reminder_center,
+        "single_next_action": single_next_action,
+        "day_flow": day_flow,
+        "focus_cards": focus_cards,
         "subscription_plans": SUBSCRIPTION_PLANS,
         "commercial_offers": COMMERCIAL_OFFERS,
         "market_flags": market_flags,
@@ -4370,6 +4778,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "foods": filtered_foods("all", "all", ""),
         "recipes": filtered_recipes("all", "all"),
         "users": list_users() if user.get("role") == "admin" else [],
+        "view_mode": view_mode,
     }
 
 
@@ -4390,6 +4799,17 @@ def set_language():
     if lang not in LANGUAGES:
         lang = "me"
     session["lang"] = lang
+    next_url = str(request.args.get("next") or "/dashboard").strip()
+    if not next_url.startswith("/"):
+        next_url = "/dashboard"
+    return redirect(next_url)
+
+
+@app.route("/set-view-mode")
+@login_required
+def set_view_mode():
+    mode = str(request.args.get("mode") or "minimal").strip().lower()
+    session["view_mode"] = mode if mode in {"minimal", "pro"} else "minimal"
     next_url = str(request.args.get("next") or "/dashboard").strip()
     if not next_url.startswith("/"):
         next_url = "/dashboard"
@@ -4512,6 +4932,36 @@ def workout_mode():
     return render_template_string(INLINE_WORKOUT_ONLY_TEMPLATE, payload=payload)
 
 
+@app.route("/daily-checkin")
+@login_required
+def daily_checkin_wizard():
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    payload = dashboard_payload(user)
+    return render_template_string(INLINE_DAILY_CHECKIN_TEMPLATE, payload=payload)
+
+
+@app.route("/nutrition-mode")
+@login_required
+def nutrition_mode():
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    payload = dashboard_payload(user)
+    return render_template_string(INLINE_NUTRITION_ONLY_TEMPLATE, payload=payload, today=date.today().isoformat())
+
+
+@app.route("/weekly-reset")
+@login_required
+def weekly_reset():
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    payload = dashboard_payload(user)
+    return render_template_string(INLINE_WEEKLY_RESET_TEMPLATE, payload=payload)
+
+
 @app.route("/onboarding", methods=["GET", "POST"])
 @login_required
 def onboarding():
@@ -4596,9 +5046,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V26",
-        "login_title": "Secure athlete login V26",
-        "dashboard_title": "Adaptive athlete dashboard V26",
+        "build": "APP.PY ONLY BUILD V29",
+        "login_title": "Secure athlete login V29",
+        "dashboard_title": "Adaptive athlete dashboard V29",
     }
 
 
