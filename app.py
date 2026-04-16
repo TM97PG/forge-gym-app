@@ -292,7 +292,7 @@ INLINE_LOGIN_TEMPLATE = """
     @media (max-width: 900px) { .grid,.login-shell-grid,.hero-gallery,.pricing-login { grid-template-columns:1fr; } h1 { font-size:36px; } .card { padding:20px; border-radius:26px; } }
   </style>
 </head>
-<body data-view-mode="{{ payload.view_mode }}">
+<body>
   <main class="card">
     <div class="brand-row">
       <div style="display:flex;align-items:center;gap:14px;">
@@ -303,14 +303,14 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V41</div>
+    <div class="pill">APP.PY ONLY BUILD V44</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V41</h1>
-    <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
+    <h1>Secure athlete login V44</h1>
+    <p>Uloguj se, otvori svoj plan i nastavi tacno tamo gdje si stao.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
         <strong>Elite gym atmosphere</strong>
@@ -345,7 +345,7 @@ INLINE_LOGIN_TEMPLATE = """
       <div class="login-side">
         <div class="mini">Private access</div>
         <strong>Mobile athlete login</strong>
-        <p>ÄŚist ulaz bez hintova, sa odvojenim nalozima i zasebnim planovima za svakog korisnika.</p>
+        <p>Cist ulaz, odvojeni nalozi i zasebni planovi za svakog korisnika.</p>
         <div class="mini" style="margin-top:16px;">Monetization ideas</div>
         <div class="pricing-login">
           {% for item in commercial_offers %}
@@ -540,6 +540,23 @@ INLINE_DASHBOARD_TEMPLATE = """
 .view-mode { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
 .view-mode a { text-decoration:none; color:var(--text); padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.04); font-size:12px; font-weight:800; letter-spacing:.06em; }
 .view-mode a.active { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
+.one-screen-home { margin-top:18px; display:grid; gap:16px; }
+.one-screen-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; }
+.home-primary { padding:24px; border-radius:28px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(155deg, rgba(241,90,36,.18), rgba(255,255,255,.05) 46%, rgba(255,176,0,.10)); }
+.home-primary strong { display:block; margin-top:10px; font-size:34px; line-height:1.02; }
+.home-primary p { margin:12px 0 0; color:#eadbc8; line-height:1.6; }
+.home-stat-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.home-stat { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+.home-stat strong { display:block; margin-top:8px; font-size:24px; }
+.guided-day-shell { display:grid; gap:12px; }
+.guided-step { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.guided-step strong { display:block; margin-top:8px; font-size:20px; }
+.guided-step.now { border-color:rgba(255,176,0,.28); background:rgba(255,176,0,.08); }
+.guided-step.done { opacity:.7; }
+.mode-board { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.mode-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.mode-card.active { border-color:rgba(241,90,36,.34); background:rgba(241,90,36,.1); }
+.mode-card strong { display:block; margin-top:8px; font-size:20px; }
 .command-center { margin-top:18px; display:grid; gap:16px; }
 .command-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
 .command-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
@@ -590,8 +607,8 @@ INLINE_DASHBOARD_TEMPLATE = """
 .panel-summary .tag { flex-shrink:0; }
 .panel-body { padding:0 20px 20px; }
 .minimal-only { display:none; }
-body[data-view-mode="minimal"] .pro-heavy { display:none !important; }
-body[data-view-mode="minimal"] .minimal-only { display:block; }
+body[data-view-mode="simple"] .pro-heavy { display:none !important; }
+body[data-view-mode="simple"] .minimal-only { display:block; }
 .focus-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
 .focus-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.035); }
 .focus-card strong { display:block; margin-top:8px; font-size:20px; }
@@ -651,8 +668,8 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
   </style>
 </head>
 <body data-view-mode="{{ payload.view_mode }}">
@@ -660,7 +677,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V41</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V44</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -695,7 +712,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V41</div>
+<div class="pill">Market ready + dashboard V44</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -709,6 +726,49 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <p>{{ payload.user.experience_level|title }} lane.</p>
         </div>
       </div>
+      <section class="one-screen-home">
+        <div class="one-screen-grid">
+          <article class="home-primary">
+            <div class="mini">Today plan</div>
+            <strong>{{ payload.home_hub.headline }}</strong>
+            <p>{{ payload.home_hub.detail }}</p>
+            <div class="hero-actions">
+              <a class="pill" href="{{ payload.home_hub.primary.anchor }}">{{ payload.home_hub.primary.label }}</a>
+              <a class="tag" href="{{ payload.home_hub.secondary.anchor }}">{{ payload.home_hub.secondary.label }}</a>
+            </div>
+            <div class="home-stat-strip">
+              {% for item in payload.home_hub.stats %}
+              <article class="home-stat">
+                <div class="mini">{{ item.label }}</div>
+                <strong>{{ item.value }}</strong>
+                <p style="margin-top:8px;">{{ item.detail }}</p>
+              </article>
+              {% endfor %}
+            </div>
+          </article>
+          <div class="guided-day-shell">
+            {% for item in payload.guided_day_flow %}
+            <article class="guided-step {{ item.state }}">
+              <div class="mini">{{ item.kicker }}</div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.detail }}</p>
+              <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">{{ item.cta }}</a></div>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="mode-board">
+          {% for item in payload.mode_blueprint %}
+          <article class="mode-card {% if item.active %}active{% endif %}">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">{{ item.cta }}</a></div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% if payload.view_mode == 'pro' %}
       <div class="hero-kpis">
         <article class="kpi"><span class="mini">Sessions</span><strong>{{ payload.stats.weekly_sessions }}</strong></article>
         <article class="kpi"><span class="mini">Volume</span><strong>{{ payload.stats.weekly_volume }}</strong></article>
@@ -722,7 +782,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       </div>
       <div class="hero-stage">
         <article class="hero-banner">
-          <div class="mini">Today certainty</div>
+          <div class="mini">Today</div>
           <strong>{{ payload.delight_board.headline }}</strong>
           <p>{{ payload.delight_board.subline }}</p>
           <div class="hero-actions">
@@ -754,8 +814,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </article>
         {% endfor %}
       </div>
+      {% endif %}
       <div class="view-mode">
-        <a href="/set-view-mode?mode=minimal" class="{% if payload.view_mode == 'minimal' %}active{% endif %}">Minimal</a>
+        <a href="/set-view-mode?mode=simple" class="{% if payload.view_mode == 'simple' %}active{% endif %}">Simple</a>
         <a href="/set-view-mode?mode=pro" class="{% if payload.view_mode == 'pro' %}active{% endif %}">Pro</a>
         <a href="/workout-mode">Workout only</a>
         <a href="/nutrition-mode">Nutrition only</a>
@@ -795,12 +856,13 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
+      {% if payload.view_mode == 'pro' %}
       <section class="delight-shell">
         <div class="delight-main">
           <article class="delight-lead">
-            <div class="mini">Operating board</div>
-            <strong>Run the app like a premium coaching system.</strong>
-            <p>Everything important is grouped here: what to do now, why today works, what to eat next, and where to go in one tap.</p>
+            <div class="mini">Control center</div>
+            <strong>Today's control panel</strong>
+            <p>Open training, food, coach or progress in one tap.</p>
           </article>
           <div class="planner-grid">
             {% for item in payload.operating_board %}
@@ -834,6 +896,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
+      {% endif %}
       <section class="launchpad">
         <article class="action-main">
           <div class="mini">Do this now</div>
@@ -864,6 +927,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
+      {% if payload.view_mode == 'pro' %}
       <section class="summary-strip" style="margin-top:18px;">
         <article class="summary-card">
           <div class="mini">{{ payload.recomposition_home.headline }}</div>
@@ -887,6 +951,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <div class="next">{{ payload.weekly_adaptive_block.coach_call }}</div>
         </article>
       </section>
+      {% endif %}
       <section class="coach-day-grid">
         {% for item in payload.coach_day_flow %}
         <article class="coach-step {% if item.done %}done{% endif %}">
@@ -899,6 +964,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </article>
         {% endfor %}
       </section>
+      {% if payload.view_mode == 'pro' %}
       <div class="summary-strip" style="margin-top:18px;">
         <article class="summary-card">
           <div class="mini">Coach</div>
@@ -918,6 +984,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <div style="margin-top:14px;"><a href="/daily-checkin" style="color:#f7efdf;font-weight:800;text-decoration:none;">Open daily check-in</a></div>
         </article>
       </div>
+      {% endif %}
     </section>
 
     <section class="panel span" id="folders">
@@ -938,7 +1005,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
 
     <section class="panel span">
       <div class="section-head">
-        <div><div class="mini">Home dashboard</div><h2>Only what matters right now</h2></div>
+        <div><div class="mini">Home</div><h2>Only today matters here</h2></div>
       </div>
       <div class="summary-strip" style="margin-top:0;">
         <article class="summary-card">
@@ -952,9 +1019,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </article>
         <article class="summary-card">
           <div class="mini">Home rule</div>
-          <strong style="display:block;margin-top:8px;font-size:24px;">Dashboard is now only the hub</strong>
-          <p style="margin-top:12px;">Program, coach, fuel, track, profile and calendar now live in separate folders so the home screen stays clean.</p>
-          <div class="notice">Use the folder widgets above for the full details.</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Home shows only today</strong>
+          <p style="margin-top:12px;">Program, coach, fuel, track, profile and calendar are separated into their own folders.</p>
+          <div class="notice">Open the widget you need and keep moving.</div>
         </article>
       </div>
     </section>
@@ -1177,7 +1244,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </div>
         <div class="minimal-only">
           <div class="summary-card" style="margin-top:16px;">
-            <div class="mini">Minimal mode</div>
+            <div class="mini">Simple mode</div>
             <strong style="display:block;margin-top:8px;font-size:22px;">{{ payload.today_blueprint.title }}</strong>
             <p style="margin-top:10px;">{{ payload.coach_briefing.next_step }}</p>
             <div class="quickbar" style="margin-top:14px;">
@@ -2966,9 +3033,21 @@ INLINE_FOCUS_HUB_TEMPLATE = """
         </article>
         {% endfor %}
       </div>
+      <div class="grid" style="margin-top:16px;">
+        {% for item in payload.program_builder %}
+        <article class="row">
+          <div class="mini">{{ item.week }} - {{ item.phase }}</div>
+          <strong>{{ item.focus }}</strong>
+          <p class="muted">{{ item.coach_call }}</p>
+          <div class="mini" style="margin-top:8px;">{{ item.session_title }} - {{ item.session_prescription }}</div>
+          <ul class="list">{% for exercise in item.top_exercises %}<li>{{ exercise }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
+      </div>
     </section>
     {% elif hub_key == "fuel" %}
     <section class="card">
+      <div class="mini">{{ payload.nutrition_os.headline }}</div>
       <div class="summary">
         <article class="tile"><div class="mini">Next meal</div><strong>{{ payload.nutrition_intelligence.next_meal_title }}</strong><p class="muted">{{ payload.nutrition_intelligence.next_meal_detail }}</p></article>
         <article class="tile"><div class="mini">Protein left</div><strong>{{ payload.nutrition_intelligence.protein_left }}g</strong><p class="muted">Keep fuel aligned.</p></article>
@@ -2983,6 +3062,16 @@ INLINE_FOCUS_HUB_TEMPLATE = """
           <strong>Shopping list</strong>
           <ul class="list">{% for item in payload.shopping_list %}<li>{{ item.name }} - {{ item.reason }}</li>{% endfor %}</ul>
         </article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        {% for item in payload.nutrition_os.weekly_plan %}
+        <article class="row">
+          <div class="mini">{{ item.day }}</div>
+          <strong>{{ item.theme }}</strong>
+          <p class="muted">{{ item.rule }}</p>
+          <ul class="list">{% for meal in item.meals %}<li>{{ meal }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
       </div>
     </section>
     {% elif hub_key == "coach" %}
@@ -3000,14 +3089,19 @@ INLINE_FOCUS_HUB_TEMPLATE = """
     </section>
     {% elif hub_key == "track" %}
     <section class="card">
+      <div class="mini">{{ payload.transformation_dashboard.headline }}</div>
       <div class="summary">
-        {% for item in payload.recomposition_home.cards %}
+        {% for item in payload.transformation_dashboard.tiles %}
         <article class="tile"><div class="mini">{{ item.label }}</div><strong>{{ item.value }}</strong><p class="muted">{{ item.detail }}</p></article>
         {% endfor %}
       </div>
       <div class="grid" style="margin-top:16px;">
         <article class="row"><strong>Progress operating system</strong><ul class="list">{% for item in payload.progress_system.wins %}<li>{{ item }}</li>{% endfor %}</ul></article>
         <article class="row"><strong>Watchouts</strong><ul class="list">{% for item in payload.progress_system.watchouts %}<li>{{ item }}</li>{% endfor %}</ul></article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="row"><strong>Trend lines</strong><ul class="list">{% for item in payload.transformation_dashboard.trends %}<li><strong>{{ item.label }}</strong> - {{ item.value }} - {{ item.detail }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Next checkpoints</strong><ul class="list">{% for item in payload.transformation_dashboard.checkpoints %}<li>{{ item }}</li>{% endfor %}</ul></article>
       </div>
     </section>
     {% elif hub_key == "profile" %}
@@ -3198,7 +3292,7 @@ INLINE_WEEKLY_RESET_TEMPLATE = """
       <div class="pill">Weekly reset</div>
       <div class="mini" style="margin-top:12px;">{{ payload.user.full_name }}</div>
       <h1 style="font-family:Georgia,serif;font-size:40px;line-height:.96;margin:10px 0 6px;">Prepare next week</h1>
-      <p style="color:#eadbc8;">This screen keeps the whole app simple: review the score, follow the coach adjustment, then move on.</p>
+      <p style="color:#eadbc8;">Review the score, follow the coach adjustment, and start the new week.</p>
       <div class="grid">
         <article class="box">
           <div class="mini">Weekly score</div>
@@ -4410,6 +4504,33 @@ def build_program_board(active_package: dict[str, Any]) -> list[dict[str, Any]]:
     return board[:5]
 
 
+def build_program_builder(active_package: dict[str, Any], periodization_engine: dict[str, Any]) -> list[dict[str, Any]]:
+    base_sessions = active_package.get("sessions", []) or []
+    if not base_sessions:
+        return []
+    week_labels = [
+        ("Week 1", "Base quality", "Own clean reps and stable technique."),
+        ("Week 2", "Volume push", "Add one quality set or one small load jump on key lifts."),
+        ("Week 3", "Peak week", "Push the main pattern while keeping accessories efficient."),
+        ("Week 4", "Deload / reset", "Keep the movement patterns, reduce fatigue and sharpen recovery."),
+    ]
+    builder: list[dict[str, Any]] = []
+    for idx, (label, focus, call) in enumerate(week_labels, start=1):
+        sample = base_sessions[(idx - 1) % len(base_sessions)]
+        builder.append(
+            {
+                "week": label,
+                "focus": focus,
+                "coach_call": call,
+                "session_title": sample.get("title", f"Session {idx}"),
+                "session_prescription": sample.get("prescription", "Coach block"),
+                "top_exercises": (sample.get("exercises") or [])[:4],
+                "phase": periodization_engine.get("block_name", "Current block"),
+            }
+        )
+    return builder
+
+
 def build_workspace_hub(
     user: dict[str, Any],
     active_package: dict[str, Any],
@@ -4541,8 +4662,8 @@ def build_delight_board(
     single_next_action: dict[str, Any],
 ) -> dict[str, Any]:
     return {
-        "headline": f"{user.get('full_name', 'Athlete')}, everything for today is already lined up.",
-        "subline": "Use the next button, follow the written workout, then close food and recovery. No extra thinking needed.",
+        "headline": f"{user.get('full_name', 'Athlete')}, today's plan is ready.",
+        "subline": "Start the workout, finish meals, and close the day clean.",
         "primary_cta": {"label": single_next_action.get("cta", "Open today"), "anchor": single_next_action.get("anchor", "#today-plan")},
         "secondary_cta": {"label": "Open workout mode", "anchor": "/workout-mode"},
         "cards": customer_delight.get("cards", []),
@@ -4580,12 +4701,12 @@ def focus_hub_meta(hub_key: str) -> dict[str, str]:
         "program": {
             "title": "Program hub",
             "heading": "Coach packages and active plan",
-            "copy": "This screen is only for plan structure, focus blocks and ready-made sessions.",
+            "copy": "See the block, the focus, and the sessions for this phase.",
         },
         "fuel": {
             "title": "Fuel hub",
             "heading": "Nutrition autopilot",
-            "copy": "Meals, swaps and shopping live here so nutrition stays clean and fast.",
+            "copy": "Meals, swaps and shopping are all in one place.",
         },
         "coach": {
             "title": "Coach hub",
@@ -4595,7 +4716,7 @@ def focus_hub_meta(hub_key: str) -> dict[str, str]:
         "track": {
             "title": "Track hub",
             "heading": "Progress and body change",
-            "copy": "Use this screen to review recomposition, adherence and training quality.",
+            "copy": "Review body change, adherence and training quality.",
         },
         "profile": {
             "title": "Profile hub",
@@ -4634,6 +4755,39 @@ def build_meal_suggestions(goal: str, calories_target: int, protein_target: int)
     items[1]["macro"] = f"{calories_target} kcal structure"
     items[2]["macro"] = "Hydration + digestion friendly finish"
     return items
+
+
+def build_nutrition_os(user: dict[str, Any], assistant: dict[str, Any], nutrition_intelligence: dict[str, Any]) -> dict[str, Any]:
+    goal = str(user.get("goal") or "performance").lower()
+    day_templates = {
+        "performance": [
+            ("Day 1", "Heavy training fuel", "Higher carbs before and after training.", ["Oats + whey", "Chicken rice bowl", "Fruit + yogurt", "Salmon + potatoes"]),
+            ("Day 2", "Steady output", "Keep protein anchored and hydration high.", ["Eggs + toast", "Turkey wrap", "Skyr + berries", "Beef + rice"]),
+            ("Day 3", "Recovery day", "Lower fats late, keep digestion easy.", ["Greek yogurt bowl", "Chicken salad", "Protein shake", "White fish + potatoes"]),
+        ],
+        "muscle": [
+            ("Day 1", "Mass day", "Push surplus through clean high-protein meals.", ["Eggs + oats", "Beef + rice", "Bagel + whey", "Pasta + chicken"]),
+            ("Day 2", "Growth support", "Keep calories high without junk food.", ["Yogurt + granola", "Chicken burrito bowl", "Rice cakes + PB", "Salmon + rice"]),
+            ("Day 3", "Appetite management", "Use easy-to-eat dense meals.", ["Shake + oats", "Turkey pasta", "Fruit + yogurt", "Burger bowl"]),
+        ],
+        "cut": [
+            ("Day 1", "Lean training day", "Cluster carbs around training and stay full.", ["Egg whites + oats", "Chicken + potatoes", "Skyr + berries", "White fish + rice"]),
+            ("Day 2", "Deficit control", "Protein first and cleaner dinners.", ["Greek yogurt", "Lean beef salad", "Protein pudding", "Turkey + vegetables"]),
+            ("Day 3", "Recovery nutrition", "Lower calories without lowering protein.", ["Egg whites", "Chicken soup", "Fruit + whey", "White fish + greens"]),
+        ],
+    }
+    week = []
+    for day, theme, rule, meals in day_templates.get(goal, day_templates["performance"]):
+        week.append({"day": day, "theme": theme, "rule": rule, "meals": meals})
+    return {
+        "headline": "Nutrition OS",
+        "next_meal": nutrition_intelligence.get("next_meal_title", "Next meal"),
+        "protein_left": nutrition_intelligence.get("protein_left", 0),
+        "calories_left": nutrition_intelligence.get("calories_left", 0),
+        "weekly_plan": week,
+        "prep_call": nutrition_intelligence.get("prep_steps", []),
+        "targets": assistant.get("targets", {}),
+    }
 
 
 def build_nutrition_intelligence(
@@ -4789,6 +4943,32 @@ def build_progress_system(
         "wins": wins,
         "watchouts": watchouts,
         "next_checkpoint": "Add a body metric and a progress photo this week so the trend engine gets sharper.",
+    }
+
+
+def build_transformation_dashboard(
+    progress_system: dict[str, Any],
+    recomposition_dashboard: dict[str, Any],
+    progress_trends: list[dict[str, Any]],
+    weekly_review: dict[str, Any],
+) -> dict[str, Any]:
+    headline_tiles = [
+        {"label": "Recomp score", "value": progress_system.get("recomposition_score", 0), "detail": "How body change and training quality currently align."},
+        {"label": "Adherence", "value": f"{progress_system.get('adherence_score', 0)}%", "detail": "This is the biggest predictor of change."},
+        {"label": "Weekly review", "value": f"{weekly_review.get('score', 0)}/100", "detail": weekly_review.get("headline", "Weekly coaching score.")},
+    ]
+    checkpoints = [
+        progress_system.get("next_checkpoint", "Log one more clean week."),
+        weekly_review.get("next_week_adjustment", "Hold the plan steady next week."),
+        recomposition_dashboard.get("coach_call", "Keep execution high and track honestly."),
+    ]
+    return {
+        "headline": "Transformation dashboard",
+        "tiles": headline_tiles,
+        "trends": progress_trends[:4],
+        "checkpoints": checkpoints,
+        "wins": progress_system.get("wins", []),
+        "watchouts": progress_system.get("watchouts", []),
     }
 
 
@@ -5807,8 +5987,10 @@ def build_progress_trends(metrics: list[dict[str, Any]], workouts: list[dict[str
 
 
 def current_view_mode() -> str:
-    mode = str(session.get("view_mode") or "minimal").strip().lower()
-    return mode if mode in {"minimal", "pro"} else "minimal"
+    mode = str(session.get("view_mode") or "simple").strip().lower()
+    if mode == "minimal":
+        mode = "simple"
+    return mode if mode in {"simple", "pro"} else "simple"
 
 
 def exercise_prescription_text(item: dict[str, Any]) -> str:
@@ -5979,6 +6161,111 @@ def build_focus_cards(
             "kicker": "Session time",
             "title": today_blueprint.get("duration", "60 min lane"),
             "detail": today_blueprint.get("focus_line", "Stay simple: train, eat, recover."),
+        },
+    ]
+
+
+def build_home_hub(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    single_next_action: dict[str, Any],
+    coach_briefing: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "headline": today_blueprint.get("title", "Today's plan"),
+        "detail": coach_briefing.get("next_step", "Open the next block and follow it."),
+        "primary": {
+            "label": single_next_action.get("cta", "Open today"),
+            "anchor": single_next_action.get("anchor", "/workout-mode"),
+        },
+        "secondary": {
+            "label": "Open food",
+            "anchor": "/nutrition-mode",
+        },
+        "stats": [
+            {
+                "label": "Day type",
+                "value": today_blueprint.get("status_label", "Ready"),
+                "detail": today_blueprint.get("duration", "Planned session"),
+            },
+            {
+                "label": "Progress",
+                "value": f"{today_progress.get('completion_percent', 0)}%",
+                "detail": f"{today_progress.get('done_items', 0)}/{today_progress.get('total_items', 0)} blocks closed today.",
+            },
+            {
+                "label": "Next meal",
+                "value": nutrition_intelligence.get("next_meal_title", "Meal block"),
+                "detail": nutrition_intelligence.get("next_meal_detail", "Keep fuel aligned."),
+            },
+        ],
+    }
+
+
+def build_guided_day_flow_v2(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+) -> list[dict[str, str]]:
+    training_day = str(today_blueprint.get("day_type") or "training") == "training"
+    done_items = int(today_progress.get("done_items", 0))
+    total_items = max(int(today_progress.get("total_items", 0)), 1)
+    all_done = done_items >= total_items
+    return [
+        {
+            "kicker": "1. Check-in",
+            "title": "Start the day",
+            "detail": "Log energy, soreness and recovery before you train.",
+            "anchor": "/daily-checkin",
+            "cta": "Open check-in",
+            "state": "done" if int(today_progress.get("completion_percent", 0)) > 0 else "now",
+        },
+        {
+            "kicker": "2. Training",
+            "title": today_blueprint.get("title", "Today's training"),
+            "detail": today_blueprint.get("focus_line", "Follow the session in order.") if training_day else "Recovery flow, mobility and steps only.",
+            "anchor": "/workout-mode",
+            "cta": "Open workout mode" if training_day else "Open recovery mode",
+            "state": "now" if training_day and int(today_progress.get("exercise_done", 0)) == 0 else ("done" if int(today_progress.get("exercise_done", 0)) >= int(today_progress.get("exercise_total", 0)) else "ready"),
+        },
+        {
+            "kicker": "3. Food",
+            "title": nutrition_intelligence.get("next_meal_title", "Meal plan"),
+            "detail": nutrition_intelligence.get("next_meal_detail", "Close your meal blocks and macros."),
+            "anchor": "/nutrition-mode",
+            "cta": "Open nutrition",
+            "state": "done" if int(today_progress.get("meal_done", 0)) >= int(today_progress.get("meal_total", 0)) else "ready",
+        },
+        {
+            "kicker": "4. Review",
+            "title": "Close the day",
+            "detail": "Finish the last block, save the session and reset for tomorrow." if not all_done else "Day closed. Review progress and get ready for tomorrow.",
+            "anchor": "/weekly-reset",
+            "cta": "Open review",
+            "state": "done" if all_done else "ready",
+        },
+    ]
+
+
+def build_mode_blueprint(view_mode: str) -> list[dict[str, Any]]:
+    simple_active = view_mode == "simple"
+    return [
+        {
+            "kicker": "Default mode",
+            "title": "Simple",
+            "detail": "Only today, today's flow and the few actions that matter.",
+            "anchor": "/set-view-mode?mode=simple",
+            "cta": "Use Simple",
+            "active": simple_active,
+        },
+        {
+            "kicker": "Advanced mode",
+            "title": "Pro",
+            "detail": "Program depth, analytics, adaptive cards and deeper review.",
+            "anchor": "/set-view-mode?mode=pro",
+            "cta": "Use Pro",
+            "active": view_mode == "pro",
         },
     ]
 
@@ -6479,6 +6766,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     package_filters = build_package_filters(assistant["suggestions"])
     active_package = build_active_package(assistant, workouts, calendar)
     program_board = build_program_board(active_package)
+    program_builder = build_program_builder(active_package, periodization_engine)
     workspace_hub = build_workspace_hub(user, active_package, today_blueprint, access)
     operating_board = build_operating_board(today_blueprint, active_package, nutrition_intelligence, coach_briefing)
     customer_delight = build_customer_delight(
@@ -6500,12 +6788,17 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         access,
         single_next_action if "single_next_action" in locals() else {"cta": "Open today", "anchor": "#today-plan"},
     )
+    home_hub = build_home_hub(today_blueprint, today_progress, nutrition_intelligence, single_next_action, coach_briefing)
+    guided_day_flow = build_guided_day_flow_v2(today_blueprint, today_progress, nutrition_intelligence)
+    nutrition_os = build_nutrition_os(user, assistant, nutrition_intelligence)
+    transformation_dashboard = build_transformation_dashboard(progress_system, recomposition_dashboard, progress_trends, weekly_review)
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
     market_flags = market_readiness_flags()
     business = business_overview() if user.get("role") == "admin" else None
     view_mode = current_view_mode()
+    mode_blueprint = build_mode_blueprint(view_mode)
 
     return {
         "seed": seed,
@@ -6560,10 +6853,15 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "package_filters": package_filters,
         "active_package": active_package,
         "program_board": program_board,
+        "program_builder": program_builder,
         "workspace_hub": workspace_hub,
         "operating_board": operating_board,
         "customer_delight": customer_delight,
         "delight_board": delight_board,
+        "home_hub": home_hub,
+        "guided_day_flow": guided_day_flow,
+        "nutrition_os": nutrition_os,
+        "transformation_dashboard": transformation_dashboard,
         "easy_mode": easy_mode,
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
@@ -6587,6 +6885,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "recipes": filtered_recipes("all", "all"),
         "users": list_users() if user.get("role") == "admin" else [],
         "view_mode": view_mode,
+        "mode_blueprint": mode_blueprint,
         "show_full_dashboard": False,
     }
 
@@ -6617,8 +6916,10 @@ def set_language():
 @app.route("/set-view-mode")
 @login_required
 def set_view_mode():
-    mode = str(request.args.get("mode") or "minimal").strip().lower()
-    session["view_mode"] = mode if mode in {"minimal", "pro"} else "minimal"
+    mode = str(request.args.get("mode") or "simple").strip().lower()
+    if mode == "minimal":
+        mode = "simple"
+    session["view_mode"] = mode if mode in {"simple", "pro"} else "simple"
     next_url = str(request.args.get("next") or "/dashboard").strip()
     if not next_url.startswith("/"):
         next_url = "/dashboard"
@@ -6876,9 +7177,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V41",
-        "login_title": "Secure athlete login V41",
-        "dashboard_title": "Adaptive athlete dashboard V41",
+        "build": "APP.PY ONLY BUILD V44",
+        "login_title": "Secure athlete login V44",
+        "dashboard_title": "Adaptive athlete dashboard V44",
     }
 
 
