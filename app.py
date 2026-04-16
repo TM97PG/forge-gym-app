@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V39</div>
+    <div class="pill">APP.PY ONLY BUILD V41</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V39</h1>
+    <h1>Secure athlete login V41</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -457,9 +457,13 @@ INLINE_DASHBOARD_TEMPLATE = """
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Forge Dashboard</title>
   <style>
-    :root { --bg:#050505; --panel:rgba(17,17,19,.92); --line:rgba(255,255,255,.08); --text:#f7efdf; --muted:#baa992; --orange:#f15a24; --gold:#ffb000; --red:#cf3342; --green:#4eba72; }
+    :root { --bg:#040404; --panel:rgba(16,16,18,.94); --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#c8b49b; --orange:#ff7a1a; --gold:#ffd15a; --red:#e04757; --green:#59cf82; --teal:#46c7c7; --blue:#6aa8ff; }
     * { box-sizing:border-box; } html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--text); background:radial-gradient(circle at top left, rgba(241,90,36,.18), transparent 24%), radial-gradient(circle at right 18%, rgba(255,176,0,.16), transparent 20%), linear-gradient(180deg,#050505,#101112 58%,#070707); font-family:Arial,Helvetica,sans-serif; }
+    body { margin:0; color:var(--text); background:
+      radial-gradient(circle at top left, rgba(255,122,26,.18), transparent 24%),
+      radial-gradient(circle at right 18%, rgba(255,209,90,.14), transparent 20%),
+      radial-gradient(circle at bottom right, rgba(70,199,199,.10), transparent 24%),
+      linear-gradient(180deg,#040404,#101214 58%,#070707); font-family:Arial,Helvetica,sans-serif; }
     .shell { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:16px 0 110px; }
     .topbar,.hero,.panel,.option,.flash { background:var(--panel); border:1px solid var(--line); border-radius:26px; box-shadow:0 28px 90px rgba(0,0,0,.42); }
     .topbar { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px; position:sticky; top:10px; z-index:4; backdrop-filter:blur(18px); margin-bottom:14px; }
@@ -656,7 +660,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V39</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V41</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -666,9 +670,9 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </div>
         <div class="top-nav-links">
           <a href="#folders">Hub {{ payload.ui.folders }}</a>
-          <a href="#plans">Coach {{ payload.ui.plans }}</a>
-          <a href="#calendar">Daily {{ payload.ui.calendar }}</a>
-          <a href="#admin">Admin {{ payload.ui.users }}</a>
+          <a href="/hub/program">Coach {{ payload.ui.plans }}</a>
+          <a href="/hub/calendar">Daily {{ payload.ui.calendar }}</a>
+          <a href="/hub/profile">Admin {{ payload.ui.users }}</a>
           <a class="logout" href="/logout">{{ payload.ui.logout }}</a>
         </div>
       </div>
@@ -691,7 +695,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V39</div>
+<div class="pill">Market ready + dashboard V41</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -932,6 +936,30 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
       </div>
     </section>
 
+    <section class="panel span">
+      <div class="section-head">
+        <div><div class="mini">Home dashboard</div><h2>Only what matters right now</h2></div>
+      </div>
+      <div class="summary-strip" style="margin-top:0;">
+        <article class="summary-card">
+          <div class="mini">Today's training</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.today_blueprint.title }}</strong>
+          <p style="margin-top:12px;">{{ payload.today_blueprint.focus_line }}</p>
+          <div class="actions">
+            <a href="/workout-mode" class="pill">Open workout mode</a>
+            <a href="/hub/program" class="tag">Open program</a>
+          </div>
+        </article>
+        <article class="summary-card">
+          <div class="mini">Home rule</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Dashboard is now only the hub</strong>
+          <p style="margin-top:12px;">Program, coach, fuel, track, profile and calendar now live in separate folders so the home screen stays clean.</p>
+          <div class="notice">Use the folder widgets above for the full details.</div>
+        </article>
+      </div>
+    </section>
+
+    {% if payload.show_full_dashboard %}
     <main class="page">
       <section class="panel span" id="profile">
         <div class="section-head">
@@ -2003,6 +2031,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         </div>
       </section>
     </main>
+    {% endif %}
 
     <nav class="bottom">
       <a href="#today-plan">Today</a>
@@ -2577,25 +2606,40 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Forge Workout Mode</title>
   <style>
-    :root { --bg:#050505; --panel:#121315; --line:rgba(255,255,255,.08); --text:#f6efdf; --muted:#c7b59f; --accent:#ff8b39; --accent2:#ffc14d; }
+    :root { --bg:#040404; --panel:#111214; --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#ccb99f; --accent:#ff7a1a; --accent2:#ffd15a; --green:#59cf82; --blue:#72a8ff; }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,139,57,.16), transparent 24%), linear-gradient(180deg,#050505,#111214); }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,122,26,.18), transparent 24%), radial-gradient(circle at bottom right, rgba(114,168,255,.10), transparent 24%), linear-gradient(180deg,#040404,#111214); }
     .shell { width:min(760px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
-    .card { padding:20px; border-radius:26px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.96), rgba(14,14,15,.96)); }
+    .card { padding:20px; border-radius:28px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.98), rgba(14,14,15,.98)); box-shadow:0 26px 80px rgba(0,0,0,.42); }
     .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
     .pill { display:inline-flex; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
     .top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     .player-time { font-size:clamp(64px, 18vw, 118px); font-family:Georgia,serif; line-height:1; margin:12px 0; text-align:center; }
-    .screen { text-align:center; padding:22px; border-radius:24px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .screen { text-align:center; padding:22px; border-radius:24px; border:1px solid var(--line); background:linear-gradient(160deg, rgba(255,122,26,.12), rgba(255,255,255,.04) 55%, rgba(114,168,255,.08)); }
     .actions,.navs { display:grid; gap:12px; }
     .actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .navs { grid-template-columns:repeat(3,minmax(0,1fr)); }
     button,a.btn { min-height:58px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font:inherit; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
     button.primary,a.btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; }
     .list { display:grid; gap:10px; }
-    .row { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .row { padding:14px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .row.done { opacity:.6; }
-    @media (max-width: 760px) { .actions,.navs { grid-template-columns:1fr; } }
+    .hero-grid,.metrics,.session-board { display:grid; gap:12px; }
+    .hero-grid { grid-template-columns:1.08fr .92fr; }
+    .metrics { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .metric { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .metric strong { display:block; margin-top:6px; font-size:22px; }
+    .session-board { grid-template-columns:1fr 1fr; }
+    .session-chip { padding:12px 14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .session-chip strong { display:block; margin-top:6px; font-size:18px; }
+    .machine-preview { width:100%; border-radius:22px; border:1px solid var(--line); background:#0d0d0e; display:block; }
+    .active-row { outline:2px solid rgba(255,209,90,.75); background:linear-gradient(180deg, rgba(255,122,26,.12), rgba(255,255,255,.04)); }
+    .set-grid { display:grid; gap:8px; margin-top:12px; }
+    .set-pill { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .set-pill.done { opacity:.58; background:rgba(89,207,130,.12); }
+    .sticky-actions { position:sticky; bottom:calc(10px + env(safe-area-inset-bottom)); display:grid; gap:12px; }
+    .sticky-actions .card { padding:14px; border-radius:24px; backdrop-filter:blur(14px); background:rgba(15,16,18,.94); }
+    @media (max-width: 760px) { .actions,.navs,.hero-grid,.metrics,.session-board { grid-template-columns:1fr; } .player-time { font-size:82px; } }
   </style>
 </head>
 <body>
@@ -2608,32 +2652,87 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         </div>
         <a href="/dashboard#today-plan" class="btn">Back to dashboard</a>
       </div>
-      <div class="screen">
-        <div class="mini">{{ payload.live_session.title }}</div>
-        <h1 style="font-family:Georgia,serif;font-size:42px;line-height:.96;">{{ payload.live_session.next_move }}</h1>
-        <div class="player-time" id="wo-timer">00:00</div>
-        <p id="wo-status">{{ payload.live_session.coach_prompt }}</p>
+      <div class="hero-grid" style="margin-top:16px;">
+        <div class="screen">
+          <div class="mini">{{ payload.live_session.title }}</div>
+          <h1 id="wo-title" style="font-family:Georgia,serif;font-size:42px;line-height:.96;">{{ payload.live_session.next_move }}</h1>
+          <div class="player-time" id="wo-timer">00:00</div>
+          <div class="mini">Session timer</div>
+          <div class="player-time" id="wo-session" style="font-size:44px;">00:00</div>
+          <p id="wo-status">{{ payload.live_session.coach_prompt }}</p>
+        </div>
+        <div class="card" style="padding:18px;">
+          {% if payload.live_session.queue and payload.live_session.queue[0].machine_image %}
+          <img id="wo-machine-image" class="machine-preview" src="{{ payload.live_session.queue[0].machine_image }}" alt="{{ payload.live_session.queue[0].machine_label }}">
+          {% else %}
+          <div id="wo-machine-image" class="machine-preview" style="display:none;"></div>
+          {% endif %}
+          <div class="session-board" style="margin-top:12px;">
+            <div class="session-chip">
+              <div class="mini">Station</div>
+              <strong id="wo-machine-label">{{ payload.live_session.queue[0].machine_label if payload.live_session.queue else "Training station" }}</strong>
+            </div>
+            <div class="session-chip">
+              <div class="mini">Focus</div>
+              <strong id="wo-machine-focus">{{ payload.live_session.queue[0].machine_focus if payload.live_session.queue else payload.today_blueprint.status_label }}</strong>
+            </div>
+            <div class="session-chip">
+              <div class="mini">Auto-weight</div>
+              <strong id="wo-weight">{{ payload.live_session.queue[0].weight_suggestion if payload.live_session.queue else "Use control and quality." }}</strong>
+            </div>
+            <div class="session-chip">
+              <div class="mini">Rest preset</div>
+              <strong id="wo-preset-label">{{ payload.live_session.rest_presets[0].seconds if payload.live_session.rest_presets else 60 }} sec</strong>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="actions">
-        <button class="primary" type="button" id="wo-start">Start</button>
-        <button type="button" id="wo-complete">Complete current set</button>
-        <button type="button" id="wo-pause">Pause</button>
-        <button type="button" id="wo-reset">Reset</button>
+      <div class="metrics">
+        <article class="metric"><div class="mini">Workout status</div><strong id="wo-progress-main">{{ payload.today_progress.completion_percent }}%</strong></article>
+        <article class="metric"><div class="mini">Sets closed</div><strong id="wo-sets-done">0</strong></article>
+        <article class="metric"><div class="mini">Exercise queue</div><strong id="wo-queue-progress">{{ payload.live_session.queue|length }}</strong></article>
       </div>
-      <div class="navs">
-        <button type="button" id="wo-prev">Prev</button>
-        <button type="button" id="wo-preset">Next preset</button>
-        <button type="button" id="wo-next">Next</button>
+      <div class="sticky-actions">
+        <div class="card">
+          <div class="actions">
+            <button class="primary" type="button" id="wo-start">Start</button>
+            <button type="button" id="wo-complete">Complete current set</button>
+            <button type="button" id="wo-pause">Pause</button>
+            <button type="button" id="wo-reset">Reset</button>
+          </div>
+          <div class="navs" style="margin-top:12px;">
+            <button type="button" id="wo-prev">Prev</button>
+            <button type="button" id="wo-preset">Next preset</button>
+            <button type="button" id="wo-next">Next</button>
+          </div>
+        </div>
       </div>
     </section>
     <section class="card">
-      <div class="mini">Live queue</div>
+      <div class="top">
+        <div>
+          <div class="mini">Live queue</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Follow the session step by step</strong>
+        </div>
+        <div class="pill">Evidence on</div>
+      </div>
       <div class="list">
         {% for item in payload.live_session.queue %}
-        <div class="row {% if item.done %}done{% endif %}" data-wo-index="{{ loop.index0 }}">
+        <div class="row {% if item.done %}done{% endif %}" data-wo-index="{{ loop.index0 }}" data-item-key="{{ item.item_key }}">
           <strong>{{ item.name }}</strong>
+          <div class="mini" style="margin-top:8px;">{{ item.machine_label }} - {{ item.machine_focus }}</div>
           <p>{{ item.detail }}</p>
           <div>Auto-weight: {{ item.weight_suggestion }}</div>
+          {% if item.checkpoints %}
+          <div class="set-grid">
+            {% for checkpoint in item.checkpoints %}
+            <div class="set-pill {% if checkpoint.done %}done{% endif %}">
+              <span>{{ checkpoint.label }}</span>
+              <strong>{% if checkpoint.done %}Done{% else %}Live{% endif %}</strong>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
@@ -2644,12 +2743,24 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
     (function () {
       const data = JSON.parse(document.getElementById("wo-data").textContent || "{}");
       const timerNode = document.getElementById("wo-timer");
+      const sessionNode = document.getElementById("wo-session");
       const statusNode = document.getElementById("wo-status");
+      const titleNode = document.getElementById("wo-title");
+      const machineImage = document.getElementById("wo-machine-image");
+      const machineLabel = document.getElementById("wo-machine-label");
+      const machineFocus = document.getElementById("wo-machine-focus");
+      const weightNode = document.getElementById("wo-weight");
+      const presetLabel = document.getElementById("wo-preset-label");
+      const progressMain = document.getElementById("wo-progress-main");
+      const setsDoneNode = document.getElementById("wo-sets-done");
+      const queueProgressNode = document.getElementById("wo-queue-progress");
       const rows = Array.from(document.querySelectorAll("[data-wo-index]"));
       const presets = data.rest_presets || [];
       let currentPreset = presets.length ? Number(presets[0].seconds || 60) : 60;
       let secondsLeft = currentPreset;
       let intervalId = null;
+      let sessionIntervalId = null;
+      let sessionSeconds = 0;
       let queue = Array.isArray(data.queue) ? data.queue : [];
       let activeIndex = Math.max(0, queue.findIndex(item => !item.done));
       if (activeIndex < 0) activeIndex = 0;
@@ -2658,19 +2769,54 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         const secs = String(secondsLeft % 60).padStart(2, "0");
         timerNode.textContent = mins + ":" + secs;
       }
+      function renderSessionTime() {
+        const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, "0");
+        const secs = String(sessionSeconds % 60).padStart(2, "0");
+        sessionNode.textContent = mins + ":" + secs;
+      }
+      function startSession() {
+        if (sessionIntervalId) return;
+        sessionIntervalId = setInterval(function () {
+          sessionSeconds += 1;
+          renderSessionTime();
+        }, 1000);
+      }
       function renderState() {
         rows.forEach((row, idx) => {
-          row.style.outline = idx === activeIndex ? "2px solid rgba(255,193,77,.7)" : "none";
+          row.classList.toggle("active-row", idx === activeIndex);
         });
         const item = queue[activeIndex];
+        const completedExercises = queue.filter(entry => entry.done).length;
+        const totalSets = queue.reduce((sum, entry) => sum + ((entry.checkpoints || []).length || 1), 0);
+        const closedSets = queue.reduce((sum, entry) => sum + ((entry.checkpoints || []).filter(point => point.done).length || (entry.done ? 1 : 0)), 0);
+        progressMain.textContent = totalSets ? Math.round((closedSets / totalSets) * 100) + "%" : "0%";
+        setsDoneNode.textContent = String(closedSets);
+        queueProgressNode.textContent = completedExercises + "/" + queue.length;
         if (!item) {
+          titleNode.textContent = data.completion_title || "Workout complete";
           statusNode.textContent = data.completion_note || "Session complete.";
+          machineLabel.textContent = "Session complete";
+          machineFocus.textContent = "Recovery and nutrition next.";
+          weightNode.textContent = "No next load";
           return;
         }
+        titleNode.textContent = item.name;
         statusNode.textContent = item.name + " | " + item.detail;
+        machineLabel.textContent = item.machine_label || "Training station";
+        machineFocus.textContent = item.machine_focus || "Main station";
+        weightNode.textContent = item.weight_suggestion || "Use stable working weight.";
+        if (machineImage) {
+          if (item.machine_image) {
+            machineImage.src = item.machine_image;
+            machineImage.style.display = "block";
+          } else {
+            machineImage.style.display = "none";
+          }
+        }
       }
       function start() {
         if (intervalId) return;
+        startSession();
         intervalId = setInterval(function () {
           if (secondsLeft > 0) {
             secondsLeft -= 1;
@@ -2695,6 +2841,7 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % presets.length;
         currentPreset = Number(presets[nextIndex].seconds || 60);
         secondsLeft = currentPreset;
+        presetLabel.textContent = currentPreset + " sec";
         renderTime();
       }
       function complete() {
@@ -2713,6 +2860,15 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
           payload = { item_type: "exercise", item_key: item.item_key };
         }
         rows[activeIndex]?.classList.add("done");
+        const setPills = rows[activeIndex] ? Array.from(rows[activeIndex].querySelectorAll(".set-pill")) : [];
+        if (setPills.length) {
+          const nextUndone = setPills.find(pill => !pill.classList.contains("done"));
+          if (nextUndone) {
+            nextUndone.classList.add("done");
+            const strong = nextUndone.querySelector("strong");
+            if (strong) strong.textContent = "Done";
+          }
+        }
         const nextPending = queue.findIndex(entry => !entry.done);
         if (nextPending !== -1) activeIndex = nextPending;
         renderState();
@@ -2731,9 +2887,156 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
       document.getElementById("wo-preset").addEventListener("click", cyclePreset);
       document.getElementById("wo-complete").addEventListener("click", complete);
       renderTime();
+      renderSessionTime();
+      presetLabel.textContent = currentPreset + " sec";
       renderState();
     })();
   </script>
+</body>
+</html>
+"""
+
+
+INLINE_FOCUS_HUB_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Forge Focus Hub</title>
+  <style>
+    :root { --bg:#040404; --panel:#111214; --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#ccb99f; --accent:#ff7a1a; --accent2:#ffd15a; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,122,26,.18), transparent 24%), linear-gradient(180deg,#040404,#101214); }
+    .shell { width:min(920px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
+    .card { padding:20px; border-radius:28px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.98), rgba(14,14,15,.98)); box-shadow:0 26px 80px rgba(0,0,0,.42); }
+    .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
+    .pill,.btn-primary { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#16110b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; }
+    .top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .grid,.summary,.trainer-grid { display:grid; gap:12px; }
+    .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .trainer-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .tile { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .tile strong { display:block; margin-top:8px; font-size:22px; }
+    .list { display:grid; gap:10px; margin-top:12px; }
+    .row { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .row strong { display:block; margin-bottom:8px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .actions a { text-decoration:none; color:inherit; }
+    .muted { color:#e7d9c8; line-height:1.6; }
+    @media (max-width: 760px) { .grid,.summary,.trainer-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="top">
+        <div>
+          <div class="pill">{{ hub_title }}</div>
+          <div class="mini" style="margin-top:12px;">{{ payload.user.full_name }}</div>
+          <h1 style="margin:10px 0 0;font-family:Georgia,serif;font-size:42px;line-height:.96;">{{ hub_heading }}</h1>
+          <p class="muted">{{ hub_copy }}</p>
+        </div>
+        <div class="actions">
+          <a href="/dashboard" class="btn-primary">Back home</a>
+          <a href="/workout-mode" class="btn-primary">Workout mode</a>
+        </div>
+      </div>
+    </section>
+
+    {% if hub_key == "program" %}
+    <section class="card">
+      <div class="summary">
+        <article class="tile"><div class="mini">Active package</div><strong>{{ payload.active_package.title }}</strong><p class="muted">{{ payload.active_package.summary }}</p></article>
+        <article class="tile"><div class="mini">Focus</div><strong>{{ payload.active_package.focus }}</strong><p class="muted">{{ payload.active_package.days }} training days.</p></article>
+        <article class="tile"><div class="mini">Next block</div><strong>{{ payload.active_package.next_calendar }}</strong><p class="muted">{{ payload.periodization_engine.block_name }}</p></article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        {% for item in payload.program_board %}
+        <article class="row">
+          <div class="mini">{{ item.day }}</div>
+          <strong>{{ item.title }}</strong>
+          <p class="muted">{{ item.prescription }}</p>
+          <ul class="list">
+            {% for exercise in item.top_exercises %}
+            <li>{{ exercise }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% elif hub_key == "fuel" %}
+    <section class="card">
+      <div class="summary">
+        <article class="tile"><div class="mini">Next meal</div><strong>{{ payload.nutrition_intelligence.next_meal_title }}</strong><p class="muted">{{ payload.nutrition_intelligence.next_meal_detail }}</p></article>
+        <article class="tile"><div class="mini">Protein left</div><strong>{{ payload.nutrition_intelligence.protein_left }}g</strong><p class="muted">Keep fuel aligned.</p></article>
+        <article class="tile"><div class="mini">Calories left</div><strong>{{ payload.nutrition_intelligence.calories_left }}</strong><p class="muted">{{ payload.nutrition_intelligence.day_type|title }} day.</p></article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="row">
+          <strong>Smart swaps</strong>
+          <ul class="list">{% for item in payload.nutrition_intelligence.smart_swaps %}<li>{{ item }}</li>{% endfor %}</ul>
+        </article>
+        <article class="row">
+          <strong>Shopping list</strong>
+          <ul class="list">{% for item in payload.shopping_list %}<li>{{ item.name }} - {{ item.reason }}</li>{% endfor %}</ul>
+        </article>
+      </div>
+    </section>
+    {% elif hub_key == "coach" %}
+    <section class="card">
+      <div class="summary">
+        <article class="tile"><div class="mini">AI concierge</div><strong>{{ payload.ai_concierge.name }}</strong><p class="muted">{{ payload.ai_concierge.greeting }}</p></article>
+        <article class="tile"><div class="mini">Current mission</div><strong>{{ payload.coach_briefing.coach }}</strong><p class="muted">{{ payload.coach_briefing.next_step }}</p></article>
+        <article class="tile"><div class="mini">Coach lane</div><strong>{{ payload.assistant.coach_role }}</strong><p class="muted">{{ payload.assistant.headline }}</p></article>
+      </div>
+      <div class="trainer-grid" style="margin-top:16px;">
+        {% for item in payload.personal_trainers %}
+        <article class="row"><div class="mini">{{ item.lead }}</div><strong>{{ item.name }}</strong><p class="muted">{{ item.duty }}</p><div class="mini">{{ item.role }}</div></article>
+        {% endfor %}
+      </div>
+    </section>
+    {% elif hub_key == "track" %}
+    <section class="card">
+      <div class="summary">
+        {% for item in payload.recomposition_home.cards %}
+        <article class="tile"><div class="mini">{{ item.label }}</div><strong>{{ item.value }}</strong><p class="muted">{{ item.detail }}</p></article>
+        {% endfor %}
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="row"><strong>Progress operating system</strong><ul class="list">{% for item in payload.progress_system.wins %}<li>{{ item }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Watchouts</strong><ul class="list">{% for item in payload.progress_system.watchouts %}<li>{{ item }}</li>{% endfor %}</ul></article>
+      </div>
+    </section>
+    {% elif hub_key == "profile" %}
+    <section class="card">
+      <div class="summary">
+        <article class="tile"><div class="mini">Full name</div><strong>{{ payload.user.full_name }}</strong><p class="muted">{{ payload.user.goal|title }} - {{ payload.user.experience_level|title }}</p></article>
+        <article class="tile"><div class="mini">Body</div><strong>{{ payload.user.height_cm }} cm / {{ payload.user.weight_kg }} kg</strong><p class="muted">Age {{ payload.user.age }}</p></article>
+        <article class="tile"><div class="mini">Equipment</div><strong>{{ payload.user.equipment_access|title }}</strong><p class="muted">{{ payload.user.fatigue_state|title }} fatigue</p></article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        {% for item in payload.achievements %}
+        <article class="row"><div class="mini">{{ item.title }}</div><strong>{{ item.value }}</strong><p class="muted">{{ item.detail }}</p></article>
+        {% endfor %}
+      </div>
+    </section>
+    {% elif hub_key == "calendar" %}
+    <section class="card">
+      <div class="grid">
+        {% for day in payload.personal_calendar %}
+        <article class="row">
+          <div class="mini">{{ day.day_label }} - {{ day.date }}</div>
+          <strong>Daily flow</strong>
+          <ul class="list">{% for slot in day.slots %}<li><strong>{{ slot.time }}</strong> - {{ slot.title }} - {{ slot.detail }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
 </body>
 </html>
 """
@@ -3802,62 +4105,68 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
     return [
         {
             "title": "Today workout",
-            "anchor": "#today-plan",
+            "anchor": "/workout-mode",
             "detail": "Open today's exact order of exercises, sets, reps, rest and live player.",
             "kicker": "Start",
             "metric": "Live session",
         },
         {
             "title": "Coach packages",
-            "anchor": "#plans",
+            "anchor": "/hub/program",
             "detail": f"{len(assistant['suggestions'])} ready-made training packages. Lead focus: {first_plan['focus'] if first_plan else 'Coach flow'}.",
             "kicker": "Plans",
             "metric": "Ready to run",
         },
         {
             "title": "Nutrition widget",
-            "anchor": "#mission",
+            "anchor": "/nutrition-mode",
             "detail": f"Meals, macro autopilot and food timing around {assistant['targets']['calories']} kcal.",
             "kicker": "Fuel",
             "metric": f"{assistant['targets']['protein']}g protein",
         },
         {
             "title": "Progress widget",
-            "anchor": "#progress",
+            "anchor": "/hub/track",
             "detail": "Recomposition score, PRs and body-change signals in one clean place.",
             "kicker": "Track",
             "metric": "Body + strength",
         },
         {
             "title": "Coach widget",
-            "anchor": "#assistant",
+            "anchor": "/hub/coach",
             "detail": "Adaptive coaching rules, weekly adjustment and recovery guidance.",
             "kicker": "Coach",
             "metric": "Adaptive engine",
         },
         {
             "title": "Profile widget",
-            "anchor": "#profile",
+            "anchor": "/hub/profile",
             "detail": "Update your body data, goal and training context any time.",
             "kicker": "Setup",
             "metric": "Personalized",
+        },
+        {
+            "title": "Calendar widget",
+            "anchor": "/hub/calendar",
+            "detail": "Weekly layout, next sessions and recovery rhythm in one focused screen.",
+            "kicker": "Calendar",
+            "metric": "Weekly flow",
         },
     ]
 
 
 def build_section_menu(user: dict[str, Any]) -> list[dict[str, str]]:
     items = [
-        {"title": "Today", "anchor": "#today-plan"},
-        {"title": "Plans", "anchor": "#plans"},
-        {"title": "Coach", "anchor": "#assistant"},
-        {"title": "Nutrition", "anchor": "#mission"},
-        {"title": "Progress", "anchor": "#progress"},
-        {"title": "Calendar", "anchor": "#calendar"},
-        {"title": "AI", "anchor": "#ai-trainer"},
-        {"title": "Profile", "anchor": "#profile"},
+        {"title": "Today", "anchor": "/workout-mode"},
+        {"title": "Plans", "anchor": "/hub/program"},
+        {"title": "Coach", "anchor": "/hub/coach"},
+        {"title": "Nutrition", "anchor": "/nutrition-mode"},
+        {"title": "Progress", "anchor": "/hub/track"},
+        {"title": "Calendar", "anchor": "/hub/calendar"},
+        {"title": "Profile", "anchor": "/hub/profile"},
     ]
     if str(user.get("role")) == "admin":
-        items.append({"title": "Admin", "anchor": "#admin"})
+        items.append({"title": "Admin", "anchor": "/hub/profile"})
     return items
 
 
@@ -4264,6 +4573,42 @@ def build_delight_board(
             },
         ],
     }
+
+
+def focus_hub_meta(hub_key: str) -> dict[str, str]:
+    mapping = {
+        "program": {
+            "title": "Program hub",
+            "heading": "Coach packages and active plan",
+            "copy": "This screen is only for plan structure, focus blocks and ready-made sessions.",
+        },
+        "fuel": {
+            "title": "Fuel hub",
+            "heading": "Nutrition autopilot",
+            "copy": "Meals, swaps and shopping live here so nutrition stays clean and fast.",
+        },
+        "coach": {
+            "title": "Coach hub",
+            "heading": "AI trainer and coach squad",
+            "copy": "Open this when you need guidance, adjustments or recovery coaching.",
+        },
+        "track": {
+            "title": "Track hub",
+            "heading": "Progress and body change",
+            "copy": "Use this screen to review recomposition, adherence and training quality.",
+        },
+        "profile": {
+            "title": "Profile hub",
+            "heading": "Body data and setup",
+            "copy": "Only personal data, goal setup and athlete profile controls live here.",
+        },
+        "calendar": {
+            "title": "Calendar hub",
+            "heading": "Weekly layout and personal flow",
+            "copy": "See your week by day without mixing it into the main home screen.",
+        },
+    }
+    return mapping.get(hub_key, mapping["program"])
 
 
 def build_meal_suggestions(goal: str, calories_target: int, protein_target: int) -> list[dict[str, Any]]:
@@ -5668,21 +6013,21 @@ def build_easy_mode(
             "kicker": "Food today",
             "title": f"{meals_left} meal blocks left" if meals_left else "Meals complete",
             "detail": "Log food and keep macros aligned with the goal.",
-            "anchor": "#mission",
+            "anchor": "/nutrition-mode",
             "tag": "Nutrition",
         },
         {
             "kicker": "Coach lane",
             "title": ai_concierge.get("name") or "Forge coach",
             "detail": "Ask the coach what to do next or how to adjust today.",
-            "anchor": "#ai-trainer",
+            "anchor": "/hub/coach",
             "tag": "AI",
         },
         {
             "kicker": "Progress",
             "title": f"{exercise_left} exercise blocks left" if training_live else f"{today_progress.get('completion_percent', 0)}% day complete",
             "detail": "See how the day is tracking and what is still open.",
-            "anchor": "#progress",
+            "anchor": "/hub/track",
             "tag": access.get("status_label", "Access"),
         },
     ]
@@ -5691,7 +6036,7 @@ def build_easy_mode(
             "kicker": "Main",
             "title": "Today",
             "detail": "Fast jump to the session and meal flow.",
-            "anchor": "#today-plan",
+            "anchor": "/workout-mode",
         },
         {
             "kicker": "Mode",
@@ -5709,7 +6054,7 @@ def build_easy_mode(
             "kicker": "Coach",
             "title": "AI trainer",
             "detail": "Open chat and coaching summaries.",
-            "anchor": "#ai-trainer",
+            "anchor": "/hub/coach",
         },
         {
             "kicker": "Meals",
@@ -6242,6 +6587,7 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "recipes": filtered_recipes("all", "all"),
         "users": list_users() if user.get("role") == "admin" else [],
         "view_mode": view_mode,
+        "show_full_dashboard": False,
     }
 
 
@@ -6395,6 +6741,27 @@ def workout_mode():
     return render_template_string(INLINE_WORKOUT_ONLY_TEMPLATE, payload=payload)
 
 
+@app.route("/hub/<hub_key>")
+@login_required
+def focus_hub(hub_key: str):
+    user = current_user()
+    if needs_onboarding(user):
+        return redirect(url_for("onboarding"))
+    allowed = {"program", "fuel", "coach", "track", "profile", "calendar"}
+    if hub_key not in allowed:
+        return redirect(url_for("dashboard"))
+    payload = dashboard_payload(user)
+    meta = focus_hub_meta(hub_key)
+    return render_template_string(
+        INLINE_FOCUS_HUB_TEMPLATE,
+        payload=payload,
+        hub_key=hub_key,
+        hub_title=meta["title"],
+        hub_heading=meta["heading"],
+        hub_copy=meta["copy"],
+    )
+
+
 @app.route("/daily-checkin")
 @login_required
 def daily_checkin_wizard():
@@ -6509,9 +6876,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V39",
-        "login_title": "Secure athlete login V39",
-        "dashboard_title": "Adaptive athlete dashboard V39",
+        "build": "APP.PY ONLY BUILD V41",
+        "login_title": "Secure athlete login V41",
+        "dashboard_title": "Adaptive athlete dashboard V41",
     }
 
 
