@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V37</div>
+    <div class="pill">APP.PY ONLY BUILD V39</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V37</h1>
+    <h1>Secure athlete login V39</h1>
     <p>Svaki korisnik ima svoj nalog, svoje godine, visinu, kilazu, cilj, predlozene treninge, ishranu i svoj kalendar. Forge sada izgleda i radi kao premium fitness proizvod spreman za prodaju.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -467,7 +467,10 @@ INLINE_DASHBOARD_TEMPLATE = """
     .toplinks a,.logout,.pill,.tag { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; }
     .pill,.logout { color:#17110a; background:linear-gradient(135deg,var(--orange),var(--gold)); }
     .toplinks a,.tag { border:1px solid var(--line); background:rgba(255,255,255,.05); }
-    .hero { padding:28px; background:linear-gradient(135deg, rgba(241,90,36,.18), rgba(12,12,13,.96) 34%, rgba(255,176,0,.1)); }
+    .hero { padding:30px; background:
+      radial-gradient(circle at top right, rgba(255,176,0,.16), transparent 22%),
+      radial-gradient(circle at left 10%, rgba(241,90,36,.22), transparent 28%),
+      linear-gradient(135deg, rgba(241,90,36,.18), rgba(12,12,13,.96) 34%, rgba(255,176,0,.1)); }
     .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
     h1,h2,h3 { margin:0; font-family:Georgia,serif; line-height:.96; }
     h1 { font-size:clamp(38px, 7vw, 76px); }
@@ -539,6 +542,24 @@ INLINE_DASHBOARD_TEMPLATE = """
 .command-card { text-decoration:none; color:var(--text); padding:18px; border-radius:22px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); display:grid; gap:8px; }
 .command-card strong { font-size:18px; }
 .command-card .tag { width:max-content; }
+.hero-stage { display:grid; grid-template-columns:1.18fr .82fr; gap:16px; margin-top:20px; }
+.hero-banner { padding:22px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); }
+.hero-banner strong { display:block; margin-top:10px; font-size:32px; line-height:1.02; }
+.hero-banner p { margin:10px 0 0; color:#eadbc8; }
+.hero-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+.hero-actions a { text-decoration:none; color:inherit; }
+.delight-shell { margin-top:18px; display:grid; gap:16px; }
+.delight-main { display:grid; grid-template-columns:1.05fr .95fr; gap:16px; }
+.delight-lead { padding:22px; border-radius:26px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(155deg, rgba(241,90,36,.18), rgba(255,255,255,.05) 42%, rgba(255,176,0,.12)); }
+.delight-lead strong { display:block; margin-top:8px; font-size:34px; line-height:1.02; }
+.delight-lead p { margin:12px 0 0; color:#eadbc8; line-height:1.6; }
+.delight-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.delight-card { padding:16px; border-radius:22px; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+.delight-card strong { display:block; margin-top:8px; font-size:22px; line-height:1.1; }
+.widget-rail { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.widget-chip { padding:16px; border-radius:22px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); text-decoration:none; color:var(--text); display:grid; gap:8px; }
+.widget-chip strong { font-size:18px; }
+.widget-chip .tag { width:max-content; }
 .dock-row { display:flex; gap:10px; overflow:auto; padding-bottom:4px; scrollbar-width:none; }
 .dock-row::-webkit-scrollbar { display:none; }
 .dock-row a { text-decoration:none; color:var(--text); min-width:148px; padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
@@ -626,8 +647,8 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
   </style>
 </head>
 <body data-view-mode="{{ payload.view_mode }}">
@@ -635,7 +656,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V37</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V39</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -670,7 +691,7 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V37</div>
+<div class="pill">Market ready + dashboard V39</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -694,6 +715,26 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
         <article class="kpi"><span class="mini">Recovery score</span><strong>{{ payload.scores.recovery_score }}/10</strong></article>
         <article class="kpi"><span class="mini">Transformation</span><strong>{{ payload.scores.transformation_score }}/10</strong></article>
         <article class="kpi"><span class="mini">Consistency</span><strong>{{ payload.scores.consistency_score }}%</strong></article>
+      </div>
+      <div class="hero-stage">
+        <article class="hero-banner">
+          <div class="mini">Today certainty</div>
+          <strong>{{ payload.delight_board.headline }}</strong>
+          <p>{{ payload.delight_board.subline }}</p>
+          <div class="hero-actions">
+            <a class="pill" href="{{ payload.delight_board.primary_cta.anchor }}">{{ payload.delight_board.primary_cta.label }}</a>
+            <a class="tag" href="{{ payload.delight_board.secondary_cta.anchor }}">{{ payload.delight_board.secondary_cta.label }}</a>
+          </div>
+        </article>
+        <div class="widget-rail">
+          {% for item in payload.delight_board.widgets %}
+          <a href="{{ item.anchor }}" class="widget-chip">
+            <div class="mini">{{ item.title }}</div>
+            <strong>{{ item.detail }}</strong>
+            <div class="tag">{{ item.metric }}</div>
+          </a>
+          {% endfor %}
+        </div>
       </div>
       <div class="quickbar">
         <a href="#folders">Open {{ payload.ui.folders }}</a>
@@ -750,29 +791,42 @@ body[data-view-mode="minimal"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
-      <section class="summary-strip" style="margin-top:18px;">
-        {% for item in payload.workspace_hub %}
-        <article class="summary-card">
-          <div class="mini">Workspace</div>
-          <strong style="display:block;margin-top:8px;font-size:24px;">{{ item.title }}</strong>
-          <p style="margin-top:12px;">{{ item.detail }}</p>
-          <div class="notice">{{ item.metric }}</div>
-          <div style="margin-top:12px;"><a href="{{ item.anchor }}" style="color:#f7efdf;font-weight:800;text-decoration:none;">Open {{ item.title|lower }}</a></div>
-        </article>
-        {% endfor %}
-      </section>
-      <section class="panel span">
-        <div class="section-head">
-          <div><div class="mini">Operating board</div><h2>Run the app without thinking</h2></div>
+      <section class="delight-shell">
+        <div class="delight-main">
+          <article class="delight-lead">
+            <div class="mini">Operating board</div>
+            <strong>Run the app like a premium coaching system.</strong>
+            <p>Everything important is grouped here: what to do now, why today works, what to eat next, and where to go in one tap.</p>
+          </article>
+          <div class="planner-grid">
+            {% for item in payload.operating_board %}
+            <article class="option">
+              <div class="mini">Now</div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.detail }}</p>
+              <div class="notice" style="margin-top:10px;">{{ item.note }}</div>
+            </article>
+            {% endfor %}
+          </div>
         </div>
-        <div class="planner-grid">
-          {% for item in payload.operating_board %}
-          <article class="option">
-            <div class="mini">Now</div>
+        <div class="delight-grid">
+          {% for item in payload.customer_delight.cards %}
+          <article class="delight-card">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p style="margin-top:12px;">{{ item.detail }}</p>
+            <div class="notice">{{ item.tag }}</div>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="widget-rail">
+          {% for item in payload.workspace_hub %}
+          <a href="{{ item.anchor }}" class="widget-chip">
+            <div class="mini">Workspace</div>
             <strong>{{ item.title }}</strong>
             <p>{{ item.detail }}</p>
-            <div class="notice" style="margin-top:10px;">{{ item.note }}</div>
-          </article>
+            <div class="tag">{{ item.metric }}</div>
+          </a>
           {% endfor %}
         </div>
       </section>
@@ -4112,6 +4166,106 @@ def build_operating_board(
     ]
 
 
+def build_customer_delight(
+    user: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    adaptive_training_engine: dict[str, Any],
+    periodization_engine: dict[str, Any],
+    coach_briefing: dict[str, Any],
+    access: dict[str, Any],
+) -> dict[str, Any]:
+    exercise_total = int(today_progress.get("exercise_total", 0))
+    meal_total = int(today_progress.get("meal_total", 0))
+    completion = int(today_progress.get("completion_percent", 0))
+    success_title = "Win today by finishing the written plan."
+    success_detail = (
+        f"Close {exercise_total} exercise blocks and {meal_total} food blocks."
+        if today_blueprint.get("day_type") == "training"
+        else "Keep recovery simple: move, eat clean and finish the check-in."
+    )
+    if completion >= 80:
+        success_title = "Today is almost closed."
+        success_detail = "Stay calm, finish the last useful block and protect recovery tonight."
+
+    return {
+        "headline": f"{user.get('full_name', 'Athlete')}, your day is already organized.",
+        "subline": "Open one widget, follow the written flow, and let the app carry the decisions.",
+        "cards": [
+            {
+                "kicker": "Success today",
+                "title": success_title,
+                "detail": success_detail,
+                "tag": f"{completion}% complete",
+            },
+            {
+                "kicker": "Why this plan fits",
+                "title": adaptive_training_engine.get("readiness", "Stay on plan"),
+                "detail": (
+                    f"{periodization_engine.get('week_label', 'Current block')} - "
+                    f"{periodization_engine.get('block_name', 'Coach block')}. "
+                    f"{adaptive_training_engine.get('today_rule', 'Keep quality high.')}"
+                ),
+                "tag": periodization_engine.get("phase_signal", "On track"),
+            },
+            {
+                "kicker": "Keep it simple",
+                "title": coach_briefing.get("next_step", "Do the next useful thing."),
+                "detail": (
+                    f"Next meal: {nutrition_intelligence.get('next_meal_title', 'Meal block')}."
+                    f" Access: {access.get('status_label', 'Active')}."
+                ),
+                "tag": today_blueprint.get("status_label", "Ready"),
+            },
+        ],
+    }
+
+
+def build_delight_board(
+    user: dict[str, Any],
+    today_blueprint: dict[str, Any],
+    customer_delight: dict[str, Any],
+    active_package: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    access: dict[str, Any],
+    single_next_action: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "headline": f"{user.get('full_name', 'Athlete')}, everything for today is already lined up.",
+        "subline": "Use the next button, follow the written workout, then close food and recovery. No extra thinking needed.",
+        "primary_cta": {"label": single_next_action.get("cta", "Open today"), "anchor": single_next_action.get("anchor", "#today-plan")},
+        "secondary_cta": {"label": "Open workout mode", "anchor": "/workout-mode"},
+        "cards": customer_delight.get("cards", []),
+        "widgets": [
+            {
+                "title": "Today",
+                "detail": today_blueprint.get("title", "Today's plan"),
+                "metric": today_blueprint.get("duration", "Ready"),
+                "anchor": "#today-plan",
+            },
+            {
+                "title": "Program",
+                "detail": active_package.get("title", "Coach package"),
+                "metric": active_package.get("focus", "Coach flow"),
+                "anchor": "#plans",
+            },
+            {
+                "title": "Fuel",
+                "detail": nutrition_intelligence.get("next_meal_title", "Next meal"),
+                "metric": f"{nutrition_intelligence.get('protein_left', 0)}g protein left",
+                "anchor": "#mission",
+            },
+            {
+                "title": "Access",
+                "detail": access.get("status_label", "Active"),
+                "metric": access.get("recommended_tier", "pro").title(),
+                "anchor": "#pricing",
+            },
+        ],
+    }
+
+
 def build_meal_suggestions(goal: str, calories_target: int, protein_target: int) -> list[dict[str, Any]]:
     library = {
         "performance": [
@@ -5982,6 +6136,25 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     program_board = build_program_board(active_package)
     workspace_hub = build_workspace_hub(user, active_package, today_blueprint, access)
     operating_board = build_operating_board(today_blueprint, active_package, nutrition_intelligence, coach_briefing)
+    customer_delight = build_customer_delight(
+        user,
+        today_blueprint,
+        today_progress,
+        nutrition_intelligence,
+        adaptive_training_engine,
+        periodization_engine,
+        coach_briefing,
+        access,
+    )
+    delight_board = build_delight_board(
+        user,
+        today_blueprint,
+        customer_delight,
+        active_package,
+        nutrition_intelligence,
+        access,
+        single_next_action if "single_next_action" in locals() else {"cta": "Open today", "anchor": "#today-plan"},
+    )
     wellness_panel = build_wellness_panel(user, scores)
     lang = current_language()
     ui = language_pack()
@@ -6044,6 +6217,8 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "program_board": program_board,
         "workspace_hub": workspace_hub,
         "operating_board": operating_board,
+        "customer_delight": customer_delight,
+        "delight_board": delight_board,
         "easy_mode": easy_mode,
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
@@ -6334,9 +6509,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V37",
-        "login_title": "Secure athlete login V37",
-        "dashboard_title": "Adaptive athlete dashboard V37",
+        "build": "APP.PY ONLY BUILD V39",
+        "login_title": "Secure athlete login V39",
+        "dashboard_title": "Adaptive athlete dashboard V39",
     }
 
 
