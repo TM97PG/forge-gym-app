@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V49</div>
+    <div class="pill">APP.PY ONLY BUILD V51</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V49</h1>
+    <h1>Secure athlete login V51</h1>
     <p>Uloguj se, otvori svoj plan i nastavi tacno tamo gdje si stao.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -457,24 +457,24 @@ INLINE_DASHBOARD_TEMPLATE = """
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Forge Dashboard</title>
   <style>
-    :root { --bg:#040404; --panel:rgba(16,16,18,.94); --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#c8b49b; --orange:#ff7a1a; --gold:#ffd15a; --red:#e04757; --green:#59cf82; --teal:#46c7c7; --blue:#6aa8ff; }
+    :root { --bg:#060505; --panel:rgba(15,14,16,.94); --panel-soft:rgba(24,20,18,.86); --line:rgba(255,255,255,.08); --text:#fbf4e8; --muted:#cbb79d; --orange:#f48b38; --gold:#f2c15a; --red:#d65d5d; --green:#59cf82; --teal:#46c7c7; --blue:#6aa8ff; --plum:#42261c; }
     * { box-sizing:border-box; } html { scroll-behavior:smooth; }
     body { margin:0; color:var(--text); background:
-      radial-gradient(circle at top left, rgba(255,122,26,.18), transparent 24%),
-      radial-gradient(circle at right 18%, rgba(255,209,90,.14), transparent 20%),
-      radial-gradient(circle at bottom right, rgba(70,199,199,.10), transparent 24%),
-      linear-gradient(180deg,#040404,#101214 58%,#070707); font-family:Arial,Helvetica,sans-serif; }
-    .shell { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:16px 0 110px; }
+      radial-gradient(circle at top left, rgba(244,139,56,.18), transparent 24%),
+      radial-gradient(circle at right 18%, rgba(242,193,90,.15), transparent 20%),
+      radial-gradient(circle at bottom right, rgba(70,199,199,.08), transparent 26%),
+      linear-gradient(180deg,#060505,#0d0d0f 50%,#070707); font-family:Arial,Helvetica,sans-serif; }
+    .shell { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:18px 0 118px; }
     .topbar,.hero,.panel,.option,.flash { background:var(--panel); border:1px solid var(--line); border-radius:26px; box-shadow:0 28px 90px rgba(0,0,0,.42); }
-    .topbar { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px; position:sticky; top:10px; z-index:4; backdrop-filter:blur(18px); margin-bottom:14px; }
+    .topbar { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:16px 18px; position:sticky; top:10px; z-index:4; backdrop-filter:blur(18px); margin-bottom:14px; background:linear-gradient(180deg, rgba(18,16,18,.96), rgba(14,13,15,.92)); }
     .toplinks { display:grid; grid-auto-flow:column; gap:10px; align-items:start; }
     .toplinks a,.logout,.pill,.tag { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; }
     .pill,.logout { color:#17110a; background:linear-gradient(135deg,var(--orange),var(--gold)); }
     .toplinks a,.tag { border:1px solid var(--line); background:rgba(255,255,255,.05); }
-    .hero { padding:30px; background:
-      radial-gradient(circle at top right, rgba(255,176,0,.16), transparent 22%),
-      radial-gradient(circle at left 10%, rgba(241,90,36,.22), transparent 28%),
-      linear-gradient(135deg, rgba(241,90,36,.18), rgba(12,12,13,.96) 34%, rgba(255,176,0,.1)); }
+    .hero { padding:34px; background:
+      radial-gradient(circle at top right, rgba(242,193,90,.18), transparent 24%),
+      radial-gradient(circle at left 8%, rgba(244,139,56,.24), transparent 30%),
+      linear-gradient(140deg, rgba(93,42,24,.58), rgba(14,14,15,.96) 36%, rgba(122,75,29,.24)); }
     .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
     h1,h2,h3 { margin:0; font-family:Georgia,serif; line-height:.96; }
     h1 { font-size:clamp(38px, 7vw, 76px); }
@@ -490,7 +490,7 @@ INLINE_DASHBOARD_TEMPLATE = """
     .quickbar { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:16px; }
     .quickbar a { padding:14px; border-radius:18px; text-decoration:none; text-align:center; background:rgba(255,255,255,.05); border:1px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; }
     .kpi,.option,.log,.user-card,.flash { padding:18px; }
-    .kpi,.option,.log,.user-card { border-radius:22px; background:rgba(24,24,26,.98); border:1px solid rgba(255,255,255,.06); }
+    .kpi,.option,.log,.user-card { border-radius:22px; background:linear-gradient(180deg, rgba(26,24,25,.98), rgba(18,18,20,.98)); border:1px solid rgba(255,255,255,.06); }
     .kpi strong,.user-card strong,.option strong { display:block; margin-top:8px; font-size:24px; }
     .page { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; margin-top:18px; }
     .span { grid-column:1 / -1; }
@@ -534,6 +534,29 @@ INLINE_DASHBOARD_TEMPLATE = """
     .flash-stack { display:grid; gap:10px; margin-bottom:14px; }
     .top-nav-links { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
     .top-nav-links a { display:inline-flex; align-items:center; justify-content:center; padding:10px 12px; border-radius:999px; text-decoration:none; color:inherit; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+    .account-rail { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .account-chip { display:inline-flex; align-items:center; justify-content:center; padding:12px 14px; border-radius:18px; text-decoration:none; color:var(--text); background:rgba(255,255,255,.06); border:1px solid var(--line); font-size:12px; font-weight:800; letter-spacing:.06em; }
+    .account-chip.primary { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
+    .utility-rail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .utility-card { padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.045); text-decoration:none; color:var(--text); }
+    .utility-card strong { display:block; margin-top:8px; font-size:18px; }
+.practical-shell { display:grid; gap:16px; margin-top:16px; }
+.fast-lane-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.lane-card { padding:16px; border-radius:22px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); text-decoration:none; color:var(--text); display:grid; gap:8px; }
+.lane-card strong { font-size:20px; line-height:1.08; }
+.lane-card.primary { background:linear-gradient(145deg, rgba(241,90,36,.2), rgba(255,255,255,.05) 44%, rgba(255,176,0,.14)); border-color:rgba(241,90,36,.24); }
+.lane-card.train { border-color:rgba(255,176,0,.16); }
+.lane-card.fuel { border-color:rgba(89,193,115,.18); }
+.lane-card.track { border-color:rgba(112,150,255,.2); }
+.agenda-board { padding:18px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.025)); }
+.agenda-grid { display:grid; gap:10px; margin-top:14px; }
+.agenda-row { display:grid; grid-template-columns:88px 1fr auto; gap:12px; align-items:start; padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+.agenda-time { font-size:18px; font-weight:900; letter-spacing:.04em; color:#f7efdf; }
+.agenda-row strong { display:block; font-size:18px; }
+.agenda-state { display:inline-flex; align-items:center; justify-content:center; padding:8px 10px; border-radius:999px; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+.agenda-state.now { background:rgba(241,90,36,.16); border-color:rgba(241,90,36,.28); }
+.agenda-state.done { background:rgba(78,186,114,.16); border-color:rgba(78,186,114,.26); }
+.agenda-state.up-next { background:rgba(255,176,0,.12); border-color:rgba(255,176,0,.22); }
 .folder-menu { display:flex; gap:10px; overflow:auto; padding:10px 2px 2px; margin-top:14px; scrollbar-width:none; }
 .folder-menu::-webkit-scrollbar { display:none; }
 .folder-menu a { white-space:nowrap; text-decoration:none; color:var(--text); padding:12px 14px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; letter-spacing:.05em; }
@@ -542,19 +565,19 @@ INLINE_DASHBOARD_TEMPLATE = """
 .view-mode a.active { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
 .one-screen-home { margin-top:18px; display:grid; gap:16px; }
 .one-screen-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; }
-.home-primary { padding:24px; border-radius:28px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(155deg, rgba(241,90,36,.18), rgba(255,255,255,.05) 46%, rgba(255,176,0,.10)); }
+    .home-primary { padding:26px; border-radius:28px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(155deg, rgba(244,139,56,.18), rgba(255,255,255,.05) 46%, rgba(242,193,90,.11)); }
 .home-primary strong { display:block; margin-top:10px; font-size:34px; line-height:1.02; }
 .home-primary p { margin:12px 0 0; color:#eadbc8; line-height:1.6; }
 .home-stat-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
 .home-stat { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.05); }
 .home-stat strong { display:block; margin-top:8px; font-size:24px; }
 .guided-day-shell { display:grid; gap:12px; }
-.guided-step { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .guided-step { padding:16px; border-radius:20px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); }
 .guided-step strong { display:block; margin-top:8px; font-size:20px; }
 .guided-step.now { border-color:rgba(255,176,0,.28); background:rgba(255,176,0,.08); }
 .guided-step.done { opacity:.7; }
 .mode-board { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.mode-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .mode-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); }
 .mode-card.active { border-color:rgba(241,90,36,.34); background:rgba(241,90,36,.1); }
 .mode-card strong { display:block; margin-top:8px; font-size:20px; }
 .command-center { margin-top:18px; display:grid; gap:16px; }
@@ -668,8 +691,8 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } .agenda-row { grid-template-columns:88px 1fr; } .agenda-row .agenda-state { grid-column:2; width:max-content; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } .agenda-row { grid-template-columns:1fr; } }
   </style>
 </head>
 <body data-view-mode="{{ payload.view_mode }}">
@@ -677,7 +700,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V49</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V51</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -689,7 +712,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           <a href="#folders">Hub {{ payload.ui.folders }}</a>
           <a href="/hub/program">Coach {{ payload.ui.plans }}</a>
           <a href="/hub/calendar">Daily {{ payload.ui.calendar }}</a>
-          <a href="/hub/profile">Admin {{ payload.ui.users }}</a>
+          <a href="/hub/profile">Profile</a>
           <a class="logout" href="/logout">{{ payload.ui.logout }}</a>
         </div>
       </div>
@@ -710,9 +733,9 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
         <div>
           <div class="mini">{{ payload.ui.hero_kicker }}</div>
           <h1>Forge</h1>
-          <p>Open today's plan, follow the order, close the food blocks, done.</p>
+          <p>Train, eat, track and finish the day without hunting through the app.</p>
         </div>
-<div class="pill">Dashboard V49</div>
+<div class="pill">Dashboard V51</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -726,6 +749,49 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           <p>{{ payload.user.experience_level|title }} lane.</p>
         </div>
       </div>
+      <div class="account-rail">
+        <a class="account-chip primary" href="/hub/profile">Open profile</a>
+        <a class="account-chip" href="/hub/calendar">Open calendar</a>
+        <a class="account-chip" href="/logout">Logout</a>
+      </div>
+      <div class="utility-rail">
+        {% for item in payload.profile_tools %}
+        <a class="utility-card" href="{{ item.anchor }}">
+          <div class="mini">Account</div>
+          <strong>{{ item.title }}</strong>
+          <p style="margin-top:8px;">{{ item.detail }}</p>
+        </a>
+        {% endfor %}
+      </div>
+      <section class="practical-shell">
+        <div class="fast-lane-grid">
+          {% for item in payload.fast_lane %}
+          <a class="lane-card {{ item.emphasis }}" href="{{ item.anchor }}">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div class="tag">{{ item.metric }}</div>
+          </a>
+          {% endfor %}
+        </div>
+        <article class="agenda-board">
+          <div class="mini">Today agenda</div>
+          <strong style="display:block;margin-top:8px;font-size:28px;">Today's run sheet</strong>
+          <p style="margin-top:10px;">Move through the day in order. Open the next block, close it, continue.</p>
+          <div class="agenda-grid">
+            {% for item in payload.today_agenda %}
+            <a class="agenda-row" href="{{ item.anchor }}" style="text-decoration:none;color:inherit;">
+              <div class="agenda-time">{{ item.time }}</div>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p style="margin-top:6px;">{{ item.detail }}</p>
+              </div>
+              <div class="agenda-state {{ item.state|replace(' ', '-') }}">{{ item.state }}</div>
+            </a>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
       <section class="one-screen-home">
         <div class="one-screen-grid">
           <article class="home-primary">
@@ -862,7 +928,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           <article class="delight-lead">
             <div class="mini">Control center</div>
             <strong>Today's control panel</strong>
-            <p>Open training, food, coach or progress in one tap.</p>
+            <p>Open the right room fast and keep the day moving.</p>
           </article>
           <div class="planner-grid">
             {% for item in payload.operating_board %}
@@ -3012,9 +3078,9 @@ INLINE_FOCUS_HUB_TEMPLATE = """
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Forge Focus Hub</title>
   <style>
-    :root { --bg:#040404; --panel:#111214; --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#ccb99f; --accent:#ff7a1a; --accent2:#ffd15a; }
+    :root { --bg:#050505; --panel:#111214; --panel-soft:rgba(24,20,18,.86); --line:rgba(255,255,255,.09); --text:#fbf4e8; --muted:#ccb99f; --accent:#f48b38; --accent2:#f2c15a; }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(255,122,26,.18), transparent 24%), linear-gradient(180deg,#040404,#101214); }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top, rgba(244,139,56,.18), transparent 24%), linear-gradient(180deg,#050505,#101214); }
     .shell { width:min(920px,100%); margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); display:grid; gap:16px; }
     .card { padding:20px; border-radius:28px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(22,22,24,.98), rgba(14,14,15,.98)); box-shadow:0 26px 80px rgba(0,0,0,.42); }
     .mini { text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); font-weight:800; }
@@ -3027,11 +3093,14 @@ INLINE_FOCUS_HUB_TEMPLATE = """
     .tile { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .tile strong { display:block; margin-top:8px; font-size:22px; }
     .list { display:grid; gap:10px; margin-top:12px; }
-    .row { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .row { padding:14px; border-radius:18px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); }
     .row strong { display:block; margin-bottom:8px; }
     .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .actions a { text-decoration:none; color:inherit; }
     .muted { color:#e7d9c8; line-height:1.6; }
+    .account-tools { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .account-tools a { text-decoration:none; color:var(--text); padding:10px 12px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:12px; font-weight:800; }
+    .account-tools a.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#17110a; }
     .hub-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
     .hub-kpi { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .hub-kpi strong { display:block; margin-top:8px; font-size:24px; }
@@ -3053,6 +3122,11 @@ INLINE_FOCUS_HUB_TEMPLATE = """
           <a href="/dashboard" class="btn-primary">Back home</a>
           <a href="/workout-mode" class="btn-primary">Workout mode</a>
         </div>
+      </div>
+      <div class="account-tools">
+        <a class="primary" href="/hub/profile">Open profile</a>
+        <a href="/hub/calendar">Calendar</a>
+        <a href="/logout">Logout</a>
       </div>
     </section>
 
@@ -4393,6 +4467,139 @@ def build_dashboard_core_widgets(
             "detail": "Open the coach lane for the shortest next step, not more information.",
             "metric": today_blueprint.get("coach_name", "Coach"),
             "anchor": "/hub/coach",
+        },
+    ]
+
+
+def build_fast_lane(
+    single_next_action: dict[str, str],
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    session_analytics: dict[str, Any],
+) -> list[dict[str, str]]:
+    exercise_left = max(int(today_progress.get("exercise_total", 0)) - int(today_progress.get("exercise_done", 0)), 0)
+    meal_left = max(int(today_progress.get("meal_total", 0)) - int(today_progress.get("meal_done", 0)), 0)
+    return [
+        {
+            "kicker": "Do next",
+            "title": single_next_action.get("title", "Open today's plan"),
+            "detail": single_next_action.get("detail", "Move the day forward from one place."),
+            "metric": single_next_action.get("tag", "Next step"),
+            "anchor": single_next_action.get("anchor", "/dashboard"),
+            "cta": single_next_action.get("cta", "Open"),
+            "emphasis": "primary",
+        },
+        {
+            "kicker": "Train",
+            "title": today_blueprint.get("title", "Today's session"),
+            "detail": f"{exercise_left} exercise blocks left today. Open the player and stay in sequence.",
+            "metric": today_blueprint.get("duration", "Live session"),
+            "anchor": "/workout-mode" if str(today_blueprint.get("day_type")) == "training" else "/hub/train",
+            "cta": "Open train",
+            "emphasis": "train",
+        },
+        {
+            "kicker": "Fuel",
+            "title": nutrition_intelligence.get("next_meal_title", "Next meal"),
+            "detail": nutrition_intelligence.get("next_meal_detail", "Keep the next block easy to close."),
+            "metric": f"{meal_left} meal blocks left",
+            "anchor": "/nutrition-mode",
+            "cta": "Open fuel",
+            "emphasis": "fuel",
+        },
+        {
+            "kicker": "Track",
+            "title": session_analytics.get("coach_note", "Stay consistent."),
+            "detail": "Open progress, body change and weekly review without leaving the daily flow.",
+            "metric": f"{today_progress.get('completion_percent', 0)}% complete",
+            "anchor": "/hub/track",
+            "cta": "Open track",
+            "emphasis": "track",
+        },
+    ]
+
+
+def build_today_agenda(
+    personal_calendar: list[dict[str, Any]],
+    today_blueprint: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    today_progress: dict[str, Any],
+    checkins: list[dict[str, Any]],
+) -> list[dict[str, str]]:
+    today_key = date.today().isoformat()
+    has_checkin_today = any(str(item.get("checkin_date") or "").startswith(today_key) for item in checkins)
+    today_slots = list((personal_calendar[0] if personal_calendar else {}).get("slots") or [])
+    agenda: list[dict[str, str]] = []
+    for slot in today_slots[:4]:
+        slot_type = str(slot.get("type") or "focus")
+        state = "up next"
+        anchor = "/dashboard"
+        if slot_type == "checkin":
+            state = "done" if has_checkin_today else "now"
+            anchor = "/daily-checkin"
+        elif slot_type == "training":
+            exercise_left = max(int(today_progress.get("exercise_total", 0)) - int(today_progress.get("exercise_done", 0)), 0)
+            state = "done" if exercise_left == 0 else "up next"
+            anchor = "/workout-mode"
+        elif slot_type == "nutrition":
+            meal_left = max(int(today_progress.get("meal_total", 0)) - int(today_progress.get("meal_done", 0)), 0)
+            state = "done" if meal_left == 0 else "up next"
+            anchor = "/nutrition-mode"
+        elif slot_type == "recovery":
+            anchor = "/hub/coach"
+        agenda.append(
+            {
+                "time": str(slot.get("time") or "--:--"),
+                "title": str(slot.get("title") or "Today's block"),
+                "detail": str(slot.get("detail") or ""),
+                "state": state,
+                "anchor": anchor,
+            }
+        )
+    if not agenda:
+        agenda = [
+            {
+                "time": "08:00",
+                "title": "Daily check-in",
+                "detail": "Open readiness and set the tone for the day.",
+                "state": "now" if not has_checkin_today else "done",
+                "anchor": "/daily-checkin",
+            },
+            {
+                "time": "17:30",
+                "title": today_blueprint.get("title", "Today's training"),
+                "detail": today_blueprint.get("focus_line", "Open the player and follow the written order."),
+                "state": "up next",
+                "anchor": "/workout-mode" if str(today_blueprint.get("day_type")) == "training" else "/hub/train",
+            },
+            {
+                "time": "20:00",
+                "title": nutrition_intelligence.get("next_meal_title", "Next meal"),
+                "detail": nutrition_intelligence.get("next_meal_detail", "Close the next meal block."),
+                "state": "up next",
+                "anchor": "/nutrition-mode",
+            },
+        ]
+    return agenda
+
+
+def build_profile_tools(user: dict[str, Any]) -> list[dict[str, str]]:
+    return [
+        {
+            "title": "Profile",
+            "detail": f"Update {user.get('goal', 'training')} setup, body data and weekly context.",
+            "anchor": "/hub/profile",
+        },
+        {
+            "title": "Calendar",
+            "detail": "Open the weekly rhythm and see training, meals and recovery slots.",
+            "anchor": "/hub/calendar",
+        },
+        {
+            "title": "Logout",
+            "detail": "Switch user or close the session without hunting through screens.",
+            "anchor": "/logout",
         },
     ]
 
@@ -7010,6 +7217,9 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     transformation_dashboard = build_transformation_dashboard(progress_system, recomposition_dashboard, progress_trends, weekly_review)
     wellness_panel = build_wellness_panel(user, scores)
     dashboard_core_widgets = build_dashboard_core_widgets(today_blueprint, today_progress, nutrition_intelligence, session_analytics)
+    fast_lane = build_fast_lane(single_next_action, today_blueprint, today_progress, nutrition_intelligence, session_analytics)
+    today_agenda = build_today_agenda(personal_calendar, today_blueprint, nutrition_intelligence, today_progress, checkins)
+    profile_tools = build_profile_tools(user)
     train_room = build_train_room(today_blueprint, live_session, session_analytics, exercise_mastery)
     fuel_room = build_fuel_room(nutrition_os, nutrition_intelligence, shopping_list)
     track_room = build_track_room(progress_system, transformation_dashboard, weekly_review)
@@ -7080,6 +7290,9 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "delight_board": delight_board,
         "home_hub": home_hub,
         "dashboard_core_widgets": dashboard_core_widgets,
+        "fast_lane": fast_lane,
+        "today_agenda": today_agenda,
+        "profile_tools": profile_tools,
         "guided_day_flow": guided_day_flow,
         "nutrition_os": nutrition_os,
         "transformation_dashboard": transformation_dashboard,
@@ -7401,9 +7614,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V49",
-        "login_title": "Secure athlete login V49",
-        "dashboard_title": "Adaptive athlete dashboard V49",
+        "build": "APP.PY ONLY BUILD V51",
+        "login_title": "Secure athlete login V51",
+        "dashboard_title": "Adaptive athlete dashboard V51",
     }
 
 
