@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V45</div>
+    <div class="pill">APP.PY ONLY BUILD V49</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V45</h1>
+    <h1>Secure athlete login V49</h1>
     <p>Uloguj se, otvori svoj plan i nastavi tacno tamo gdje si stao.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -677,7 +677,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V45</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V49</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -710,9 +710,9 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
         <div>
           <div class="mini">{{ payload.ui.hero_kicker }}</div>
           <h1>Forge</h1>
-          <p>Today first. Open the player, follow the plan, close the meals, done.</p>
+          <p>Open today's plan, follow the order, close the food blocks, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V45</div>
+<div class="pill">Dashboard V49</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -1003,28 +1003,24 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
       </div>
     </section>
 
-    <section class="panel span">
-      <div class="section-head">
-        <div><div class="mini">Home</div><h2>Only today matters here</h2></div>
-      </div>
-      <div class="summary-strip" style="margin-top:0;">
-        <article class="summary-card">
-          <div class="mini">Today's training</div>
-          <strong style="display:block;margin-top:8px;font-size:24px;">{{ payload.today_blueprint.title }}</strong>
-          <p style="margin-top:12px;">{{ payload.today_blueprint.focus_line }}</p>
-          <div class="actions">
-            <a href="/workout-mode" class="pill">Open workout mode</a>
-            <a href="/hub/program" class="tag">Open program</a>
-          </div>
-        </article>
-        <article class="summary-card">
-          <div class="mini">Home rule</div>
-          <strong style="display:block;margin-top:8px;font-size:24px;">Home shows only today</strong>
-          <p style="margin-top:12px;">Program, coach, fuel, track, profile and calendar are separated into their own folders.</p>
-          <div class="notice">Open the widget you need and keep moving.</div>
-        </article>
-      </div>
-    </section>
+      <section class="panel span">
+        <div class="section-head">
+          <div><div class="mini">Home</div><h2>Use one widget and move on</h2></div>
+        </div>
+        <div class="summary-strip" style="margin-top:0;">
+          {% for item in payload.dashboard_core_widgets %}
+          <article class="summary-card">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong style="display:block;margin-top:8px;font-size:24px;">{{ item.title }}</strong>
+            <p style="margin-top:12px;">{{ item.detail }}</p>
+            <div class="actions">
+              <a href="{{ item.anchor }}" class="pill">Open</a>
+              <div class="notice">{{ item.metric }}</div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
 
     {% if payload.show_full_dashboard %}
     <main class="page">
@@ -2699,6 +2695,8 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
     .session-board { grid-template-columns:1fr 1fr; }
     .session-chip { padding:12px 14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
     .session-chip strong { display:block; margin-top:6px; font-size:18px; }
+    .next-up { margin-top:12px; padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .next-up strong { display:block; margin-top:8px; font-size:20px; }
     .machine-preview { width:100%; border-radius:22px; border:1px solid var(--line); background:#0d0d0e; display:block; }
     .active-row { outline:2px solid rgba(255,209,90,.75); background:linear-gradient(180deg, rgba(255,122,26,.12), rgba(255,255,255,.04)); }
     .set-grid { display:grid; gap:8px; margin-top:12px; }
@@ -2751,6 +2749,11 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
               <div class="mini">Rest preset</div>
               <strong id="wo-preset-label">{{ payload.live_session.rest_presets[0].seconds if payload.live_session.rest_presets else 60 }} sec</strong>
             </div>
+          </div>
+          <div class="next-up">
+            <div class="mini">Next up</div>
+            <strong id="wo-next-up">{{ payload.live_session.queue[1].name if payload.live_session.queue|length > 1 else payload.live_session.next_move }}</strong>
+            <p id="wo-next-detail">{{ payload.live_session.queue[1].detail if payload.live_session.queue|length > 1 else payload.live_session.coach_prompt }}</p>
           </div>
         </div>
       </div>
@@ -2839,6 +2842,8 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
       const machineFocus = document.getElementById("wo-machine-focus");
       const weightNode = document.getElementById("wo-weight");
       const presetLabel = document.getElementById("wo-preset-label");
+      const nextUpNode = document.getElementById("wo-next-up");
+      const nextDetailNode = document.getElementById("wo-next-detail");
       const progressMain = document.getElementById("wo-progress-main");
       const setsDoneNode = document.getElementById("wo-sets-done");
       const queueProgressNode = document.getElementById("wo-queue-progress");
@@ -2886,6 +2891,8 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
           machineLabel.textContent = "Session complete";
           machineFocus.textContent = "Recovery and nutrition next.";
           weightNode.textContent = "No next load";
+          if (nextUpNode) nextUpNode.textContent = "Session complete";
+          if (nextDetailNode) nextDetailNode.textContent = "Open recovery, food and the weekly review.";
           return;
         }
         titleNode.textContent = item.name;
@@ -2893,6 +2900,9 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         machineLabel.textContent = item.machine_label || "Training station";
         machineFocus.textContent = item.machine_focus || "Main station";
         weightNode.textContent = item.weight_suggestion || "Use stable working weight.";
+        const nextItem = queue[activeIndex + 1];
+        if (nextUpNode) nextUpNode.textContent = nextItem ? nextItem.name : "Finish session";
+        if (nextDetailNode) nextDetailNode.textContent = nextItem ? nextItem.detail : "Close the last block, then move to recovery and food.";
         if (machineImage) {
           if (item.machine_image) {
             machineImage.src = item.machine_image;
@@ -2959,6 +2969,15 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         }
         const nextPending = queue.findIndex(entry => !entry.done);
         if (nextPending !== -1) activeIndex = nextPending;
+        if (item.done && queue[activeIndex]) {
+          const nextRest = parseInt(String(queue[activeIndex].detail || '').match(/rest\\s+(\\d+)/i)?.[1] || currentPreset, 10);
+          if (!Number.isNaN(nextRest) && nextRest > 0) {
+            currentPreset = nextRest;
+            secondsLeft = currentPreset;
+            presetLabel.textContent = currentPreset + " sec";
+            renderTime();
+          }
+        }
         renderState();
         if (!payload) return;
         fetch("/today/check", {
@@ -3013,7 +3032,11 @@ INLINE_FOCUS_HUB_TEMPLATE = """
     .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .actions a { text-decoration:none; color:inherit; }
     .muted { color:#e7d9c8; line-height:1.6; }
+    .hub-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .hub-kpi { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
+    .hub-kpi strong { display:block; margin-top:8px; font-size:24px; }
     @media (max-width: 760px) { .grid,.summary,.trainer-grid { grid-template-columns:1fr; } }
+    @media (max-width: 760px) { .hub-strip { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -3033,8 +3056,64 @@ INLINE_FOCUS_HUB_TEMPLATE = """
       </div>
     </section>
 
-    {% if hub_key == "program" %}
+    {% if hub_key == "train" %}
     <section class="card">
+      <div class="hub-strip">
+        <article class="hub-kpi"><div class="mini">Today</div><strong>{{ payload.today_blueprint.status_label }}</strong><p class="muted">{{ payload.train_room.detail }}</p></article>
+        <article class="hub-kpi"><div class="mini">Progress</div><strong>{{ payload.today_progress.completion_percent }}%</strong><p class="muted">{{ payload.today_progress.done_items }}/{{ payload.today_progress.total_items }} blocks closed.</p></article>
+        <article class="hub-kpi"><div class="mini">Coach</div><strong>{{ payload.today_blueprint.coach_name }}</strong><p class="muted">{{ payload.single_next_action.tag }}</p></article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="row">
+          <div class="mini">Current block</div>
+          <strong>{{ payload.train_room.current_name }}</strong>
+          <p class="muted">{{ payload.train_room.current_detail }}</p>
+          <div class="mini" style="margin-top:8px;">{{ payload.train_room.current_prescription }}</div>
+          <div class="actions">
+            <a href="/workout-mode" class="btn-primary">Open live player</a>
+            <a href="/hub/program" class="btn-primary">Open program</a>
+          </div>
+        </article>
+        <article class="row">
+          {% if payload.train_room.current_machine_image %}
+          <img src="{{ payload.train_room.current_machine_image }}" alt="{{ payload.train_room.current_machine }}" style="width:100%;max-width:260px;border-radius:18px;border:1px solid rgba(255,255,255,.08);display:block;margin-bottom:12px;background:#111;">
+          {% endif %}
+          <div class="mini">{{ payload.train_room.current_machine }}</div>
+          <strong>{{ payload.train_room.current_machine_focus }}</strong>
+          <p class="muted">Auto-weight: {{ payload.train_room.current_weight }}</p>
+          <div class="mini" style="margin-top:8px;">Next up · {{ payload.train_room.next_name }}</div>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        {% for item in payload.train_room.queue_preview %}
+        <article class="row">
+          <div class="mini">{{ item.machine_label }}</div>
+          <strong>{{ item.name }}</strong>
+          <p class="muted">{{ item.detail }}</p>
+          <div class="mini" style="margin-top:8px;">Auto-weight</div>
+          <strong style="font-size:18px;">{{ item.weight_suggestion }}</strong>
+        </article>
+        {% endfor %}
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="row">
+          <strong>Session board</strong>
+          <ul class="list">{% for item in payload.train_room.session_tiles %}<li><strong>{{ item.label }}</strong> - {{ item.value }} - {{ item.detail }}</li>{% endfor %}</ul>
+        </article>
+        <article class="row">
+          <strong>Technique notes</strong>
+          <ul class="list">{% for item in payload.train_room.mastery_preview %}<li><strong>{{ item.name }}</strong> - {{ item.execution }}</li>{% endfor %}</ul>
+          <div class="mini" style="margin-top:10px;">{{ payload.voice_coach.mode_label }}</div>
+        </article>
+      </div>
+    </section>
+    {% elif hub_key == "program" %}
+    <section class="card">
+      <div class="hub-strip">
+        <article class="hub-kpi"><div class="mini">Current block</div><strong>{{ payload.periodization_engine.week_label }}</strong><p class="muted">{{ payload.periodization_engine.block_name }}</p></article>
+        <article class="hub-kpi"><div class="mini">Coach signal</div><strong>{{ payload.periodization_engine.phase_signal }}</strong><p class="muted">{{ payload.periodization_engine.coach_call }}</p></article>
+        <article class="hub-kpi"><div class="mini">Focus this week</div><strong>{{ payload.periodization_engine.week_focus }}</strong><p class="muted">{{ payload.periodization_engine.today_fit }}</p></article>
+      </div>
       <div class="summary">
         <article class="tile"><div class="mini">Active package</div><strong>{{ payload.active_package.title }}</strong><p class="muted">{{ payload.active_package.summary }}</p></article>
         <article class="tile"><div class="mini">Focus</div><strong>{{ payload.active_package.focus }}</strong><p class="muted">{{ payload.active_package.days }} training days.</p></article>
@@ -3068,24 +3147,29 @@ INLINE_FOCUS_HUB_TEMPLATE = """
     </section>
     {% elif hub_key == "fuel" %}
     <section class="card">
-      <div class="mini">{{ payload.nutrition_os.headline }}</div>
+      <div class="mini">{{ payload.fuel_room.headline }}</div>
+      <div class="hub-strip" style="margin-top:16px;">
+        <article class="hub-kpi"><div class="mini">Eat now</div><strong>{{ payload.fuel_room.next_meal }}</strong><p class="muted">{{ payload.fuel_room.next_detail }}</p></article>
+        <article class="hub-kpi"><div class="mini">Prep call</div><strong>{{ payload.fuel_room.prep_call[0] if payload.fuel_room.prep_call else 'Prep core foods' }}</strong><p class="muted">{{ payload.fuel_room.prep_call[1] if payload.fuel_room.prep_call|length > 1 else 'Stay ahead of the week.' }}</p></article>
+        <article class="hub-kpi"><div class="mini">Macro lane</div><strong>{{ payload.fuel_room.protein_left }}g protein left</strong><p class="muted">{{ payload.fuel_room.calories_left }} kcal left today.</p></article>
+      </div>
       <div class="summary">
-        <article class="tile"><div class="mini">Next meal</div><strong>{{ payload.nutrition_intelligence.next_meal_title }}</strong><p class="muted">{{ payload.nutrition_intelligence.next_meal_detail }}</p></article>
-        <article class="tile"><div class="mini">Protein left</div><strong>{{ payload.nutrition_intelligence.protein_left }}g</strong><p class="muted">Keep fuel aligned.</p></article>
-        <article class="tile"><div class="mini">Calories left</div><strong>{{ payload.nutrition_intelligence.calories_left }}</strong><p class="muted">{{ payload.nutrition_intelligence.day_type|title }} day.</p></article>
+        <article class="tile"><div class="mini">Next meal</div><strong>{{ payload.fuel_room.next_meal }}</strong><p class="muted">{{ payload.fuel_room.next_detail }}</p></article>
+        <article class="tile"><div class="mini">Protein left</div><strong>{{ payload.fuel_room.protein_left }}g</strong><p class="muted">Keep fuel aligned.</p></article>
+        <article class="tile"><div class="mini">Calories left</div><strong>{{ payload.fuel_room.calories_left }}</strong><p class="muted">{{ payload.nutrition_intelligence.day_type|title }} day.</p></article>
       </div>
       <div class="grid" style="margin-top:16px;">
         <article class="row">
           <strong>Smart swaps</strong>
-          <ul class="list">{% for item in payload.nutrition_intelligence.smart_swaps %}<li>{{ item }}</li>{% endfor %}</ul>
+          <ul class="list">{% for item in payload.fuel_room.smart_swaps %}<li>{{ item }}</li>{% endfor %}</ul>
         </article>
         <article class="row">
           <strong>Shopping list</strong>
-          <ul class="list">{% for item in payload.shopping_list %}<li>{{ item.name }} - {{ item.reason }}</li>{% endfor %}</ul>
+          <ul class="list">{% for item in payload.fuel_room.shopping_preview %}<li>{{ item.name }} - {{ item.reason }}</li>{% endfor %}</ul>
         </article>
       </div>
       <div class="grid" style="margin-top:16px;">
-        {% for item in payload.nutrition_os.weekly_plan %}
+        {% for item in payload.fuel_room.weekly_plan %}
         <article class="row">
           <div class="mini">{{ item.day }}</div>
           <strong>{{ item.theme }}</strong>
@@ -3110,19 +3194,24 @@ INLINE_FOCUS_HUB_TEMPLATE = """
     </section>
     {% elif hub_key == "track" %}
     <section class="card">
-      <div class="mini">{{ payload.transformation_dashboard.headline }}</div>
+      <div class="mini">{{ payload.track_room.headline }}</div>
+      <div class="hub-strip" style="margin-top:16px;">
+        <article class="hub-kpi"><div class="mini">Recomp</div><strong>{{ payload.track_room.recomp }}/100</strong><p class="muted">{{ payload.track_room.checkpoint }}</p></article>
+        <article class="hub-kpi"><div class="mini">Adherence</div><strong>{{ payload.track_room.adherence }}%</strong><p class="muted">{{ payload.weekly_review.headline }}</p></article>
+        <article class="hub-kpi"><div class="mini">Next checkpoint</div><strong>{{ payload.track_room.checkpoint }}</strong><p class="muted">{{ payload.track_room.review }}</p></article>
+      </div>
       <div class="summary">
-        {% for item in payload.transformation_dashboard.tiles %}
+        {% for item in payload.track_room.tiles %}
         <article class="tile"><div class="mini">{{ item.label }}</div><strong>{{ item.value }}</strong><p class="muted">{{ item.detail }}</p></article>
         {% endfor %}
       </div>
       <div class="grid" style="margin-top:16px;">
-        <article class="row"><strong>Progress operating system</strong><ul class="list">{% for item in payload.progress_system.wins %}<li>{{ item }}</li>{% endfor %}</ul></article>
-        <article class="row"><strong>Watchouts</strong><ul class="list">{% for item in payload.progress_system.watchouts %}<li>{{ item }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Wins</strong><ul class="list">{% for item in payload.track_room.wins %}<li>{{ item }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Watchouts</strong><ul class="list">{% for item in payload.track_room.watchouts %}<li>{{ item }}</li>{% endfor %}</ul></article>
       </div>
       <div class="grid" style="margin-top:16px;">
-        <article class="row"><strong>Trend lines</strong><ul class="list">{% for item in payload.transformation_dashboard.trends %}<li><strong>{{ item.label }}</strong> - {{ item.value }} - {{ item.detail }}</li>{% endfor %}</ul></article>
-        <article class="row"><strong>Next checkpoints</strong><ul class="list">{% for item in payload.transformation_dashboard.checkpoints %}<li>{{ item }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Trend lines</strong><ul class="list">{% for item in payload.track_room.trends %}<li><strong>{{ item.label }}</strong> - {{ item.value }} - {{ item.detail }}</li>{% endfor %}</ul></article>
+        <article class="row"><strong>Coach review</strong><ul class="list"><li>{{ payload.track_room.review }}</li><li>{{ payload.track_room.checkpoint }}</li></ul></article>
       </div>
     </section>
     {% elif hub_key == "profile" %}
@@ -4220,8 +4309,8 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
     return [
         {
             "title": "Train",
-            "anchor": "/workout-mode",
-            "detail": "Open today's exact exercise order, timer and live player.",
+            "anchor": "/hub/train",
+            "detail": "Open today's training room, then jump into the live player.",
             "kicker": "Start",
             "metric": "Live session",
         },
@@ -4270,9 +4359,110 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
     ]
 
 
+def build_dashboard_core_widgets(
+    today_blueprint: dict[str, Any],
+    today_progress: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    session_analytics: dict[str, Any],
+) -> list[dict[str, str]]:
+    return [
+        {
+            "kicker": "Train",
+            "title": today_blueprint.get("title", "Today's session"),
+            "detail": today_blueprint.get("focus_line", "Open the training room and follow the written order."),
+            "metric": today_blueprint.get("duration", "Live session"),
+            "anchor": "/hub/train",
+        },
+        {
+            "kicker": "Fuel",
+            "title": nutrition_intelligence.get("next_meal_title", "Next meal"),
+            "detail": nutrition_intelligence.get("next_meal_detail", "Keep food timing clean and simple."),
+            "metric": f"{nutrition_intelligence.get('protein_left', 0)}g protein left",
+            "anchor": "/hub/fuel",
+        },
+        {
+            "kicker": "Track",
+            "title": f"{today_progress.get('completion_percent', 0)}% day complete",
+            "detail": f"{today_progress.get('done_items', 0)}/{today_progress.get('total_items', 0)} blocks are already closed.",
+            "metric": session_analytics.get("coach_note", "Stay consistent."),
+            "anchor": "/hub/track",
+        },
+        {
+            "kicker": "Coach",
+            "title": "What to do next",
+            "detail": "Open the coach lane for the shortest next step, not more information.",
+            "metric": today_blueprint.get("coach_name", "Coach"),
+            "anchor": "/hub/coach",
+        },
+    ]
+
+
+def build_train_room(
+    today_blueprint: dict[str, Any],
+    live_session: dict[str, Any],
+    session_analytics: dict[str, Any],
+    exercise_mastery: list[dict[str, Any]],
+) -> dict[str, Any]:
+    queue = list(live_session.get("queue") or [])
+    current = queue[0] if queue else {}
+    next_item = queue[1] if len(queue) > 1 else current
+    return {
+        "headline": today_blueprint.get("title", "Today's training room"),
+        "detail": today_blueprint.get("focus_line", "Open the player and follow the order."),
+        "current_name": current.get("name", live_session.get("next_move", "Open the player")),
+        "current_detail": current.get("detail", live_session.get("coach_prompt", "Live session ready.")),
+        "current_machine": current.get("machine_label", "Training station"),
+        "current_machine_focus": current.get("machine_focus", today_blueprint.get("status_label", "Training")),
+        "current_machine_image": current.get("machine_image", ""),
+        "current_weight": current.get("weight_suggestion", "Use clean execution first."),
+        "current_prescription": exercise_prescription_text(current) if current else today_blueprint.get("duration", "Live session"),
+        "next_name": next_item.get("name", "Open workout mode"),
+        "next_detail": next_item.get("detail", "The next movement appears here once the current block is closed."),
+        "queue_preview": queue[:5],
+        "mastery_preview": exercise_mastery[:3],
+        "session_tiles": session_analytics.get("tiles", [])[:4],
+    }
+
+
+def build_fuel_room(
+    nutrition_os: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    shopping_list: list[dict[str, str]],
+) -> dict[str, Any]:
+    return {
+        "headline": nutrition_os.get("headline", "Fuel room"),
+        "next_meal": nutrition_intelligence.get("next_meal_title", "Next meal"),
+        "next_detail": nutrition_intelligence.get("next_meal_detail", "Close the next meal block."),
+        "protein_left": nutrition_intelligence.get("protein_left", 0),
+        "calories_left": nutrition_intelligence.get("calories_left", 0),
+        "smart_swaps": list(nutrition_intelligence.get("smart_swaps", []))[:4],
+        "prep_call": list(nutrition_os.get("prep_call", []))[:3],
+        "weekly_plan": list(nutrition_os.get("weekly_plan", []))[:4],
+        "shopping_preview": list(shopping_list or [])[:6],
+    }
+
+
+def build_track_room(
+    progress_system: dict[str, Any],
+    transformation_dashboard: dict[str, Any],
+    weekly_review: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "headline": transformation_dashboard.get("headline", "Track room"),
+        "recomp": progress_system.get("recomposition_score", 0),
+        "adherence": progress_system.get("adherence_score", 0),
+        "checkpoint": progress_system.get("next_checkpoint", "Stay consistent this week."),
+        "wins": list(progress_system.get("wins", []))[:4],
+        "watchouts": list(progress_system.get("watchouts", []))[:4],
+        "tiles": list(transformation_dashboard.get("tiles", []))[:4],
+        "trends": list(transformation_dashboard.get("trends", []))[:4],
+        "review": weekly_review.get("next_week_adjustment", weekly_review.get("adjustment", "Hold the plan and improve execution.")),
+    }
+
+
 def build_section_menu(user: dict[str, Any]) -> list[dict[str, str]]:
     items = [
-        {"title": "Train", "anchor": "/workout-mode"},
+        {"title": "Train", "anchor": "/hub/train"},
         {"title": "Program", "anchor": "/hub/program"},
         {"title": "Coach", "anchor": "/hub/coach"},
         {"title": "Fuel", "anchor": "/nutrition-mode"},
@@ -4719,6 +4909,11 @@ def build_delight_board(
 
 def focus_hub_meta(hub_key: str) -> dict[str, str]:
     mapping = {
+        "train": {
+            "title": "Train hub",
+            "heading": "Today's training room",
+            "copy": "Open the room, see the exact order, then move straight into the live player.",
+        },
         "program": {
             "title": "Program hub",
             "heading": "Coach packages and active plan",
@@ -6814,6 +7009,10 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     nutrition_os = build_nutrition_os(user, assistant, nutrition_intelligence)
     transformation_dashboard = build_transformation_dashboard(progress_system, recomposition_dashboard, progress_trends, weekly_review)
     wellness_panel = build_wellness_panel(user, scores)
+    dashboard_core_widgets = build_dashboard_core_widgets(today_blueprint, today_progress, nutrition_intelligence, session_analytics)
+    train_room = build_train_room(today_blueprint, live_session, session_analytics, exercise_mastery)
+    fuel_room = build_fuel_room(nutrition_os, nutrition_intelligence, shopping_list)
+    track_room = build_track_room(progress_system, transformation_dashboard, weekly_review)
     lang = current_language()
     ui = language_pack()
     market_flags = market_readiness_flags()
@@ -6880,9 +7079,13 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "customer_delight": customer_delight,
         "delight_board": delight_board,
         "home_hub": home_hub,
+        "dashboard_core_widgets": dashboard_core_widgets,
         "guided_day_flow": guided_day_flow,
         "nutrition_os": nutrition_os,
         "transformation_dashboard": transformation_dashboard,
+        "train_room": train_room,
+        "fuel_room": fuel_room,
+        "track_room": track_room,
         "easy_mode": easy_mode,
         "quick_dock": easy_mode["quick_dock"],
         "coach_briefing": coach_briefing,
@@ -7069,7 +7272,7 @@ def focus_hub(hub_key: str):
     user = current_user()
     if needs_onboarding(user):
         return redirect(url_for("onboarding"))
-    allowed = {"program", "fuel", "coach", "track", "profile", "calendar"}
+    allowed = {"train", "program", "fuel", "coach", "track", "profile", "calendar"}
     if hub_key not in allowed:
         return redirect(url_for("dashboard"))
     payload = dashboard_payload(user)
@@ -7198,9 +7401,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V45",
-        "login_title": "Secure athlete login V45",
-        "dashboard_title": "Adaptive athlete dashboard V45",
+        "build": "APP.PY ONLY BUILD V49",
+        "login_title": "Secure athlete login V49",
+        "dashboard_title": "Adaptive athlete dashboard V49",
     }
 
 
