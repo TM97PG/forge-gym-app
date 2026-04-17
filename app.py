@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V44</div>
+    <div class="pill">APP.PY ONLY BUILD V45</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V44</h1>
+    <h1>Secure athlete login V45</h1>
     <p>Uloguj se, otvori svoj plan i nastavi tacno tamo gdje si stao.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -677,7 +677,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V44</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V45</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -712,7 +712,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Today first. Open the player, follow the plan, close the meals, done.</p>
         </div>
-<div class="pill">Market ready + dashboard V44</div>
+<div class="pill">Market ready + dashboard V45</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -802,9 +802,9 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
       </div>
       <div class="quickbar">
         <a href="#folders">Open {{ payload.ui.folders }}</a>
-        <a href="#plans">View {{ payload.ui.plans }}</a>
+        <a href="/hub/program">View {{ payload.ui.plans }}</a>
           <a href="/daily-checkin">Daily check-in</a>
-          <a href="#profile">Edit profile</a>
+          <a href="/hub/profile">Edit profile</a>
       </div>
       <div class="filter-grid">
         {% for item in payload.adaptive_filters %}
@@ -2804,6 +2804,27 @@ INLINE_WORKOUT_ONLY_TEMPLATE = """
         {% endfor %}
       </div>
     </section>
+    <section class="card">
+      <div class="top">
+        <div>
+          <div class="mini">Session board</div>
+          <strong style="display:block;margin-top:8px;font-size:24px;">Live workout summary</strong>
+        </div>
+        <div class="pill">{{ payload.session_analytics.completion_score }}% complete</div>
+      </div>
+      <div class="metrics" style="margin-top:16px;">
+        <article class="metric"><div class="mini">Volume</div><strong>{{ payload.session_analytics.total_volume }}</strong></article>
+        <article class="metric"><div class="mini">Calories</div><strong>{{ payload.session_analytics.estimated_calories }}</strong></article>
+        <article class="metric"><div class="mini">Average RPE</div><strong>{{ payload.session_analytics.average_rpe }}</strong></article>
+      </div>
+      <div class="list" style="margin-top:16px;">
+        <div class="row">
+          <div class="mini">Coach call</div>
+          <strong>{{ payload.session_analytics.next_session_call }}</strong>
+          <p>{{ payload.session_analytics.summary }}</p>
+        </div>
+      </div>
+    </section>
   </main>
   <script id="wo-data" type="application/json">{{ payload.live_session|tojson }}</script>
   <script>
@@ -4198,51 +4219,51 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
     first_plan = assistant["suggestions"][0] if assistant.get("suggestions") else None
     return [
         {
-            "title": "Today workout",
+            "title": "Train",
             "anchor": "/workout-mode",
-            "detail": "Open today's exact order of exercises, sets, reps, rest and live player.",
+            "detail": "Open today's exact exercise order, timer and live player.",
             "kicker": "Start",
             "metric": "Live session",
         },
         {
-            "title": "Coach packages",
+            "title": "Program",
             "anchor": "/hub/program",
-            "detail": f"{len(assistant['suggestions'])} ready-made training packages. Lead focus: {first_plan['focus'] if first_plan else 'Coach flow'}.",
+            "detail": f"{len(assistant['suggestions'])} ready-made programs with fixed training days and sessions.",
             "kicker": "Plans",
             "metric": "Ready to run",
         },
         {
-            "title": "Nutrition widget",
+            "title": "Fuel",
             "anchor": "/nutrition-mode",
-            "detail": f"Meals, macro autopilot and food timing around {assistant['targets']['calories']} kcal.",
+            "detail": f"Meals, macros and timing built around {assistant['targets']['calories']} kcal.",
             "kicker": "Fuel",
             "metric": f"{assistant['targets']['protein']}g protein",
         },
         {
-            "title": "Progress widget",
+            "title": "Track",
             "anchor": "/hub/track",
-            "detail": "Recomposition score, PRs and body-change signals in one clean place.",
+            "detail": "Body change, PRs and adherence in one clean place.",
             "kicker": "Track",
             "metric": "Body + strength",
         },
         {
-            "title": "Coach widget",
+            "title": "Coach",
             "anchor": "/hub/coach",
-            "detail": "Adaptive coaching rules, weekly adjustment and recovery guidance.",
+            "detail": "Adaptive coaching, weekly adjustment and recovery guidance.",
             "kicker": "Coach",
             "metric": "Adaptive engine",
         },
         {
-            "title": "Profile widget",
+            "title": "Profile",
             "anchor": "/hub/profile",
-            "detail": "Update your body data, goal and training context any time.",
+            "detail": "Update body data, goal and training context any time.",
             "kicker": "Setup",
             "metric": "Personalized",
         },
         {
-            "title": "Calendar widget",
+            "title": "Calendar",
             "anchor": "/hub/calendar",
-            "detail": "Weekly layout, next sessions and recovery rhythm in one focused screen.",
+            "detail": "Weekly layout, next sessions and recovery rhythm.",
             "kicker": "Calendar",
             "metric": "Weekly flow",
         },
@@ -4251,11 +4272,11 @@ def build_folder_cards(user: dict[str, Any], assistant: dict[str, Any]) -> list[
 
 def build_section_menu(user: dict[str, Any]) -> list[dict[str, str]]:
     items = [
-        {"title": "Today", "anchor": "/workout-mode"},
-        {"title": "Plans", "anchor": "/hub/program"},
+        {"title": "Train", "anchor": "/workout-mode"},
+        {"title": "Program", "anchor": "/hub/program"},
         {"title": "Coach", "anchor": "/hub/coach"},
-        {"title": "Nutrition", "anchor": "/nutrition-mode"},
-        {"title": "Progress", "anchor": "/hub/track"},
+        {"title": "Fuel", "anchor": "/nutrition-mode"},
+        {"title": "Track", "anchor": "/hub/track"},
         {"title": "Calendar", "anchor": "/hub/calendar"},
         {"title": "Profile", "anchor": "/hub/profile"},
     ]
@@ -6347,13 +6368,13 @@ def build_easy_mode(
             "kicker": "Meals",
             "title": "Nutrition",
             "detail": "Log food without digging through the page.",
-            "anchor": "#mission",
+            "anchor": "/nutrition-mode",
         },
         {
             "kicker": "User",
             "title": "Profile",
             "detail": "Change body data, goal and equipment.",
-            "anchor": "#profile",
+            "anchor": "/hub/profile",
         },
     ]
     return {
@@ -7177,9 +7198,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V44",
-        "login_title": "Secure athlete login V44",
-        "dashboard_title": "Adaptive athlete dashboard V44",
+        "build": "APP.PY ONLY BUILD V45",
+        "login_title": "Secure athlete login V45",
+        "dashboard_title": "Adaptive athlete dashboard V45",
     }
 
 
