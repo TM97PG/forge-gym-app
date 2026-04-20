@@ -303,13 +303,13 @@ INLINE_LOGIN_TEMPLATE = """
           </svg>
         </div>
         <div>
-    <div class="pill">APP.PY ONLY BUILD V57</div>
+    <div class="pill">APP.PY ONLY BUILD V59</div>
           <div class="eyebrow" style="margin-top:10px;">Forge Athlete OS</div>
         </div>
       </div>
       <div class="mini">Premium gym performance system</div>
     </div>
-    <h1>Secure athlete login V57</h1>
+    <h1>Secure athlete login V59</h1>
     <p>Uloguj se, otvori svoj plan i nastavi tacno tamo gdje si stao.</p>
     <div class="hero-gallery">
       <article class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80');">
@@ -631,6 +631,31 @@ INLINE_DASHBOARD_TEMPLATE = """
 .dock-row::-webkit-scrollbar { display:none; }
 .dock-row a { text-decoration:none; color:var(--text); min-width:148px; padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.04); }
 .dock-row strong { display:block; margin-top:8px; font-size:16px; }
+.workspace-home { display:grid; gap:16px; margin-top:18px; }
+.workspace-shell { display:grid; grid-template-columns:1.12fr .88fr; gap:16px; }
+.workspace-lead { padding:24px; border-radius:28px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(150deg, rgba(244,139,56,.16), rgba(255,255,255,.04) 46%, rgba(106,168,255,.08)); }
+.workspace-lead strong { display:block; margin-top:10px; font-size:36px; line-height:1.02; }
+.workspace-lead p { margin:12px 0 0; color:#eadbc8; line-height:1.6; }
+.workspace-stack { display:grid; gap:12px; }
+.workspace-note { padding:16px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.05); }
+.workspace-note strong { display:block; margin-top:8px; font-size:20px; }
+.room-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.room-card { padding:18px; border-radius:22px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)); text-decoration:none; color:var(--text); display:grid; gap:8px; }
+.room-card strong { font-size:21px; line-height:1.08; }
+.room-card .tag { width:max-content; }
+.today-plan-shell { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.plan-stack { display:grid; gap:10px; margin-top:14px; }
+.plan-step { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.045); }
+.plan-step strong { display:block; margin-top:6px; font-size:18px; }
+.task-stack { display:grid; gap:10px; }
+.task-card { padding:14px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.045); }
+.task-card strong { display:block; margin-top:6px; font-size:18px; }
+.command-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.command-pill { padding:14px 16px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.045); text-decoration:none; color:var(--text); display:grid; gap:8px; }
+.command-pill strong { font-size:18px; line-height:1.08; }
+.priority-shell { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.priority-card { padding:16px; border-radius:20px; border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); }
+.priority-card strong { display:block; margin-top:8px; font-size:22px; line-height:1.08; }
 .launchpad { display:grid; grid-template-columns:1.05fr .95fr; gap:16px; margin-top:18px; }
 .action-main { padding:20px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(150deg, rgba(241,90,36,.18), rgba(255,255,255,.04) 44%, rgba(255,176,0,.12)); }
 .action-main strong { display:block; margin-top:8px; font-size:30px; line-height:1.02; }
@@ -714,8 +739,8 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     .bottom { position:fixed; left:12px; right:12px; bottom:12px; display:none; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:10px; background:rgba(15,15,16,.92); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(18px); }
     .bottom a { padding:12px 8px; text-decoration:none; text-align:center; border-radius:14px; font-size:12px; color:var(--muted); font-weight:800; }
     .bottom a:first-child { background:linear-gradient(135deg,var(--orange),var(--gold)); color:#17110a; }
-    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail,.snapshot-strip,.tactical-grid,.quick-capture-grid,.mission-shell { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } .agenda-row { grid-template-columns:88px 1fr; } .agenda-row .agenda-state { grid-column:2; width:max-content; } }
-@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail,.snapshot-strip,.tactical-grid,.quick-capture-grid,.mission-shell { grid-template-columns:1fr; } .hero,.panel { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } .agenda-row { grid-template-columns:1fr; } }
+    @media (max-width: 980px) { .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail,.snapshot-strip,.tactical-grid,.quick-capture-grid,.mission-shell,.workspace-shell,.today-plan-shell,.room-grid,.command-strip,.priority-shell { grid-template-columns:1fr 1fr; } .topbar { grid-template-columns:1fr; } .top-nav-links { justify-content:flex-start; } .agenda-row { grid-template-columns:88px 1fr; } .agenda-row .agenda-state { grid-column:2; width:max-content; } }
+@media (max-width: 760px) { .shell { width:min(100vw - 14px,100%); } .page,.panel-grid,.hero-kpis,.grid3,.grid4,.users-grid,.quickbar,.form2,.meal-grid,.mission-grid,.achievement-grid,.folder-grid,.filter-grid,.planner-grid,.pr-grid,.coach-grid,.today-grid,.calendar-lane,.trend-grid,.chat-grid,.pricing-grid,.today-kpis,.summary-strip,.session-grid,.player-meta,.player-overlay-grid,.player-overlay-actions,.command-grid,.launchpad,.focus-grid,.coach-day-grid,.hero-stage,.delight-main,.delight-grid,.widget-rail,.one-screen-grid,.home-stat-strip,.mode-board,.fast-lane-grid,.utility-rail,.snapshot-strip,.tactical-grid,.quick-capture-grid,.mission-shell,.workspace-shell,.today-plan-shell,.room-grid,.command-strip,.priority-shell { grid-template-columns:1fr; } .hero,.panel,.workspace-lead { padding:18px; } .bottom { display:grid; bottom:max(12px, env(safe-area-inset-bottom)); } .lang-switch { justify-content:start; grid-auto-flow:row; } .folder-menu { margin-top:12px; padding-bottom:4px; } .player-overlay { padding:calc(10px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)); } .player-overlay-screen { padding:18px; } .player-overlay-title { font-size:34px; } .dock-row a { min-width:132px; } .panel-summary { padding:16px 18px; } .panel-body { padding:0 18px 18px; } .agenda-row { grid-template-columns:1fr; } }
   </style>
 </head>
 <body data-view-mode="{{ payload.view_mode }}">
@@ -723,7 +748,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
     <div class="topbar">
       <div>
         <div class="mini">Forge athlete OS</div>
-<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V57</strong>
+<strong style="display:block;margin-top:6px;font-size:20px;">APP.PY ONLY BUILD V59</strong>
       </div>
       <div class="toplinks">
         <div class="lang-switch">
@@ -758,7 +783,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           <h1>Forge</h1>
           <p>Home keeps only the essentials. Open the right room, finish the block, move on.</p>
         </div>
-<div class="pill">Dashboard V57</div>
+<div class="pill">Dashboard V59</div>
       </div>
       <div class="hero-user" style="margin-top:18px;">
         <div>
@@ -804,6 +829,112 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           </div>
         </article>
       </section>
+      <section class="workspace-home">
+        <div class="command-strip">
+          {% for item in payload.command_strip %}
+          <a class="command-pill" href="{{ item.anchor }}">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </a>
+          {% endfor %}
+        </div>
+        <div class="priority-shell">
+          {% for item in payload.priority_stack %}
+          <article class="priority-card">
+            <div class="mini">{{ item.kicker }}</div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+            <div class="tag">{{ item.meta }}</div>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="workspace-shell">
+          <article class="workspace-lead">
+            <div class="mini">Daily workspace</div>
+            <strong>{{ payload.home_hub.headline }}</strong>
+            <p>{{ payload.home_hub.detail }}</p>
+            <div class="hero-actions">
+              <a class="pill" href="{{ payload.home_hub.primary.anchor }}">{{ payload.home_hub.primary.label }}</a>
+              <a class="tag" href="{{ payload.home_hub.secondary.anchor }}">{{ payload.home_hub.secondary.label }}</a>
+            </div>
+            <div class="plan-stack">
+              {% for item in payload.home_hub.stats %}
+              <article class="plan-step">
+                <div class="mini">{{ item.label }}</div>
+                <strong>{{ item.value }}</strong>
+                <p style="margin-top:8px;">{{ item.detail }}</p>
+              </article>
+              {% endfor %}
+            </div>
+          </article>
+          <div class="workspace-stack">
+            <article class="workspace-note">
+              <div class="mini">Next move</div>
+              <strong>{{ payload.single_next_action.title }}</strong>
+              <p>{{ payload.single_next_action.detail }}</p>
+              <div class="hero-actions">
+                <a class="pill" href="{{ payload.single_next_action.anchor }}">{{ payload.single_next_action.cta }}</a>
+                <div class="tag">{{ payload.single_next_action.tag }}</div>
+              </div>
+            </article>
+            <div class="task-stack">
+              {% for item in payload.daily_tasks %}
+              <article class="task-card">
+                <div class="mini">{{ item.kicker }}</div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.detail }}</p>
+              </article>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="room-grid" id="folders">
+          {% for item in payload.workspace_hub %}
+          <a class="room-card" href="{{ item.anchor }}">
+            <div class="mini">{{ item.title }}</div>
+            <strong>{{ item.detail }}</strong>
+            <p>{{ item.metric }}</p>
+            <div class="tag">Open room</div>
+          </a>
+          {% endfor %}
+        </div>
+        <div class="today-plan-shell">
+          <article class="agenda-board">
+            <div class="mini">Today agenda</div>
+            <strong style="display:block;margin-top:8px;font-size:28px;">Move through the day in order.</strong>
+            <p style="margin-top:10px;">Open one block at a time. Finish it. The next step is already prepared.</p>
+            <div class="agenda-grid">
+              {% for item in payload.today_agenda %}
+              <a class="agenda-row" href="{{ item.anchor }}" style="text-decoration:none;color:inherit;">
+                <div class="agenda-time">{{ item.time }}</div>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p style="margin-top:6px;">{{ item.detail }}</p>
+                </div>
+                <div class="agenda-state {{ item.state|replace(' ', '-') }}">{{ item.state }}</div>
+              </a>
+              {% endfor %}
+            </div>
+          </article>
+          <article class="agenda-board">
+            <div class="mini">Focused actions</div>
+            <strong style="display:block;margin-top:8px;font-size:28px;">Only the useful tools.</strong>
+            <p style="margin-top:10px;">Training, fuel, progress and coach stay close. Extra detail lives inside each room.</p>
+            <div class="fast-lane-grid" style="margin-top:14px;">
+              {% for item in payload.fast_lane %}
+              <a class="lane-card {{ item.emphasis }}" href="{{ item.anchor }}">
+                <div class="mini">{{ item.kicker }}</div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.detail }}</p>
+                <div class="tag">{{ item.metric }}</div>
+              </a>
+              {% endfor %}
+            </div>
+          </article>
+        </div>
+      </section>
+      {% if payload.view_mode == 'pro' %}
       <section class="mission-shell">
         <article class="mission-lead">
           <div class="mini">Mission control</div>
@@ -1013,6 +1144,7 @@ body[data-view-mode="simple"] .minimal-only { display:block; }
           {% endfor %}
         </div>
       </section>
+      {% endif %}
       {% if payload.view_mode == 'pro' %}
       <section class="delight-shell">
         <div class="delight-main">
@@ -4992,6 +5124,69 @@ def build_signal_stack(
     return stack[:4]
 
 
+def build_command_strip(
+    single_next_action: dict[str, str],
+    workspace_hub: list[dict[str, str]],
+    profile_tools: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    strip = [
+        {
+            "kicker": "Now",
+            "title": single_next_action.get("cta", "Open next step"),
+            "detail": single_next_action.get("title", "Move the day forward."),
+            "anchor": single_next_action.get("anchor", "/dashboard"),
+        }
+    ]
+    for item in workspace_hub[:2]:
+        strip.append(
+            {
+                "kicker": "Room",
+                "title": item.get("title", "Open room"),
+                "detail": item.get("detail", "Go straight to the focused workspace."),
+                "anchor": item.get("anchor", "/dashboard"),
+            }
+        )
+    for item in profile_tools[:1]:
+        strip.append(
+            {
+                "kicker": "Account",
+                "title": item.get("title", "Profile"),
+                "detail": item.get("detail", "Open account tools."),
+                "anchor": item.get("anchor", "/hub/profile"),
+            }
+        )
+    return strip[:4]
+
+
+def build_priority_stack(
+    today_blueprint: dict[str, Any],
+    nutrition_intelligence: dict[str, Any],
+    daily_tasks: list[dict[str, str]],
+    scores: dict[str, Any],
+) -> list[dict[str, str]]:
+    top_task = daily_tasks[0] if daily_tasks else {"title": "Close the first block", "detail": "Start with the next scheduled action."}
+    return [
+        {
+            "kicker": "Train",
+            "title": today_blueprint.get("title", "Today's training"),
+            "detail": today_blueprint.get("focus_line", "Open the training room and follow the sequence."),
+            "meta": today_blueprint.get("duration", "Live session"),
+        },
+        {
+            "kicker": "Fuel",
+            "title": nutrition_intelligence.get("next_meal_title", "Next meal"),
+            "detail": nutrition_intelligence.get("next_meal_detail", "Keep the next meal block simple and on time."),
+            "meta": f"{nutrition_intelligence.get('protein_left', 0)}g protein left",
+        },
+        {
+            "kicker": "Focus",
+            "title": top_task.get("title", "Close the next block"),
+            "detail": top_task.get("detail", "Move one clean step at a time."),
+            "meta": f"Recovery {scores.get('recovery_score', 0)}/10",
+        },
+    ]
+
+
 def build_train_room(
     today_blueprint: dict[str, Any],
     live_session: dict[str, Any],
@@ -7880,6 +8075,8 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
     mission_control = build_mission_control(today_blueprint, today_progress, nutrition_intelligence, coach_briefing, weekly_review)
     quick_capture = build_quick_capture(today_progress, nutrition_intelligence)
     signal_stack = build_signal_stack(notifications, today_progress)
+    command_strip = build_command_strip(single_next_action, workspace_hub, profile_tools)
+    priority_stack = build_priority_stack(today_blueprint, nutrition_intelligence, daily_tasks, scores)
     train_room = build_train_room(today_blueprint, live_session, session_analytics, exercise_mastery)
     fuel_room = build_fuel_room(nutrition_os, nutrition_intelligence, shopping_list)
     track_room = build_track_room(progress_system, transformation_dashboard, weekly_review)
@@ -7970,6 +8167,8 @@ def dashboard_payload(user: dict[str, Any]) -> dict[str, Any]:
         "mission_control": mission_control,
         "quick_capture": quick_capture,
         "signal_stack": signal_stack,
+        "command_strip": command_strip,
+        "priority_stack": priority_stack,
         "guided_day_flow": guided_day_flow,
         "nutrition_os": nutrition_os,
         "transformation_dashboard": transformation_dashboard,
@@ -8302,9 +8501,9 @@ def privacy():
 @app.route("/app-version")
 def app_version():
     return {
-        "build": "APP.PY ONLY BUILD V57",
-        "login_title": "Secure athlete login V57",
-        "dashboard_title": "Adaptive athlete dashboard V57",
+        "build": "APP.PY ONLY BUILD V59",
+        "login_title": "Secure athlete login V59",
+        "dashboard_title": "Adaptive athlete dashboard V59",
     }
 
 
